@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Uxban | Release</title>
+
+  <meta name="description"         id="meta-desc" content="">
+  <meta property="og:type"                        content="music.album">
+  <meta property="og:url"          id="og-url"    content="">
+  <meta property="og:title"        id="og-title"  content="">
+  <meta property="og:description"  id="og-desc"   content="">
+  <meta property="og:image"        id="og-image"  content="">
+  <meta name="twitter:card"                       content="summary_large_image">
+  <meta name="twitter:site"                       content="@uxbanwtf">
+  <meta name="twitter:title"       id="tw-title"  content="">
+  <meta name="twitter:description" id="tw-desc"   content="">
+  <meta name="twitter:image"       id="tw-image"  content="">
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script defer src="/_vercel/insights/script.js"></script>
+
+  <script src="/listen/listen-config.js"></script>
+  <script src="/release/release-config.js"></script>
+
+  <style>
+    /* =========================
+       RELEASE PAGE
+    ========================= */
+
+    .rel-page {
+      padding: 140px var(--pad-x) 0;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    /* ── HERO ── */
+    .rel-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      padding: 60px 0 100px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rel-cover-wrap {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .rel-cover-glow {
+      position: absolute;
+      inset: -20px;
+      background-size: cover;
+      background-position: center;
+      filter: blur(60px) saturate(0.8);
+      opacity: 0.35;
+      z-index: 0;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+    .rel-cover {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      border-radius: 6px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55);
+      will-change: transform;
+      transform-origin: center center;
+      transition: box-shadow 0.4s var(--ease);
+    }
+
+    /* ── INFO ── */
+    .rel-info { max-width: 560px; }
+
+    .rel-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+    .rel-badge.album {
+      background: var(--accent);
+      color: #fff;
+    }
+    .rel-badge.single {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .rel-badge.presave {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .rel-title {
+      font-family: var(--sans);
+      font-size: clamp(2.8rem, 6.5vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+
+    .rel-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .rel-meta span {
+      display: inline-flex;
+      align-items: center;
+    }
+    .rel-meta span + span::before {
+      content: '·';
+      margin-right: 16px;
+      color: var(--border-2);
+    }
+
+    .rel-story {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--fg-dim);
+      margin-bottom: 44px;
+      max-width: 480px;
+    }
+
+    /* ── CTA ROW ── */
+    .rel-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .rel-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: #000;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 18px 34px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
+    }
+    .rel-cta:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    .rel-cta:active { transform: scale(0.98); }
+
+    .rel-platform-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 12px;
+      border-left: 1px solid var(--border);
+    }
+
+    .rel-platform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-2);
+      color: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s var(--spring);
+    }
+    .rel-platform:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: scale(1.1);
+    }
+    .rel-platform svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ── TRACKLIST ── */
+    .rel-section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rel-section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      display: block;
+    }
+
+    .rel-tracklist {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rel-track {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s var(--ease), padding-left 0.3s var(--ease);
+      cursor: pointer;
+    }
+    .rel-track:last-child { border-bottom: none; }
+    .rel-track:hover {
+      background: rgba(255, 255, 255, 0.025);
+      padding-left: 28px;
+    }
+
+    .rel-track-num {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .rel-track-name {
+      flex: 1;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.005em;
+      text-transform: uppercase;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rel-track-feat {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .rel-track-dur {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 52px;
+      text-align: right;
+    }
+
+    /* ── CREDITS ── */
+    .rel-credits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+    }
+
+    .rel-credit-group h4 {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .rel-credit-group p {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.5;
+    }
+
+    /* ── RELATED ── */
+    .rel-related {
+      padding: 80px 0 40px;
+    }
+
+    .rel-related .grid {
+      margin-top: 32px;
+    }
+
+    /* ── SKELETON ── */
+    .rel-skeleton {
+      background: var(--bg-card);
+      border-radius: 6px;
+      animation: rel-shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes rel-shimmer {
+      0%, 100% { opacity: 0.5; }
+      50%      { opacity: 0.9; }
+    }
+
+    .rel-not-found {
+      padding: 200px var(--pad-x);
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── ENTRANCE ── */
+    @keyframes relFadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .rel-fade { animation: relFadeUp 0.7s var(--ease) both; }
+    .rel-fade-1 { animation-delay: 0.05s; }
+    .rel-fade-2 { animation-delay: 0.15s; }
+    .rel-fade-3 { animation-delay: 0.25s; }
+    .rel-fade-4 { animation-delay: 0.35s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .rel-page { padding: 120px var(--pad-x) 0; }
+      .rel-hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 30px 0 60px;
+      }
+      .rel-cover-wrap { max-width: 420px; }
+      .rel-info { max-width: 100%; }
+      .rel-title { font-size: clamp(2.2rem, 10vw, 4rem); }
+      .rel-section { padding: 56px 0; }
+      .rel-platform-row {
+        padding-left: 0;
+        border-left: none;
+      }
+      .rel-track { gap: 16px; padding: 16px 12px; }
+      .rel-track-feat { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .rel-cta { padding: 16px 26px; font-size: 12px; }
+      .rel-platform { width: 40px; height: 40px; }
+      .rel-platform svg { width: 16px; height: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<div class="site-banner" id="site-banner">
+  <span class="site-banner-text"></span>
+  <button class="site-banner-close" aria-label="Close banner">✕</button>
+</div>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="/">HOME</a>
+  <a href="/releases/" class="active">RELEASES</a>
+  <a href="/store/">STORE</a>
+  <div class="mobile-nav-footer">© 2026 UXBAN</div>
+</nav>
+
+<nav class="top-bar" id="top-bar">
+  <a href="/"><img src="/assets/images/logo.png" class="nav-logo" alt="uxban"></a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="/releases/" class="active">RELEASES</a>
+    <a href="/store/">STORE</a>
+  </div>
+  <div class="nav-info">
+    <button class="nav-search" onclick="window.UxbanCmdk && window.UxbanCmdk.open()" aria-label="Search (⌘K)" title="Search (⌘K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="rel-page" id="rel-page">
+    <div class="rel-not-found" id="rel-loading">
+      <span class="rel-skeleton" style="display:inline-block;width:200px;height:12px;"></span>
+    </div>
+  </div>
+</div>
+
+<button class="scroll-top" id="scroll-top" aria-label="Back to top">↑</button>
+
+<script>
+/* ══════════════════════════════════════════════
+   UXBAN — RELEASE DETAIL PAGE
+   URL: /release/{slug}/
+   Data from /api/spotify + /api/spotify-tracks
+   Content from /release/release-config.js
+══════════════════════════════════════════════ */
+
+const ICONS = {
+  spotify: '<svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>',
+  apple:   '<svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>',
+};
+
+function slugify(name) {
+  return String(name || '').toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function fmtDuration(ms) {
+  if (!ms) return '';
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+(async function init() {
+
+  /* ── 1. Slug from URL ───────────────────── */
+  const parts = location.pathname.replace(/\/$/, '').split('/');
+  const slug  = decodeURIComponent(parts[parts.length - 1] || '');
+
+  const notFoundEl = document.getElementById('rel-loading');
+  if (!slug) return showNotFound();
+
+  /* ── 2. Fetch all releases ──────────────── */
+  let release = null;
+  let allReleases = [];
+
+  try {
+    const res  = await fetch('/api/spotify');
+    const data = await res.json();
+    allReleases = [
+      ...(data.albums  || []).map(r => ({ ...r, _type: 'ALBUM'  })),
+      ...(data.singles || []).map(r => ({ ...r, _type: 'SINGLE' })),
+    ];
+    release = allReleases.find(r => slugify(r.name) === slug) || null;
+  } catch (e) {
+    console.warn('Spotify fetch failed:', e.message);
+  }
+
+  if (!release) return showNotFound();
+
+  /* ── 3. Merge config content ────────────── */
+  const cfg       = window.UXBAN_RELEASE_CONFIG || {};
+  const story     = (cfg.stories || {})[slug] || `${release.name} by Uxban.`;
+  const credits   = (cfg.credits || {})[slug] || cfg.defaultCredits || {};
+
+  /* ── 4. Field extraction ────────────────── */
+  const cover   = release.images?.[0]?.url || '';
+  const year    = release.release_date?.slice(0, 4) || '';
+  const type    = release.album_type === 'album' ? 'ALBUM' : 'SINGLE';
+  const typeLc  = type.toLowerCase();
+  const isAlbum = type === 'ALBUM';
+
+  const isReleased = release.release_date
+    ? new Date(release.release_date) <= new Date()
+    : true;
+
+  const links = release.links || {};
+
+  /* ── 5. Meta tags ───────────────────────── */
+  const pageUrl = `${location.origin}/release/${slug}/`;
+  document.title = `Uxban — ${release.name}`;
+  document.getElementById('page-title').textContent = `Uxban — ${release.name}`;
+  document.getElementById('meta-desc').content      = story;
+  document.getElementById('og-url').content         = pageUrl;
+  document.getElementById('og-title').content       = `Uxban — ${release.name}`;
+  document.getElementById('og-desc').content        = story;
+  document.getElementById('tw-title').content       = `Uxban — ${release.name}`;
+  document.getElementById('tw-desc').content        = story;
+  if (cover) {
+    document.getElementById('og-image').content = cover;
+    document.getElementById('tw-image').content = cover;
+  }
+
+  /* ── 6. Tracklist (albums only) ─────────── */
+  let tracks = [];
+  if (isAlbum && release.id) {
+    try {
+      const tRes = await fetch(`/api/spotify-tracks?id=${release.id}`);
+      if (tRes.ok) {
+        const tData = await tRes.json();
+        tracks = tData.tracks || [];
+      }
+    } catch {}
+  }
+
+  /* ── 7. Build CTA ───────────────────────── */
+  const ctaText = isReleased ? 'LISTEN NOW' : 'PRE-SAVE NOW';
+  const ctaUrl  = `/listen/${slug}/`;   // goes through listen-config (respects overrides)
+
+  /* ── 8. Platform icons ──────────────────── */
+  const platformBtns = [];
+  if (links.spotify)      platformBtns.push(`<a class="rel-platform" href="${links.spotify}"      target="_blank" rel="noopener" aria-label="Spotify">${ICONS.spotify}</a>`);
+  if (links.appleMusic)   platformBtns.push(`<a class="rel-platform" href="${links.appleMusic}"   target="_blank" rel="noopener" aria-label="Apple Music">${ICONS.apple}</a>`);
+  if (links.youtubeMusic) platformBtns.push(`<a class="rel-platform" href="${links.youtubeMusic}" target="_blank" rel="noopener" aria-label="YouTube Music">${ICONS.youtube}</a>`);
+
+  /* ── 9. Related releases ────────────────── */
+  const related = allReleases
+    .filter(r => r.id !== release.id)
+    .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
+    .slice(0, 4);
+
+  const relatedHTML = related.length ? `
+    <div class="rel-related">
+      <p class="rel-section-label">// MORE FROM UXBAN</p>
+      <div class="grid">
+        ${related.map(r => {
+          const rSlug  = slugify(r.name);
+          const rCover = r.images?.[0]?.url || '';
+          const rYear  = r.release_date?.slice(0, 4) || '';
+          return `
+            <a class="grid-card spotlight-card" href="/release/${rSlug}/">
+              <div class="grid-img">
+                <img src="${rCover}" alt="${r.name}" loading="lazy">
+              </div>
+              <div class="grid-info">
+                <h3 class="grid-name">${r.name}</h3>
+                <p class="grid-price">${r._type} · ${rYear}</p>
+              </div>
+            </a>`;
+        }).join('')}
+      </div>
+    </div>` : '';
+
+  /* ── 10. Render ─────────────────────────── */
+  const root = document.getElementById('rel-page');
+
+  root.innerHTML = `
+    <div class="rel-hero">
+      <div class="rel-cover-wrap rel-fade rel-fade-1">
+        ${cover ? `
+          <div class="rel-cover-glow" style="background-image:url('${cover}')"></div>
+          <div class="rel-cover" id="rel-cover" style="background-image:url('${cover}')"></div>
+        ` : ''}
+      </div>
+      <div class="rel-info">
+        <span class="rel-badge ${isReleased ? typeLc : 'presave'} rel-fade rel-fade-1">
+          ${isReleased ? type : 'PRE-SAVE'}
+        </span>
+        <h1 class="rel-title rel-fade rel-fade-2">${release.name}</h1>
+        <div class="rel-meta rel-fade rel-fade-2">
+          <span>${year}</span>
+          ${tracks.length ? `<span>${tracks.length} TRACK${tracks.length !== 1 ? 'S' : ''}</span>` : ''}
+          ${!isReleased && release.release_date ? `<span>DROPS ${new Date(release.release_date).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }).toUpperCase()}</span>` : ''}
+        </div>
+        <p class="rel-story rel-fade rel-fade-3">${story}</p>
+        <div class="rel-cta-row rel-fade rel-fade-3">
+          <a class="rel-cta" href="${ctaUrl}">
+            ${ctaText}
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          ${platformBtns.length ? `
+            <div class="rel-platform-row">
+              ${platformBtns.join('')}
+            </div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    ${tracks.length ? `
+      <div class="rel-section">
+        <span class="rel-section-label">// TRACKLIST</span>
+        <div class="rel-tracklist">
+          ${tracks.map(t => `
+            <a class="rel-track" href="${ctaUrl}">
+              <span class="rel-track-num">${String(t.number).padStart(2, '0')}</span>
+              <span class="rel-track-name">${t.name}</span>
+              ${t.featuring && t.featuring.length
+                ? `<span class="rel-track-feat">FEAT. ${t.featuring.join(', ').toUpperCase()}</span>`
+                : ''}
+              <span class="rel-track-dur">${fmtDuration(t.duration)}</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+
+    ${Object.keys(credits).length ? `
+      <div class="rel-section">
+        <span class="rel-section-label">// CREDITS</span>
+        <div class="rel-credits">
+          ${Object.entries(credits).map(([role, who]) => `
+            <div class="rel-credit-group">
+              <h4>${role}</h4>
+              <p>${who}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+
+    ${relatedHTML}
+  `;
+
+  /* ── 11. Scroll-driven cover rotation ───── */
+  const coverEl = document.getElementById('rel-cover');
+  if (coverEl) {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y     = window.scrollY;
+        const rot   = Math.max(-3, Math.min(3, y * 0.004));
+        const scale = Math.min(1.04, 1 + y * 0.00006);
+        coverEl.style.transform = `rotate(${rot}deg) scale(${scale})`;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+})();
+
+/* ── Not found state ────────────────────── */
+function showNotFound() {
+  const root = document.getElementById('rel-page');
+  if (root) {
+    root.innerHTML = `
+      <div class="rel-not-found">
+        <p style="margin-bottom:16px">// RELEASE NOT FOUND</p>
+        <a href="/releases/" style="color:var(--accent);text-decoration:none;">← BACK TO RELEASES</a>
+      </div>`;
+  }
+}
+
+/* ── Nav / banner / scroll-top (shared) ─── */
+const scrollTop = document.getElementById('scroll-top');
+if (scrollTop) {
+  window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400), { passive: true });
+  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobile-nav');
+if (hamburger && mobileNav) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+}
+
+const topBar = document.getElementById('top-bar');
+if (topBar) {
+  window.addEventListener('scroll', () => topBar.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+}
+
+function updateNavOffset() {
+  const banner = document.getElementById('site-banner');
+  const nav    = document.getElementById('top-bar');
+  if (!nav) return;
+  const visible = banner && banner.style.display !== 'none';
+  nav.style.top = visible ? banner.offsetHeight + 'px' : '0';
+}
+updateNavOffset();
+window.addEventListener('resize', updateNavOffset);
+
+const bannerClose = document.querySelector('.site-banner-close');
+if (bannerClose) {
+  bannerClose.addEventListener('click', () => {
+    document.getElementById('site-banner').style.display = 'none';
+    setTimeout(updateNavOffset, 30);
+  });
+}
+</script>
+
+<script src="/assets/command-palette.js" defer></script>
+</body>
+</html>

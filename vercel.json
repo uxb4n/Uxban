@@ -1,6 +1,8 @@
 {
-  "rewrites": [
-    { "source": "/listen/:slug", "destination": "/listen/index.html" },
-    { "source": "/listen/:slug/", "destination": "/listen/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/listen/.*", "dest": "/listen/index.html" },
+    { "src": "/release/.*", "dest": "/release/index.html" },
+    { "src": "/(.*)", "dest": "/404.html" }
   ]
 }

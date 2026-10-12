@@ -494,7 +494,7 @@ function buildTile(item, index) {
   const year = release.release_date?.slice(0, 4) || '';
 
   const slug    = slugify(release.name);
-  const tileUrl = `/listen/${slug}/`;
+  const tileUrl = `/release/${slug}/`;
 
   const tile = document.createElement('div');
   tile.className = 'release-tile spotlight-card';
