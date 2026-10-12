@@ -35,7 +35,7 @@
       "https://open.spotify.com/artist/433lt9JbmTHzNzHqZtiK7C",
       "https://music.apple.com/us/artist/uxban/1757422943",
       "https://www.instagram.com/uxbanwtf",
-      "https://www.tiktok.com/@uxba_n",
+      "https://www.tiktok.com/@uxbanwtf",
       "https://x.com/uxbanwtf",
       "https://www.youtube.com/@uxban"
     ]
@@ -93,6 +93,7 @@
     </div>
   </header>
 
+  <!-- FEATURED RELEASE -->
   <section class="section">
     <div class="section-header">
       <div>
@@ -102,7 +103,7 @@
       <a class="section-link" href="/releases/">ALL RELEASES</a>
     </div>
 
-    <div class="featured-release" id="featured-release">
+    <div class="featured-release" id="featured-release" style="display:none;">
       <div class="featured-cover" id="featured-cover"></div>
       <div class="featured-info">
         <span class="featured-badge" id="featured-badge">NEW</span>
@@ -111,8 +112,19 @@
         <div class="featured-links" id="featured-links"></div>
       </div>
     </div>
+
+    <div class="empty-state" id="featured-empty" style="display:none;">
+      <div class="empty-state-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <p class="empty-state-label">// CATALOG SYNCING</p>
+      <h3 class="empty-state-title">Releases loading soon.</h3>
+      <p class="empty-state-desc">We're syncing with streaming platforms. The latest drop will appear here automatically.</p>
+      <p class="empty-state-meta">Auto-refreshes every few minutes</p>
+    </div>
   </section>
 
+  <!-- DISCOGRAPHY GRID -->
   <section class="section">
     <div class="section-header">
       <div>
@@ -121,9 +133,21 @@
       </div>
       <a class="section-link" href="/releases/">VIEW ALL</a>
     </div>
-    <div class="grid" id="releases-grid"></div>
+
+    <div class="grid" id="releases-grid" style="display:none;"></div>
+
+    <div class="empty-state" id="grid-empty" style="display:none;">
+      <div class="empty-state-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <p class="empty-state-label">// CATALOG SYNCING</p>
+      <h3 class="empty-state-title">Discography coming online.</h3>
+      <p class="empty-state-desc">Releases will show up here as soon as the platform sync completes.</p>
+      <p class="empty-state-meta">Auto-refreshes every few minutes</p>
+    </div>
   </section>
 
+  <!-- EMAIL -->
   <section class="email-capture">
     <div class="email-capture-inner">
       <p class="section-label">// STAY IN THE LOOP</p>
@@ -137,6 +161,7 @@
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-top">
       <div class="footer-col">

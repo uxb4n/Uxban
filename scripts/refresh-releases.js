@@ -4,10 +4,12 @@
    Fetches your catalog from Spotify and writes
    data/releases.json. Commit the JSON, push.
 
-   Safety: if Spotify returns zero releases (quota
-   error, network fail, etc.), the existing
-   releases.json is left untouched so a bad run
-   never wipes the live site.
+   Safety layers:
+   1. Retry each Spotify call once on failure
+   2. Never write if albums AND singles are both empty
+   3. Never overwrite a category with fewer items than
+      what's already on disk (prevents a partial API
+      failure from wiping your releases)
    ============================================== */
 
 const fs   = require('fs');
@@ -17,7 +19,6 @@ const CLIENT_ID     = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const ARTIST_ID     = '433lt9JbmTHzNzHqZtiK7C';
 
-// Manually maintained — Apple Music + YouTube Music links
 const APPLE_MUSIC = {
   '5GNic68ZHANOnMKxtuGyXL': 'https://music.apple.com/us/album/1895801290',
   '62Qw3eFdZ9SpvHqsVDKuDt': 'https://music.apple.com/nz/album/1890788021',
@@ -55,12 +56,11 @@ const YOUTUBE_MUSIC = {
 };
 
 const OUT_PATH = path.join(__dirname, '..', 'data', 'releases.json');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function main() {
   if (!CLIENT_ID || !CLIENT_SECRET) {
     console.error('❌ Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET env vars');
-    console.error('   Set them in your terminal, e.g.:');
-    console.error('   $env:SPOTIFY_CLIENT_ID="..."; $env:SPOTIFY_CLIENT_SECRET="..."');
     process.exit(1);
   }
 
@@ -82,20 +82,28 @@ async function main() {
   const { access_token } = await tokenRes.json();
   console.log('→ Token ok. Fetching albums + singles...');
 
-  const safeFetch = async (url) => {
+  // Retry once on failure, with a small delay
+  const safeFetch = async (url, attempt = 1) => {
     const r = await fetch(url, { headers: { Authorization: `Bearer ${access_token}` } });
     if (!r.ok) {
-      console.error(`❌ Spotify ${r.status} for ${url}:`, (await r.text()).slice(0, 200));
+      const text = await r.text();
+      console.error(`❌ Spotify ${r.status} for ${url}:`, text.slice(0, 200));
+      if (attempt < 2) {
+        console.log(`   Retrying in 2s...`);
+        await sleep(2000);
+        return safeFetch(url, attempt + 1);
+      }
       return { items: [] };
     }
     return r.json();
   };
 
-  const [albumsData, singlesData1, singlesData2] = await Promise.all([
-    safeFetch(`https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=album&limit=20&offset=0`),
-    safeFetch(`https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=single&limit=20&offset=0`),
-    safeFetch(`https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=single&limit=20&offset=20`),
-  ]);
+  // Use limit=10 (safer than 20 with Spotify's flaky endpoint) and run them in sequence
+  const albumsData   = await safeFetch(`https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=album&limit=10&offset=0`);
+  await sleep(500);
+  const singlesData1 = await safeFetch(`https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=single&limit=10&offset=0`);
+  await sleep(500);
+  const singlesData2 = await safeFetch(`https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=single&limit=10&offset=10`);
 
   const dedupe = (items) => {
     const seen = new Set();
@@ -108,12 +116,36 @@ async function main() {
 
   const albums  = dedupe(albumsData.items || []);
   const singles = dedupe([...(singlesData1.items || []), ...(singlesData2.items || [])]);
-  const total   = albums.length + singles.length;
 
-  if (total === 0) {
-    console.error('❌ Spotify returned zero releases — refusing to overwrite existing releases.json');
-    console.error('   (This usually means the API quota was hit. It resets within 24h.)');
+  // ── Load existing file for comparison ────────
+  let existing = { albums: [], singles: [] };
+  if (fs.existsSync(OUT_PATH)) {
+    try {
+      existing = JSON.parse(fs.readFileSync(OUT_PATH, 'utf8'));
+    } catch {}
+  }
+
+  const existingAlbumCount  = (existing.albums  || []).length;
+  const existingSingleCount = (existing.singles || []).length;
+
+  // ── Sanity checks ────────────────────────────
+  // If both came back empty, bail entirely
+  if (albums.length === 0 && singles.length === 0) {
+    console.error('❌ Spotify returned zero releases — refusing to write anything');
+    console.error('   Existing data/releases.json is untouched. (Quota probably hit.)');
     process.exit(1);
+  }
+
+  // If a category got fewer results than before, keep the existing one
+  // (prevents partial API failures from wiping data)
+  const finalAlbums  = (albums.length  >= existingAlbumCount  || existingAlbumCount  === 0) ? albums  : (existing.albums  || []);
+  const finalSingles = (singles.length >= existingSingleCount || existingSingleCount === 0) ? singles : (existing.singles || []);
+
+  if (albums.length < existingAlbumCount) {
+    console.warn(`⚠️  Albums dropped from ${existingAlbumCount} to ${albums.length} — keeping existing albums`);
+  }
+  if (singles.length < existingSingleCount) {
+    console.warn(`⚠️  Singles dropped from ${existingSingleCount} to ${singles.length} — keeping existing singles`);
   }
 
   const attachLinks = (release) => {
@@ -140,26 +172,23 @@ async function main() {
   };
 
   const result = {
-    albums:  albums.map(attachLinks),
-    singles: singles.map(attachLinks),
+    albums:  finalAlbums.map(attachLinks),
+    singles: finalSingles.map(attachLinks),
   };
 
   const newJson = JSON.stringify(result, null, 2);
+  const oldJson = fs.existsSync(OUT_PATH) ? fs.readFileSync(OUT_PATH, 'utf8') : '';
 
-  // Skip write if nothing changed (keeps git clean for the auto-refresh cron)
-  if (fs.existsSync(OUT_PATH)) {
-    const existing = fs.readFileSync(OUT_PATH, 'utf8');
-    if (existing === newJson) {
-      console.log('ℹ️  No changes — releases.json is already up to date');
-      return;
-    }
+  if (oldJson === newJson) {
+    console.log('ℹ️  No changes — releases.json is already up to date');
+    return;
   }
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
   fs.writeFileSync(OUT_PATH, newJson);
 
   console.log(`✅ Wrote ${OUT_PATH}`);
-  console.log(`   ${albums.length} album(s), ${singles.length} single(s)`);
+  console.log(`   ${result.albums.length} album(s), ${result.singles.length} single(s)`);
 }
 
 main().catch(err => {

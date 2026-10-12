@@ -169,8 +169,8 @@ async function initHero() {
     }
 
     const slug    = uxbanSlugify(release.name);
-    const ctaLink = `/listen/${slug}/`;
-    const ctaText = 'LISTEN NOW';
+    const ctaLink = `/release/${slug}/`;
+    const ctaText = 'VIEW RELEASE';
 
     const year     = release.release_date?.slice(0, 4) || '';
     const typeStr  = release._type === 'ALBUM' ? 'Album' : 'Single';
@@ -220,39 +220,63 @@ function renderFeaturedRelease(release, cover, links, type) {
   const year = release.release_date?.slice(0, 4) || '';
   metaEl.textContent = `${type} · ${year}`;
   if (badgeEl) badgeEl.textContent = type === 'ALBUM' ? 'NEW ALBUM' : 'NEW SINGLE';
-  linksEl.innerHTML = buildStreamLinks(links);
+
+  // Build links + add a "view release" link
+  const slug = uxbanSlugify(release.name);
+  const releaseLink = `<a class="stream-link" href="/release/${slug}/">VIEW RELEASE ↗</a>`;
+  linksEl.innerHTML = releaseLink + buildStreamLinks(links);
+
+  // Make the whole card clickable
+  const card = document.getElementById('featured-release');
+  if (card && !card.dataset.bound) {
+    card.dataset.bound = '1';
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', e => {
+      if (e.target.tagName === 'A') return;
+      window.location.href = `/release/${slug}/`;
+    });
+  }
 }
 
 /* ---------- SPOTIFY DATA LOAD ---------- */
 async function loadSpotifyData() {
-  const gridEl = document.getElementById('releases-grid');
-  const featEl = document.getElementById('featured-release');
+  const gridEl    = document.getElementById('releases-grid');
+  const featEl    = document.getElementById('featured-release');
+  const featEmpty = document.getElementById('featured-empty');
+  const gridEmpty = document.getElementById('grid-empty');
+
   if (!gridEl && !featEl) return;
+
+  function setVisible(container, emptyEl, hasData) {
+    if (container) container.style.display = hasData ? '' : 'none';
+    if (emptyEl)   emptyEl.style.display   = hasData ? 'none' : '';
+  }
 
   try {
     const res  = await fetch('/api/spotify');
     const data = await res.json();
-    if (!data.albums && !data.singles) return;
 
     const all = [
       ...(data.albums  || []).map(r => ({ release: r, cover: r.images?.[0]?.url || '', links: r.links || {}, type: 'ALBUM'  })),
       ...(data.singles || []).map(r => ({ release: r, cover: r.images?.[0]?.url || '', links: r.links || {}, type: 'SINGLE' })),
     ].sort((a, b) => new Date(b.release.release_date) - new Date(a.release.release_date));
 
-    if (!all.length) return;
-
-    if (featEl) {
-      const f = all[0];
-      renderFeaturedRelease(f.release, f.cover, f.links, f.type);
+    // ── Featured ──
+    if (all.length) {
+      renderFeaturedRelease(all[0].release, all[0].cover, all[0].links, all[0].type);
+      setVisible(featEl, featEmpty, true);
+    } else {
+      setVisible(featEl, featEmpty, false);
     }
 
-    if (gridEl) {
+    // ── Grid ──
+    if (all.length > 1) {
       const gridItems = all.slice(1, 8);
 
       gridEl.innerHTML = gridItems.map(({ release, cover, type }) => {
-        const slug   = uxbanSlugify(release.name);
-        const href   = `/listen/${slug}/`;
-        const year   = release.release_date?.slice(0, 4) || '';
+        const slug = uxbanSlugify(release.name);
+        const href = `/release/${slug}/`;
+        const year = release.release_date?.slice(0, 4) || '';
         return `
           <a class="grid-card spotlight-card" href="${href}">
             <div class="grid-img">
@@ -268,9 +292,14 @@ async function loadSpotifyData() {
           <p class="grid-promo-eyebrow">BROWSE</p>
           <h3 class="grid-promo-title">ALL<br>RELEASES</h3>
         </a>`;
+      setVisible(gridEl, gridEmpty, true);
+    } else {
+      setVisible(gridEl, gridEmpty, false);
     }
   } catch (err) {
     console.warn('Spotify load failed:', err.message);
+    setVisible(featEl, featEmpty, false);
+    setVisible(gridEl, gridEmpty, false);
   }
 }
 

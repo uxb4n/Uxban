@@ -448,14 +448,6 @@ const ICONS = {
   youtube: '<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>',
 };
 
-const slugMap = {};
-const _cfg = window.UXBAN_LINKS_CONFIG || {};
-if (Array.isArray(_cfg)) {
-  _cfg.forEach(c => { if (c.spotifyId) slugMap[c.spotifyId] = c.slug; });
-} else if (_cfg.custom) {
-  // new object-shaped config — no spotifyId map needed
-}
-
 function slugify(name) {
   return String(name || '').toLowerCase()
     .replace(/['']/g, '')
@@ -617,6 +609,10 @@ function updateFilterPillBg(instant) {
 }
 
 async function loadReleases() {
+  const grid  = document.getElementById('release-grid');
+  const empty = document.getElementById('releases-empty');
+  const count = document.getElementById('release-count');
+
   try {
     const res  = await fetch('/api/spotify');
     const data = await res.json();
@@ -626,23 +622,42 @@ async function loadReleases() {
       ...(data.singles || []).map(r => ({ release: r, cover: r.images?.[0]?.url || '', type: 'SINGLE' })),
     ];
 
-    const grid = document.getElementById('release-grid');
-    grid.innerHTML = '';
-
+    // ── Empty / syncing state ──
     if (!allReleases.length) {
-      document.getElementById('release-count').textContent = '// NO RELEASES';
-      document.getElementById('releases-empty').classList.add('visible');
+      count.textContent = '// CATALOG SYNCING';
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1;border:none;border-radius:0;padding:100px 32px;">
+          <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+          </div>
+          <p class="empty-state-label">// CATALOG SYNCING</p>
+          <h3 class="empty-state-title">Discography coming online.</h3>
+          <p class="empty-state-desc">Releases will show up here as soon as the platform sync completes.</p>
+          <p class="empty-state-meta">Auto-refreshes every few minutes</p>
+        </div>`;
+      empty.classList.remove('visible');
+      setTimeout(loadReleases, 60000);
       return;
     }
 
+    // ── Build tiles ──
+    grid.innerHTML = '';
     allReleases.forEach((item, i) => grid.appendChild(buildTile(item, i)));
-
     renderGrid();
-
     requestAnimationFrame(() => updateFilterPillBg(true));
+
   } catch (err) {
     console.warn('Releases load failed:', err.message);
-    document.getElementById('release-count').textContent = '// FAILED TO LOAD';
+    count.textContent = '// CATALOG UNAVAILABLE';
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;border:none;border-radius:0;padding:100px 32px;">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <p class="empty-state-label">// CATALOG UNAVAILABLE</p>
+        <h3 class="empty-state-title">Couldn't reach the music library.</h3>
+        <p class="empty-state-desc">Try refreshing in a moment.</p>
+      </div>`;
   }
 }
 
