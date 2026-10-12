@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uxban | Store</title>
+  <meta name="description" content="Official uxban merch — UXTRA first drop.">
+  <link rel="canonical" href="https://uxban.shop/store/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://uxban.shop/store/">
+  <meta property="og:title" content="Uxban | Store">
+  <meta property="og:description" content="UXTRA first drop — NZ urban.">
+  <meta property="og:image" content="https://uxban.shop/assets/images/cover-next.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@uxbanwtf">
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script defer src="/_vercel/insights/script.js"></script>
+
+  <style>
+    .store-page-header {
+      padding: 160px var(--pad-x) 60px;
+      border-bottom: 1px solid var(--border);
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .store-page-header small {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .store-page-title {
+      font-family: var(--sans);
+      font-size: clamp(3rem, 11vw, 8rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.88;
+      text-transform: uppercase;
+    }
+    .store-page-sub {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 20px;
+      text-transform: uppercase;
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    .store-body {
+      padding: 48px var(--pad-x) 100px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .store-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .store-count, .store-currency {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .store-currency span { color: #fff; }
+
+    .store-empty {
+      display: none;
+      padding: 80px 0;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .store-empty.visible { display: block; }
+
+    .grid-card .grid-name {
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+    }
+    .grid-card .grid-price {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .grid-card .grid-price strong {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: #fff;
+      margin-right: 4px;
+      text-transform: none;
+    }
+
+    .store-note {
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .store-note p {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .store-note a {
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid #fff;
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .store-note a:hover { color: var(--accent); border-color: var(--accent); }
+
+    @media (max-width: 900px) {
+      .store-page-header { padding: 140px var(--pad-x) 40px; }
+      .store-body { padding: 32px var(--pad-x) 80px; }
+      .store-note { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="site-banner" id="site-banner">
+  <span class="site-banner-text"></span>
+  <button class="site-banner-close" aria-label="Close banner">✕</button>
+</div>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="/">HOME</a>
+  <a href="/releases/">RELEASES</a>
+  <a href="/store/" class="active">STORE</a>
+  <div class="mobile-nav-footer">© 2026 UXBAN</div>
+</nav>
+
+<nav class="top-bar" id="top-bar">
+  <a href="/"><img src="/assets/images/logo.png" class="nav-logo" alt="uxban"></a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="/releases/">RELEASES</a>
+    <a href="/store/" class="active">STORE</a>
+  </div>
+  <div class="nav-info">
+    <button class="nav-search" onclick="window.UxbanCmdk && window.UxbanCmdk.open()" aria-label="Search (⌘K)" title="Search (⌘K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <header class="store-page-header">
+    <small>// OFFICIAL STORE</small>
+    <h1 class="store-page-title">STORE</h1>
+    <p class="store-page-sub">Official merch from the UXTRA era. Limited runs, ships worldwide.</p>
+  </header>
+
+  <div class="store-body">
+    <div class="store-meta">
+      <p class="store-count" id="store-count">// loading...</p>
+      <p class="store-currency" id="store-currency">PRICES IN <span>USD</span></p>
+    </div>
+
+    <div class="store-empty" id="store-empty">// no products found</div>
+    <div class="grid" id="product-grid"></div>
+
+    <div class="store-note">
+      <p>// tag us when it lands — <a href="https://instagram.com/uxbanwtf" target="_blank">@uxbanwtf</a></p>
+      <p>questions? <a href="mailto:uxban@gmail.com">uxban@gmail.com</a></p>
+    </div>
+  </div>
+
+</div>
+
+<button class="scroll-top" id="scroll-top" aria-label="Back to top">↑</button>
+
+<script src="/store/products.js"></script>
+<script src="/store/cart-ui.js"></script>
+<script>
+  const CURRENCY_SYMBOLS = { USD: '$', NZD: '$', AUD: '$', GBP: '£', CAD: '$' };
+  const CURRENCY_LABELS  = { USD: 'USD', NZD: 'NZD', AUD: 'AUD', GBP: 'GBP', CAD: 'CAD' };
+  const COUNTRY_CURRENCY = { NZ: 'NZD', AU: 'AUD', GB: 'GBP', CA: 'CAD', US: 'USD' };
+
+  let userCurrency = 'USD';
+
+  async function detectCurrency() {
+    try {
+      const r = await fetch('https://ipapi.co/json/');
+      const d = await r.json();
+      userCurrency = COUNTRY_CURRENCY[d.country_code] || 'NZD';
+    } catch { userCurrency = 'NZD'; }
+  }
+
+  function isLaunched(p) {
+    if (!p.launchDate) return true;
+    return Date.now() >= new Date(p.launchDate).getTime();
+  }
+
+  function renderGrid() {
+    const products = Object.values(STORE_PRODUCTS);
+    const sym      = CURRENCY_SYMBOLS[userCurrency];
+    const label    = CURRENCY_LABELS[userCurrency];
+    const grid     = document.getElementById('product-grid');
+
+    document.getElementById('store-currency').innerHTML = `PRICES IN <span>${label}</span>`;
+    document.getElementById('store-count').textContent =
+      `// ${products.length} ITEM${products.length !== 1 ? 'S' : ''}`;
+
+    if (!products.length) {
+      document.getElementById('store-empty').classList.add('visible');
+      return;
+    }
+
+    grid.innerHTML = products.map(p => {
+      const amt        = p.prices[userCurrency] || p.prices.USD;
+      const firstColor = Object.keys(p.colors)[0];
+      const firstImg   = p.colors[firstColor].images[0] || '';
+      const launched   = isLaunched(p);
+      const albumTag   = p.album ? `<span class="product-tag-badge album-tag">${p.album}</span>` : '';
+
+      return `
+        <a class="grid-card spotlight-card" href="/store/product.html?id=${p.id}">
+          <div class="grid-img">
+            <img src="${firstImg}" alt="${p.name}" loading="lazy">
+            ${!launched ? `<div class="grid-badge">COMING SOON</div>` : ''}
+            <div class="product-tag-badges">${albumTag}</div>
+            <div class="color-dots">
+              ${Object.entries(p.colors).map(([, c]) =>
+                `<span class="color-dot" style="background:${c.swatch}"></span>`
+              ).join('')}
+            </div>
+          </div>
+          <div class="grid-info">
+            <h3 class="grid-name">${p.name}</h3>
+            <p class="grid-price"><strong>${sym}${amt}</strong>${label} · + SHIPPING</p>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  const scrollTop = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400));
+  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobile-nav');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+
+  const topBar = document.getElementById('top-bar');
+  if (topBar) {
+    window.addEventListener('scroll', () => topBar.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+  }
+
+  function updateNavOffset() {
+    const banner = document.getElementById('site-banner');
+    const nav    = document.getElementById('top-bar');
+    if (!nav) return;
+    const visible = banner && banner.style.display !== 'none';
+    nav.style.top = visible ? banner.offsetHeight + 'px' : '0';
+  }
+  updateNavOffset();
+  window.addEventListener('resize', updateNavOffset);
+
+  const bannerClose = document.querySelector('.site-banner-close');
+  if (bannerClose) {
+    bannerClose.addEventListener('click', () => {
+      document.getElementById('site-banner').style.display = 'none';
+      setTimeout(updateNavOffset, 30);
+    });
+  }
+
+  async function init() {
+    await detectCurrency();
+    renderGrid();
+  }
+  init();
+</script>
+
+<script src="/assets/command-palette.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Uxban — Listen</title>
+
+  <meta name="description"           id="meta-desc"    content="Stream or pre-save on all platforms.">
+  <meta property="og:type"                             content="music.song">
+  <meta property="og:url"            id="og-url"       content="">
+  <meta property="og:title"          id="og-title"     content="Uxban — Listen">
+  <meta property="og:description"    id="og-desc"      content="Stream or pre-save on all platforms.">
+  <meta property="og:image"          id="og-image"     content="">
+  <meta name="twitter:card"                            content="summary_large_image">
+  <meta name="twitter:site"                            content="@uxbanwtf">
+  <meta name="twitter:title"         id="tw-title"     content="Uxban — Listen">
+  <meta name="twitter:description"   id="tw-desc"      content="Stream or pre-save on all platforms.">
+  <meta name="twitter:image"         id="tw-image"     content="">
+
+  <!-- ════════════════════════════════════════════
+       EARLY REDIRECT
+       Runs before the stylesheet loads. If this slug
+       has a redirect target (override or pattern),
+       we jump instantly — no flash.
+  ════════════════════════════════════════════ -->
+  <script src="/listen/listen-config.js"></script>
+  <script>
+    (function () {
+      var parts = location.pathname.replace(/\/$/, '').split('/');
+      var slug  = decodeURIComponent(parts[parts.length - 1] || '');
+      if (!slug) return;
+
+      var cfg = window.UXBAN_LINKS_CONFIG || {};
+      var overrides = cfg.overrides || {};
+
+      // 1. Explicit override wins
+      if (Object.prototype.hasOwnProperty.call(overrides, slug)) {
+        var o = overrides[slug];
+        if (o === null) return;                         // stay on-site, render below
+        if (typeof o === 'string' && o) {
+          location.replace(o);
+          return;
+        }
+      }
+
+      // 2. Otherwise apply the pattern
+      var pattern = cfg.pattern;
+      if (pattern) {
+        location.replace(pattern.replace('{slug}', encodeURIComponent(slug)));
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+
+<body>
+<div class="noise"></div>
+
+<nav class="lp-nav">
+  <a href="/"><img src="/logo.png" class="lp-nav-logo" alt="uxban"></a>
+  <div class="lp-nav-right">
+    <a href="/releases/" class="lp-nav-link">RELEASES</a>
+    <a href="/store/"    class="lp-nav-link">STORE</a>
+  </div>
+</nav>
+
+<div class="lp-wrap">
+  <div class="lp-bg"      id="lp-bg"></div>
+  <div class="lp-bg-fade"></div>
+
+  <div class="lp-inner" id="lp-inner">
+    <div class="lp-skeleton" style="width:200px;height:200px;border-radius:10px;margin-bottom:28px;"></div>
+    <div class="lp-skeleton" style="width:120px;height:12px;border-radius:4px;margin-bottom:14px;"></div>
+    <div class="lp-skeleton" style="width:240px;height:48px;border-radius:4px;margin-bottom:24px;"></div>
+    <div class="lp-skeleton" style="width:100%;height:56px;border-radius:12px;margin-bottom:10px;"></div>
+    <div class="lp-skeleton" style="width:100%;height:56px;border-radius:12px;"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   UXBAN LISTEN PAGE — /listen/[slug]/
+   Only reached when the slug is in overrides with
+   value `null` (i.e. you want an on-site page).
+   Everything else has already redirected in <head>.
+   ══════════════════════════════════════════════ */
+
+function slugify(name) {
+  return String(name || '').toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+(async function () {
+
+  const parts = location.pathname.replace(/\/$/, '').split('/');
+  const slug  = decodeURIComponent(parts[parts.length - 1] || '');
+
+  if (!slug) { renderError('No release specified.'); return; }
+
+  /* ── Fetch Spotify ───────────────────────── */
+  let release = null;
+  try {
+    const res  = await fetch('/api/spotify');
+    const data = await res.json();
+    const all  = [...(data.albums || []), ...(data.singles || [])];
+    release = all.find(r => slugify(r.name) === slug) || null;
+  } catch (e) {
+    console.warn('Spotify fetch failed:', e.message);
+  }
+
+  if (!release) {
+    renderError('Release not found.');
+    return;
+  }
+
+  /* ── Fields ──────────────────────────────── */
+  const title   = release.name;
+  const cover   = release.images?.[0]?.url || '';
+  const type    = release.album_type === 'album' ? 'ALBUM' : 'SINGLE';
+  const year    = release.release_date?.slice(0, 4) || new Date().getFullYear();
+  const links   = release.links || {};
+  const pageUrl = `${location.origin}/listen/${slug}/`;
+
+  /* ── Meta tags ───────────────────────────── */
+  const descText = `Stream ${title} by Uxban on Spotify, Apple Music and more.`;
+  document.getElementById('page-title').textContent = `Uxban — ${title}`;
+  document.getElementById('og-title').content       = `Uxban — ${title}`;
+  document.getElementById('tw-title').content       = `Uxban — ${title}`;
+  document.getElementById('og-url').content         = pageUrl;
+  document.getElementById('meta-desc').content      = descText;
+  document.getElementById('og-desc').content        = descText;
+  document.getElementById('tw-desc').content        = descText;
+  if (cover) {
+    document.getElementById('og-image').content = cover;
+    document.getElementById('tw-image').content = cover;
+  }
+
+  /* ── Render ──────────────────────────────── */
+  const inner = document.getElementById('lp-inner');
+  const bg    = document.getElementById('lp-bg');
+  if (cover) bg.style.backgroundImage = `url('${cover}')`;
+
+  inner.innerHTML = `
+    ${cover ? `<div class="lp-cover" style="background-image:url('${cover}')"></div>` : ''}
+    <span class="lp-badge ${type.toLowerCase()}">${type}</span>
+    <p class="lp-artist">UXBAN</p>
+    <h1 class="lp-title">${title}</h1>
+    <p class="lp-date"><span class="lp-date-dot"></span>OUT ${year}<span class="lp-date-dot"></span></p>
+    <div class="lp-buttons">
+      ${links.spotify      ? `<a class="lp-btn primary" href="${links.spotify}"      target="_blank" rel="noopener"><span class="lp-btn-icon">${iconSpotify()}</span>SPOTIFY</a>`      : ''}
+      ${links.appleMusic   ? `<a class="lp-btn"         href="${links.appleMusic}"   target="_blank" rel="noopener"><span class="lp-btn-icon">${iconApple()}</span>APPLE MUSIC</a>`   : ''}
+      ${links.youtubeMusic ? `<a class="lp-btn"         href="${links.youtubeMusic}" target="_blank" rel="noopener"><span class="lp-btn-icon">${iconYouTube()}</span>YOUTUBE MUSIC</a>` : ''}
+      ${!links.spotify && !links.appleMusic && !links.youtubeMusic
+        ? `<p style="font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--muted);padding:20px 0;text-transform:uppercase;">// LINKS COMING SOON</p>`
+        : ''}
+    </div>
+    <div class="lp-copy-row">
+      <input class="lp-copy-input" readonly value="${pageUrl}">
+      <button class="lp-copy-btn" id="lp-copy-btn">COPY LINK</button>
+    </div>
+    <div class="lp-footer">
+      <a class="lp-back"         href="/">← UXBAN.COM</a>
+      <a class="lp-all-releases" href="/releases/">ALL RELEASES</a>
+    </div>
+  `;
+
+  document.getElementById('lp-copy-btn').addEventListener('click', function () {
+    navigator.clipboard.writeText(pageUrl).then(() => {
+      this.textContent = 'COPIED ✓';
+      this.classList.add('copied');
+      setTimeout(() => {
+        this.textContent = 'COPY LINK';
+        this.classList.remove('copied');
+      }, 1800);
+    });
+  });
+
+})();
+
+/* ──────────────────────────────────────────────
+   ERROR
+─────────────────────────────────────────────── */
+
+function renderError(msg) {
+  document.getElementById('lp-inner').innerHTML = `
+    <div class="lp-error">
+      <p style="margin-bottom:16px">// ${msg}</p>
+      <a class="lp-back" href="/">← BACK TO UXBAN.COM</a>
+    </div>
+  `;
+}
+
+/* ──────────────────────────────────────────────
+   ICONS
+─────────────────────────────────────────────── */
+
+function iconSpotify() {
+  return `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>`;
+}
+function iconApple() {
+  return `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>`;
+}
+function iconYouTube() {
+  return `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>`;
+}
+</script>
+</body>
+</html>

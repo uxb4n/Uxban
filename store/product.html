@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uxban | Product</title>
+  <meta name="description" content="UXTRA first drop — uxban NZ.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script defer src="/_vercel/insights/script.js"></script>
+
+  <style>
+    /* Page-specific tweaks only — everything else lives in style.css */
+
+    .product-wrap {
+      padding: 160px var(--pad-x) 100px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-bottom: 56px;
+      transition: color 0.2s, transform 0.2s var(--spring);
+    }
+    .back-link:hover { color: #fff; transform: translateX(-4px); }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 72px;
+      align-items: start;
+    }
+
+    .gallery { position: sticky; top: 140px; }
+
+    .gallery-main {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #0a0a0a;
+      margin-bottom: 12px;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+    .gallery-main img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.4s var(--ease);
+    }
+    .gallery-main-counter {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.75);
+      background: rgba(0,0,0,0.75);
+      padding: 6px 12px;
+      text-transform: uppercase;
+    }
+    .gallery-thumbs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .gallery-thumb {
+      width: 76px;
+      height: 76px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      opacity: 0.5;
+      transition: opacity 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .gallery-thumb:hover { opacity: 0.85; }
+    .gallery-thumb.active { opacity: 1; border-color: var(--accent); }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.75);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 16px;
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .gallery-arrow:hover { background: #000; border-color: #fff; }
+    .gallery-arrow-left  { left: 12px; }
+    .gallery-arrow-right { right: 12px; }
+
+    /* ── Info panel ── */
+    .product-panel-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .product-panel-name {
+      font-family: var(--sans);
+      font-size: clamp(2.6rem, 5.5vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.92;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .product-panel-price {
+      font-family: var(--sans);
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .product-panel-price-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .product-panel-desc {
+      font-size: 15px;
+      color: var(--fg-dim);
+      line-height: 1.75;
+      margin-bottom: 40px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Selectors */
+    .selector-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .selector-label span { color: #fff; font-weight: 700; }
+    .selector-wrap { margin-bottom: 28px; }
+
+    .color-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: 1px solid var(--border-2);
+      color: var(--fg-dim);
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 11px 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .color-btn:hover { border-color: #fff; color: #fff; }
+    .color-btn.active { border-color: var(--accent); color: #fff; background: var(--accent-dim); }
+    .color-swatch {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.25);
+      flex-shrink: 0;
+    }
+
+    .size-grid { display: flex; gap: 6px; flex-wrap: wrap; }
+    .size-btn {
+      background: transparent;
+      border: 1px solid var(--border-2);
+      color: var(--fg-dim);
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 12px 20px;
+      min-width: 52px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .size-btn:hover { border-color: #fff; color: #fff; }
+    .size-btn.active { border-color: var(--accent); color: #fff; background: var(--accent-dim); }
+
+    /* Country */
+    .country-select {
+      width: 100%;
+      background: var(--bg-card);
+      color: #fff;
+      border: 1px solid var(--border-2);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      padding: 14px 16px;
+      outline: none;
+      text-transform: uppercase;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b6b'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      transition: border-color 0.2s;
+    }
+    .country-select:focus { border-color: var(--accent); }
+    .country-select option { background: #000; }
+
+    /* Buy */
+    .buy-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+
+    .add-cart-btn {
+      width: 100%;
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--border-2);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      padding: 18px 24px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .add-cart-btn:hover { border-color: #fff; background: rgba(255,255,255,0.04); }
+    .add-cart-btn:active { transform: scale(0.99); }
+
+    .buy-btn {
+      width: 100%;
+      background: #fff;
+      color: #000;
+      border: none;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      padding: 20px 24px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .buy-btn:hover { background: var(--accent); color: #fff; }
+    .buy-btn:active { transform: scale(0.99); }
+    .buy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .select-warning {
+      display: none;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: #ff4b4b;
+      margin-top: 12px;
+      text-transform: uppercase;
+    }
+    .select-warning.visible { display: block; }
+
+    /* Drop countdown */
+    .drop-countdown {
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      background: var(--bg-card);
+    }
+    .drop-countdown-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .drop-countdown-grid { display: flex; }
+    .drop-countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      padding-right: 20px;
+      margin-right: 20px;
+      border-right: 1px solid var(--border);
+    }
+    .drop-countdown-unit:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .drop-countdown-num {
+      font-family: var(--sans);
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .drop-countdown-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* Details list */
+    .product-details-list {
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .product-detail-item {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--fg-dim);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+    }
+    .product-detail-item::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .product-social {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      line-height: 1.7;
+    }
+    .product-social a {
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid #fff;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .product-social a:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* Sticky buy bar */
+    .sticky-buy-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 800;
+      transform: translateY(100%);
+      transition: transform 0.4s var(--spring);
+    }
+    .sticky-buy-bar.visible { transform: translateY(0); }
+    .sticky-buy-info { flex: 1; }
+    .sticky-buy-name {
+      font-family: var(--sans);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .sticky-buy-price {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .sticky-buy-btn {
+      background: #fff;
+      color: #000;
+      border: none;
+      font-family: var(--sans);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      padding: 14px 24px;
+      cursor: pointer;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sticky-buy-btn:hover { background: var(--accent); color: #fff; }
+
+    @media (min-width: 769px) { .sticky-buy-bar { display: none; } }
+
+    @media (max-width: 900px) {
+      .product-wrap { padding: 140px var(--pad-x) 80px; }
+      .product-layout { grid-template-columns: 1fr; gap: 40px; }
+      .gallery { position: static; }
+      .gallery-thumb { width: 64px; height: 64px; }
+    }
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="site-banner" id="site-banner">
+  <span class="site-banner-text"></span>
+  <button class="site-banner-close" aria-label="Close banner">✕</button>
+</div>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="/">HOME</a>
+  <a href="/releases/">RELEASES</a>
+  <a href="/store/" class="active">STORE</a>
+  <div class="mobile-nav-footer">© 2026 UXBAN</div>
+</nav>
+
+<nav class="top-bar" id="top-bar">
+  <a href="/"><img src="/assets/images/logo.png" class="nav-logo" alt="uxban"></a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="/releases/">RELEASES</a>
+    <a href="/store/" class="active">STORE</a>
+  </div>
+  <div class="nav-info">
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="product-wrap">
+    <a class="back-link" href="/store/">← BACK TO STORE</a>
+    <div class="product-layout" id="product-layout"></div>
+  </div>
+</div>
+
+<div class="sticky-buy-bar" id="sticky-buy-bar">
+  <div class="sticky-buy-info">
+    <div class="sticky-buy-name"  id="sticky-name"></div>
+    <div class="sticky-buy-price" id="sticky-price"></div>
+  </div>
+  <button class="sticky-buy-btn" id="sticky-buy-btn">Add to Cart</button>
+</div>
+
+<button class="scroll-top" id="scroll-top" aria-label="Back to top">↑</button>
+
+<script src="/store/products.js"></script>
+<script src="/store/cart-ui.js"></script>
+<script>
+  const CURRENCY_SYMBOLS = { USD: '$', NZD: '$', AUD: '$', GBP: '£', CAD: '$' };
+  const CURRENCY_LABELS  = { USD: 'USD', NZD: 'NZD', AUD: 'AUD', GBP: 'GBP', CAD: 'CAD' };
+  const COUNTRY_CURRENCY = { NZ: 'NZD', AU: 'AUD', GB: 'GBP', CA: 'CAD', US: 'USD' };
+
+  let userCurrency  = 'NZD';
+  let selectedColor = null;
+  let selectedSize  = null;
+  let currentImgIdx = 0;
+  let product       = null;
+
+  async function detectCurrency() {
+    try {
+      const r = await fetch('https://ipapi.co/json/');
+      const d = await r.json();
+      userCurrency = COUNTRY_CURRENCY[d.country_code] || 'USD';
+    } catch { userCurrency = 'USD'; }
+  }
+
+  function getProductId() {
+    return new URLSearchParams(window.location.search).get('id');
+  }
+
+  function buildGallery(images) {
+    if (!images || images.length === 0)
+      return '<p style="color:var(--muted);font-family:var(--mono);font-size:11px;padding:40px;text-align:center;letter-spacing:0.15em;">// IMAGES COMING SOON</p>';
+    return `
+      <div class="gallery-main" id="gallery-main" onclick="nextImage()">
+        <img id="gallery-main-img" src="${images[0]}" alt="${product.name}">
+        ${images.length > 1 ? `
+          <button class="gallery-arrow gallery-arrow-left" onclick="event.stopPropagation();prevImage()" aria-label="Previous">&#8592;</button>
+          <button class="gallery-arrow gallery-arrow-right" onclick="event.stopPropagation();nextImage()" aria-label="Next">&#8594;</button>
+          <div class="gallery-main-counter" id="gallery-counter">1 / ${images.length}</div>` : ''}
+      </div>
+      ${images.length > 1 ? `
+        <div class="gallery-thumbs" id="gallery-thumbs">
+          ${images.map((src, i) => `
+            <div class="gallery-thumb ${i === 0 ? 'active' : ''}" onclick="setImage(${i})" data-idx="${i}">
+              <img src="${src}" alt="${product.name} view ${i + 1}" loading="lazy">
+            </div>`).join('')}
+        </div>` : ''}`;
+  }
+
+  function setImage(idx) {
+    const color  = selectedColor || Object.keys(product.colors)[0];
+    const images = product.colors[color].images;
+    if (!images[idx]) return;
+    currentImgIdx = idx;
+    const mainImg = document.getElementById('gallery-main-img');
+    mainImg.style.opacity = '0';
+    setTimeout(() => { mainImg.src = images[idx]; mainImg.style.opacity = ''; }, 120);
+    const counter = document.getElementById('gallery-counter');
+    if (counter) counter.textContent = `${idx + 1} / ${images.length}`;
+    document.querySelectorAll('.gallery-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+  }
+
+  function nextImage() {
+    const color  = selectedColor || Object.keys(product.colors)[0];
+    const images = product.colors[color].images;
+    setImage((currentImgIdx + 1) % images.length);
+  }
+
+  function prevImage() {
+    const color  = selectedColor || Object.keys(product.colors)[0];
+    const images = product.colors[color].images;
+    setImage((currentImgIdx - 1 + images.length) % images.length);
+  }
+
+  function switchColor(colorName) {
+    selectedColor = colorName;
+    currentImgIdx = 0;
+    document.querySelector('.gallery').innerHTML = buildGallery(product.colors[colorName].images);
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.toggle('active', b.dataset.color === colorName));
+    const label = document.querySelector('.selector-label span[data-colorlabel]');
+    if (label) label.textContent = colorName;
+  }
+
+  function selectSize(size, btn) {
+    selectedSize = size;
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('select-warning').classList.remove('visible');
+    const label = document.querySelector('.selector-label span[data-sizelabel]');
+    if (label) label.textContent = size;
+
+    const sym = CURRENCY_SYMBOLS[userCurrency];
+    const amt = (product.sizePrices && product.sizePrices[size])
+      ? (product.sizePrices[size][userCurrency] || product.sizePrices[size].USD)
+      : (product.prices[userCurrency] || product.prices.USD);
+    const label2 = CURRENCY_LABELS[userCurrency];
+
+    const priceEl = document.querySelector('.product-panel-price');
+    if (priceEl) priceEl.textContent = `${sym}${amt}`;
+
+    const buyBtn = document.getElementById('buy-now-btn');
+    if (buyBtn) buyBtn.textContent = `BUY NOW — ${sym}${amt} ${label2}`;
+
+    const stickyPrice = document.getElementById('sticky-price');
+    if (stickyPrice) stickyPrice.textContent = `${sym}${amt} ${label2}`;
+  }
+
+  function validate() {
+    const needsColor = Object.keys(product.colors).length > 1;
+    const needsSize  = product.sizes.length > 1;
+    if (needsColor && !selectedColor) {
+      const w = document.getElementById('select-warning');
+      w.textContent = '// SELECT A COLOUR FIRST';
+      w.classList.add('visible');
+      return false;
+    }
+    if (needsSize && !selectedSize) {
+      const w = document.getElementById('select-warning');
+      w.textContent = '// SELECT A SIZE FIRST';
+      w.classList.add('visible');
+      return false;
+    }
+    return true;
+  }
+
+  function addToCart() {
+    if (!validate()) return;
+    Cart.add(product.id, selectedColor, selectedSize, userCurrency);
+    CartUI.showToast(`${product.name} added to cart`);
+    CartUI.bumpBadge();
+  }
+
+  async function buyNow() {
+    if (!validate()) return;
+    const btn = document.getElementById('buy-now-btn');
+    btn.classList.add('loading');
+    btn.textContent = 'REDIRECTING...';
+    btn.disabled = true;
+
+    const countryEl = document.getElementById('checkout-country');
+    const country = countryEl ? countryEl.value : 'NZ';
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product: product.id, size: selectedSize, color: selectedColor,
+          currency: userCurrency, country,
+        }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else throw new Error(data.error || 'No URL returned');
+    } catch (err) {
+      console.error('Buy Now error:', err);
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      const sym = CURRENCY_SYMBOLS[userCurrency];
+      const amt = (product.sizePrices && product.sizePrices[selectedSize])
+        ? (product.sizePrices[selectedSize][userCurrency] || product.sizePrices[selectedSize].USD)
+        : (product.prices[userCurrency] || product.prices.USD);
+      btn.textContent = `BUY NOW — ${sym}${amt} ${CURRENCY_LABELS[userCurrency]}`;
+    }
+  }
+
+  function isLaunched(p) {
+    if (!p.launchDate) return true;
+    return Date.now() >= new Date(p.launchDate).getTime();
+  }
+
+  function renderBuyArea(p, sym, amt, label) {
+    if (isLaunched(p)) {
+      return `
+        <div class="buy-actions">
+          <button class="add-cart-btn" id="add-cart-btn" onclick="addToCart()">ADD TO CART</button>
+          <button class="buy-btn" id="buy-now-btn" onclick="buyNow()">BUY NOW — ${sym}${amt} ${label}</button>
+        </div>`;
+    }
+    return `
+      <div class="drop-countdown">
+        <p class="drop-countdown-label">// DROP IN</p>
+        <div class="drop-countdown-grid">
+          <div class="drop-countdown-unit"><span class="drop-countdown-num" id="dc-days">00</span><span class="drop-countdown-tag">DAYS</span></div>
+          <div class="drop-countdown-unit"><span class="drop-countdown-num" id="dc-hours">00</span><span class="drop-countdown-tag">HRS</span></div>
+          <div class="drop-countdown-unit"><span class="drop-countdown-num" id="dc-mins">00</span><span class="drop-countdown-tag">MINS</span></div>
+          <div class="drop-countdown-unit"><span class="drop-countdown-num" id="dc-secs">00</span><span class="drop-countdown-tag">SECS</span></div>
+        </div>
+      </div>`;
+  }
+
+  function startCountdown(p, sym, amt, label) {
+    if (isLaunched(p)) return;
+    const target = new Date(p.launchDate).getTime();
+    const pad = n => String(n).padStart(2, '0');
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        document.getElementById('buy-area').innerHTML = `
+          <div class="buy-actions">
+            <button class="add-cart-btn" id="add-cart-btn" onclick="addToCart()">ADD TO CART</button>
+            <button class="buy-btn" id="buy-now-btn" onclick="buyNow()">BUY NOW — ${sym}${amt} ${label}</button>
+          </div>`;
+        return;
+      }
+      const el = id => document.getElementById(id);
+      if (el('dc-days'))  el('dc-days').textContent  = pad(Math.floor(diff / 86400000));
+      if (el('dc-hours')) el('dc-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+      if (el('dc-mins'))  el('dc-mins').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+      if (el('dc-secs'))  el('dc-secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
+      setTimeout(tick, 1000);
+    };
+    tick();
+  }
+
+  function initStickyBar(p, sym, amt, label) {
+    const bar     = document.getElementById('sticky-buy-bar');
+    const nameEl  = document.getElementById('sticky-name');
+    const priceEl = document.getElementById('sticky-price');
+    const btn     = document.getElementById('sticky-buy-btn');
+    nameEl.textContent  = p.name;
+    priceEl.textContent = `${sym}${amt} ${label}`;
+    btn.addEventListener('click', () => {
+      if (!validate()) return;
+      Cart.add(p.id, selectedColor, selectedSize, userCurrency);
+      CartUI.showToast(`${p.name} added to cart`);
+      CartUI.bumpBadge();
+    });
+    const productPanel = document.querySelector('.product-panel');
+    if (!productPanel) return;
+    const io = new IntersectionObserver(([entry]) => {
+      bar.classList.toggle('visible', !entry.isIntersecting);
+    }, { threshold: 0 });
+    io.observe(productPanel);
+  }
+
+  async function init() {
+    await detectCurrency();
+    const id = getProductId();
+    product  = STORE_PRODUCTS[id];
+    if (!product) { window.location.href = '/store/'; return; }
+
+    document.title = `Uxban | ${product.name}`;
+
+    const sym         = CURRENCY_SYMBOLS[userCurrency];
+    const amt         = product.prices[userCurrency] || product.prices.USD;
+    const label       = CURRENCY_LABELS[userCurrency];
+    const firstColor  = Object.keys(product.colors)[0];
+    const firstImages = product.colors[firstColor].images;
+    const multiColor  = Object.keys(product.colors).length > 1;
+    const multiSize   = product.sizes.length > 1;
+
+    document.getElementById('product-layout').innerHTML = `
+      <div class="gallery">${buildGallery(firstImages)}</div>
+      <div class="product-panel">
+        <p class="product-panel-label">${product.label}</p>
+        <h1 class="product-panel-name">${product.name}</h1>
+        <div class="product-panel-price">${sym}${amt}</div>
+        <p class="product-panel-price-sub">${label} · + SHIPPING</p>
+        <p class="product-panel-desc">${product.description}</p>
+
+        ${multiColor ? `
+        <div class="selector-wrap">
+          <p class="selector-label">COLOUR <span data-colorlabel>—</span></p>
+          <div class="color-grid">
+            ${Object.entries(product.colors).map(([name, c]) => `
+              <button class="color-btn" data-color="${name}" onclick="switchColor('${name}')">
+                <span class="color-swatch" style="background:${c.swatch}"></span>
+                ${name}
+              </button>`).join('')}
+          </div>
+        </div>` : ''}
+
+        ${multiSize ? `
+        <div class="selector-wrap">
+          <p class="selector-label">SIZE <span data-sizelabel>—</span></p>
+          <div class="size-grid">
+            ${product.sizes.map(s => `<button class="size-btn" onclick="selectSize('${s}', this)">${s}</button>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <div class="selector-wrap">
+          <p class="selector-label">SHIPPING COUNTRY</p>
+          <select id="checkout-country" class="country-select">
+            <option value="NZ">New Zealand</option>
+            <option value="AU">Australia</option>
+            <option value="US">United States</option>
+            <option value="GB">United Kingdom</option>
+            <option value="CA">Canada</option>
+          </select>
+        </div>
+
+        <div id="buy-area">
+          ${renderBuyArea(product, sym, amt, label)}
+        </div>
+        <p class="select-warning" id="select-warning"></p>
+
+        <div class="product-details-list">
+          ${product.details.map(d => `<span class="product-detail-item">${d}</span>`).join('')}
+        </div>
+
+        <p class="product-social">
+          ROCK IT AND TAG <a href="https://instagram.com/uxbanwtf" target="_blank">@UXBANWTF</a> — WE REPOST EVERYONE.
+        </p>
+      </div>`;
+
+    if (!multiColor) selectedColor = firstColor;
+    if (!multiSize) selectedSize = product.sizes[0];
+
+    startCountdown(product, sym, amt, label);
+    initStickyBar(product, sym, amt, label);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft')  prevImage();
+    });
+  }
+
+  const scrollTop = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400));
+  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobile-nav');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+
+  const topBar = document.getElementById('top-bar');
+  if (topBar) {
+    window.addEventListener('scroll', () => topBar.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+  }
+
+  function updateNavOffset() {
+    const banner = document.getElementById('site-banner');
+    const nav    = document.getElementById('top-bar');
+    if (!nav) return;
+    const visible = banner && banner.style.display !== 'none';
+    nav.style.top = visible ? banner.offsetHeight + 'px' : '0';
+  }
+  updateNavOffset();
+  window.addEventListener('resize', updateNavOffset);
+
+  const bannerClose = document.querySelector('.site-banner-close');
+  if (bannerClose) {
+    bannerClose.addEventListener('click', () => {
+      document.getElementById('site-banner').style.display = 'none';
+      setTimeout(updateNavOffset, 30);
+    });
+  }
+
+  init();
+</script>
+</body>
+</html>

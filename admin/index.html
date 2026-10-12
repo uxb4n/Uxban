@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uxban | Admin</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <style>
+    .admin-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px;
+      gap: 32px;
+    }
+
+    /* ── LOGIN ── */
+    .admin-login {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+      margin: auto;
+    }
+
+    .admin-title {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    /* ── SHARED ── */
+    .mono-label {
+      font-size: 8.5px;
+      letter-spacing: 5px;
+      color: var(--neon);
+      font-family: var(--mono);
+      text-transform: uppercase;
+    }
+
+    .admin-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--fg);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 3px;
+      padding: 14px 18px;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    .admin-input:focus { border-color: rgba(255,255,255,0.2); }
+
+    select.admin-input { cursor: pointer; }
+
+    textarea.admin-input {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.6;
+      text-transform: none;
+    }
+
+    .admin-btn {
+      background: var(--neon);
+      color: #000;
+      border: none;
+      font-family: var(--mono);
+      font-size: 8.5px;
+      letter-spacing: 3px;
+      font-weight: 700;
+      padding: 14px 22px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .admin-btn:hover { background: #fff; }
+    .admin-btn:active { transform: scale(0.97); }
+    .admin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .admin-btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+    }
+
+    .admin-btn-ghost:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--fg);
+    }
+
+    .admin-btn-danger {
+      background: transparent;
+      border: 1px solid rgba(255,60,60,0.25);
+      color: rgba(255,80,80,0.6);
+    }
+
+    .admin-btn-danger:hover {
+      background: rgba(255,40,40,0.08);
+      color: #ff4444;
+    }
+
+    .admin-error {
+      font-size: 8.5px;
+      letter-spacing: 3px;
+      color: #ff4444;
+      font-family: var(--mono);
+      min-height: 16px;
+      text-transform: uppercase;
+    }
+
+    .admin-status {
+      font-size: 8.5px;
+      letter-spacing: 3px;
+      font-family: var(--mono);
+      min-height: 16px;
+      text-transform: uppercase;
+    }
+
+    .admin-status.success { color: var(--neon); }
+    .admin-status.error   { color: #ff4444; }
+    .admin-status.loading { color: rgba(255,255,255,0.4); }
+
+    /* ── PANEL SHELL ── */
+    .admin-panel {
+      display: none;
+      width: 100%;
+      max-width: 660px;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .admin-panel.visible { display: flex; }
+
+    .admin-panel-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .admin-logout {
+      font-size: 8px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.2);
+      font-family: var(--mono);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      padding: 0;
+    }
+
+    .admin-logout:hover { color: rgba(255,255,255,0.5); }
+
+    /* ── STATS BAR ── */
+    .admin-stats {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+
+    .stat-block {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-block:last-child { border-right: none; }
+
+    .stat-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: var(--neon);
+      line-height: 1;
+      margin-top: 6px;
+    }
+
+    .stat-sub {
+      font-size: 9px;
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* ── TABS ── */
+    .admin-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+      overflow-x: auto;
+    }
+
+    .admin-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: rgba(255,255,255,0.3);
+      font-family: var(--mono);
+      font-size: 8.5px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 12px 18px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      margin-bottom: -1px;
+    }
+
+    .admin-tab:hover { color: rgba(255,255,255,0.7); }
+
+    .admin-tab.active {
+      color: var(--neon);
+      border-bottom-color: var(--neon);
+    }
+
+    /* ── PAGES ── */
+    .admin-page { display: none; flex-direction: column; gap: 20px; }
+    .admin-page.active { display: flex; }
+
+    /* ── SECTION ── */
+    .admin-section {
+      border: 1px solid var(--border);
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .admin-section-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .admin-section-sub {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.3);
+      font-family: var(--mono);
+      letter-spacing: 1px;
+      line-height: 1.7;
+      margin-top: -6px;
+    }
+
+    .admin-preview {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      padding: 14px;
+      font-size: 10px;
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1px;
+      line-height: 1.8;
+      display: none;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .admin-preview.visible { display: block; }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-row .admin-input { margin-bottom: 0; flex: 1; }
+
+    /* ── SCHEDULE LIST ── */
+    .sch-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.45);
+    }
+
+    .sch-item:last-child { border-bottom: none; }
+
+    .sch-badge {
+      font-size: 7px;
+      letter-spacing: 2px;
+      padding: 4px 9px;
+      text-transform: uppercase;
+    }
+
+    .sch-badge.music  { background: rgba(0,255,106,0.07); color: var(--neon); border: 1px solid rgba(0,255,106,0.2); }
+    .sch-badge.merch  { background: rgba(255,200,0,0.07); color: #ffd700; border: 1px solid rgba(255,200,0,0.2); }
+    .sch-badge.custom { background: rgba(150,100,255,0.07); color: #a78fff; border: 1px solid rgba(150,100,255,0.2); }
+    .sch-badge.draft  { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.1); }
+
+    /* ── LINK-IN-BIO ── */
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .link-row .admin-input { flex: 1; margin-bottom: 0; }
+
+    .link-platform {
+      font-size: 8px;
+      letter-spacing: 2px;
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      min-width: 88px;
+    }
+
+    /* ── CUSTOM EMAIL SPLIT LAYOUT ── */
+    .ce-split {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      border: 1px solid var(--border);
+    }
+
+    .ce-form-col {
+      flex: 0 0 320px;
+      padding: 26px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ce-preview-col {
+      flex: 1;
+      min-width: 0;
+      background: #060606;
+      padding: 28px 24px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .elp-top {
+      border-bottom: 1px solid #111;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .elp-eyebrow {
+      font-size: 8px;
+      letter-spacing: 4px;
+      font-family: monospace;
+      text-transform: uppercase;
+      color: var(--neon);
+      margin-bottom: 14px;
+      min-height: 14px;
+    }
+
+    .elp-headline {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
+      color: #f0f0f0;
+      min-height: 28px;
+      word-break: break-word;
+    }
+
+    .elp-body {
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.75;
+      padding: 16px 0;
+      border-bottom: 1px solid #111;
+      margin-bottom: 16px;
+      min-height: 40px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .elp-btn {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 8px;
+      letter-spacing: 3px;
+      font-weight: 700;
+      padding: 11px 22px;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: default;
+      min-width: 20px;
+      min-height: 16px;
+    }
+
+    .elp-footer {
+      margin-top: 16px;
+      border-top: 1px solid #111;
+      padding-top: 12px;
+      font-size: 8px;
+      letter-spacing: 2px;
+      font-family: monospace;
+      color: rgba(255,255,255,0.18);
+      text-transform: uppercase;
+    }
+
+    .elp-footer a { color: var(--neon); text-decoration: none; }
+
+    .ce-preview-label {
+      font-size: 8px;
+      letter-spacing: 3px;
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .ce-split { flex-direction: column; }
+      .ce-form-col { flex: none; border-right: none; border-bottom: 1px solid var(--border); }
+      .ce-preview-col { position: static; }
+    }
+
+    /* ── COLOR PICKERS ── */
+    .color-row {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .color-pair {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-pair label {
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+    }
+
+    .color-pair input[type=color] {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: none;
+      cursor: pointer;
+      padding: 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+
+<div class="admin-wrap">
+
+  <!-- ════════════════════════════════
+       LOGIN
+  ════════════════════════════════ -->
+  <div class="admin-login" id="admin-login">
+    <p class="mono-label">// Uxban Admin</p>
+    <h1 class="admin-title">DROP<br>CONTROL.</h1>
+    <input class="admin-input" id="admin-password" type="password" placeholder="Password" autocomplete="off">
+    <button class="admin-btn" id="admin-login-btn">ENTER</button>
+    <p class="admin-error" id="admin-error"></p>
+  </div>
+
+  <!-- ════════════════════════════════
+       PANEL
+  ════════════════════════════════ -->
+  <div class="admin-panel" id="admin-panel">
+
+    <!-- Header -->
+    <div class="admin-panel-header">
+      <div>
+        <p class="mono-label">// Drop Control</p>
+        <h2 style="font-size:2rem;font-weight:900;letter-spacing:-0.05em;">UXBAN ADMIN</h2>
+      </div>
+      <button class="admin-logout" id="admin-logout">// logout</button>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="admin-stats">
+      <div class="stat-block">
+        <p class="mono-label">// Subscribers</p>
+        <div class="stat-num" id="sub-count">—</div>
+        <p class="stat-sub">Total across all forms</p>
+      </div>
+      <div class="stat-block">
+        <p class="mono-label">// Last Drop</p>
+        <div class="stat-num" id="last-drop-name" style="font-size:1.1rem;margin-top:8px">—</div>
+        <p class="stat-sub" id="last-drop-date">—</p>
+      </div>
+      <div class="stat-block">
+        <p class="mono-label">// Scheduled</p>
+        <div class="stat-num" id="sch-count">0</div>
+        <p class="stat-sub">Queued sends</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="drops">Drops</button>
+      <button class="admin-tab" data-tab="custom">Custom Email</button>
+      <button class="admin-tab" data-tab="schedule">Schedule</button>
+      <button class="admin-tab" data-tab="links">Link-in-Bio</button>
+      <button class="admin-tab" data-tab="broadcast">Broadcast</button>
+    </div>
+
+    <!-- ── TAB: DROPS ── -->
+    <div class="admin-page active" id="page-drops">
+
+      <!-- Music -->
+      <div class="admin-section">
+        <p class="mono-label">// New Music</p>
+        <h3 class="admin-section-title">ANNOUNCE A DROP</h3>
+        <p class="admin-section-sub">Pulls the latest release from Spotify automatically and sends an email blast to all subscribers.</p>
+        <div class="admin-preview" id="music-preview"></div>
+        <div class="btn-row">
+          <button class="admin-btn" id="preview-music-btn">Preview Email</button>
+          <button class="admin-btn" id="send-music-btn" style="display:none">Send to All Subscribers</button>
+          <button class="admin-btn admin-btn-ghost" id="schedule-music-btn">Schedule Instead</button>
+        </div>
+        <p class="admin-status" id="music-status"></p>
+      </div>
+
+      <!-- Merch -->
+      <div class="admin-section">
+        <p class="mono-label">// Merch</p>
+        <h3 class="admin-section-title">ANNOUNCE MERCH DROP</h3>
+        <p class="admin-section-sub">Sends a merch drop alert email to all subscribers with links to the store.</p>
+        <div class="admin-preview" id="merch-preview"></div>
+        <div class="btn-row">
+          <button class="admin-btn" id="preview-merch-btn">Preview Email</button>
+          <button class="admin-btn" id="send-merch-btn" style="display:none">Send to All Subscribers</button>
+          <button class="admin-btn admin-btn-ghost" id="schedule-merch-btn">Schedule Instead</button>
+        </div>
+        <p class="admin-status" id="merch-status"></p>
+      </div>
+
+    </div>
+
+    <!-- ── TAB: CUSTOM EMAIL ── -->
+    <div class="admin-page" id="page-custom">
+      <div class="ce-split">
+
+        <!-- LEFT: form -->
+        <div class="ce-form-col">
+          <p class="mono-label">// Custom Email Builder</p>
+          <h3 class="admin-section-title">BUILD YOUR OWN BLAST</h3>
+          <p class="admin-section-sub">Preview updates live as you type.</p>
+
+          <input  class="admin-input" id="ce-subject"   placeholder="SUBJECT LINE" />
+          <input  class="admin-input" id="ce-eyebrow"   placeholder="EYEBROW  E.G. // TOUR DATES" />
+          <input  class="admin-input" id="ce-headline"  placeholder="HEADLINE  E.G. WE'RE ON TOUR." />
+          <textarea class="admin-input" id="ce-body"    placeholder="Body copy — plain text." style="min-height:100px"></textarea>
+          <input  class="admin-input" id="ce-btn-text"  placeholder="BUTTON TEXT  E.G. GET TICKETS →" />
+          <input  class="admin-input" id="ce-btn-url"   placeholder="BUTTON URL  HTTPS://..." />
+
+          <div class="color-row">
+            <div class="color-pair">
+              <label>Button bg</label>
+              <input type="color" id="ce-btn-bg" value="#00ff6a">
+            </div>
+            <div class="color-pair">
+              <label>Button text</label>
+              <input type="color" id="ce-btn-fg" value="#000000">
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="admin-btn admin-btn-ghost" id="ce-schedule-btn">Schedule</button>
+            <button class="admin-btn" id="ce-send-btn">Send to All</button>
+          </div>
+          <p class="admin-status" id="ce-status"></p>
+        </div>
+
+        <!-- RIGHT: live preview -->
+        <div class="ce-preview-col">
+          <p class="ce-preview-label">// Live preview</p>
+          <div class="elp-top">
+            <p style="font-size:8px;letter-spacing:5px;color:var(--neon);font-family:monospace;text-transform:uppercase;margin:0">// UXBAN</p>
+          </div>
+          <p class="elp-eyebrow" id="pv-eyebrow">// EYEBROW LABEL</p>
+          <h2 class="elp-headline" id="pv-headline">YOUR HEADLINE.</h2>
+          <div class="elp-body" id="pv-body">Your body copy will appear here as you type.</div>
+          <a class="elp-btn" id="pv-btn" href="#" onclick="return false" style="background:#00ff6a;color:#000">BUTTON TEXT →</a>
+          <div class="elp-footer">
+            © 2026 UXBAN // X34 MUSIC<br><br>
+            <a href="https://uxban.shop">uxban.shop</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: SCHEDULE ── -->
+    <div class="admin-page" id="page-schedule">
+      <div class="admin-section">
+        <p class="mono-label">// Schedule a Send</p>
+        <h3 class="admin-section-title">QUEUE AN EMAIL</h3>
+        <p class="admin-section-sub">Pick a type, date, and time. The send will fire automatically via your backend cron job.</p>
+
+        <select class="admin-input" id="sch-type">
+          <option value="music">Music Drop (auto-pull Spotify)</option>
+          <option value="merch">Merch Drop</option>
+          <option value="custom">Custom Email (uses current builder content)</option>
+        </select>
+
+        <div class="input-row">
+          <input class="admin-input" type="date" id="sch-date" />
+          <input class="admin-input" type="time" id="sch-time" value="09:00" />
+        </div>
+
+        <div class="btn-row">
+          <button class="admin-btn" id="sch-add-btn">Add to Queue</button>
+        </div>
+        <p class="admin-status" id="sch-status"></p>
+
+        <!-- Scheduled list -->
+        <div id="sch-list" style="margin-top:8px"></div>
+        <p id="sch-empty" style="font-size:10px;font-family:var(--mono);color:rgba(255,255,255,0.2);display:none">// No sends queued.</p>
+      </div>
+    </div>
+
+    <!-- ── TAB: LINK-IN-BIO ── -->
+    <div class="admin-page" id="page-links">
+      <div class="admin-section">
+        <p class="mono-label">// Link-in-Bio Manager</p>
+        <h3 class="admin-section-title">STREAMING & SOCIAL LINKS</h3>
+        <p class="admin-section-sub">Update these and they'll reflect site-wide and in email CTAs. Save after any change.</p>
+
+        <div id="link-fields">
+          <div class="link-row"><span class="link-platform">Spotify</span>      <input class="admin-input" data-platform="spotify"      placeholder="https://open.spotify.com/artist/..." /></div>
+          <div class="link-row"><span class="link-platform">Apple Music</span>  <input class="admin-input" data-platform="appleMusic"   placeholder="https://music.apple.com/..." /></div>
+          <div class="link-row"><span class="link-platform">YouTube</span>      <input class="admin-input" data-platform="youtube"      placeholder="https://youtube.com/@..." /></div>
+          <div class="link-row"><span class="link-platform">SoundCloud</span>   <input class="admin-input" data-platform="soundcloud"   placeholder="https://soundcloud.com/..." /></div>
+          <div class="link-row"><span class="link-platform">Instagram</span>    <input class="admin-input" data-platform="instagram"    placeholder="https://instagram.com/..." /></div>
+          <div class="link-row"><span class="link-platform">TikTok</span>       <input class="admin-input" data-platform="tiktok"       placeholder="https://tiktok.com/@..." /></div>
+          <div class="link-row"><span class="link-platform">X / Twitter</span>  <input class="admin-input" data-platform="twitter"      placeholder="https://x.com/..." /></div>
+          <div class="link-row"><span class="link-platform">Store</span>        <input class="admin-input" data-platform="store"        placeholder="https://uxban.shop/store/" /></div>
+        </div>
+
+        <div style="margin-top:6px">
+          <p class="mono-label" style="margin-bottom:10px">// Add Custom Link</p>
+          <div class="input-row">
+            <input class="admin-input" id="custom-link-name" placeholder="LABEL  E.G. BANDCAMP" style="max-width:160px" />
+            <input class="admin-input" id="custom-link-url"  placeholder="URL" />
+            <button class="admin-btn" id="add-link-btn" style="white-space:nowrap">Add</button>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:4px">
+          <button class="admin-btn" id="save-links-btn">Save All Links</button>
+        </div>
+        <p class="admin-status" id="links-status"></p>
+      </div>
+    </div>
+
+    <!-- ── TAB: BROADCAST ── -->
+    <div class="admin-page" id="page-broadcast">
+      <div class="admin-section">
+        <p class="mono-label">// Quick Broadcast</p>
+        <h3 class="admin-section-title">SEND A TEXT UPDATE</h3>
+        <p class="admin-section-sub">Fast plain-text blast — no images, no template. Good for tour dates, last-minute news, personal notes.</p>
+        <input    class="admin-input" id="bc-subject" placeholder="SUBJECT  E.G. // ONE MORE THING" />
+        <textarea class="admin-input" id="bc-body"    placeholder="Your message here. Keep it raw." style="min-height:120px"></textarea>
+        <div class="btn-row">
+          <button class="admin-btn" id="bc-send-btn">Send Broadcast</button>
+          <button class="admin-btn admin-btn-ghost" id="bc-draft-btn">Save Draft</button>
+        </div>
+        <p class="admin-status" id="bc-status"></p>
+      </div>
+
+      <!-- Drafts -->
+      <div class="admin-section">
+        <p class="mono-label">// Saved Drafts</p>
+        <div id="draft-list"></div>
+        <p id="draft-empty" style="font-size:10px;font-family:var(--mono);color:rgba(255,255,255,0.2)">// No drafts saved.</p>
+      </div>
+    </div>
+
+  </div><!-- /admin-panel -->
+</div>
+
+<!--
+  ════════════════════════════════════════════════════════════
+  HOW TO APPLY THIS FILE
+  ════════════════════════════════════════════════════════════
+  Your admin.html is otherwise unchanged — only the <script> block
+  at the bottom needs to be replaced. Everything above (the <style>
+  and all the markup/divs for login, tabs, stats, etc.) stays exactly
+  as it was. Swap your existing <script>...</script> for this one.
+-->
+<script>
+  /* ════════════════════════════════════════════════════════
+     LOGIN  — now delegates to the server, no password in JS
+  ════════════════════════════════════════════════════════ */
+  const loginEl = document.getElementById('admin-login');
+  const panelEl = document.getElementById('admin-panel');
+  const errorEl = document.getElementById('admin-error');
+  const pwInput = document.getElementById('admin-password');
+
+  // On load, ask the server if we have a valid session (via cookie).
+  // We no longer trust sessionStorage — it proves nothing.
+  (async function checkSession() {
+    try {
+      const res = await fetch('/api/admin-check', { credentials: 'same-origin' });
+      if (res.ok) showPanel();
+    } catch {}
+  })();
+
+  document.getElementById('admin-login-btn').addEventListener('click', tryLogin);
+  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+  async function tryLogin() {
+    const loginBtn = document.getElementById('admin-login-btn');
+    loginBtn.disabled = true;
+    errorEl.textContent = '';
+    try {
+      const res = await fetch('/api/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ password: pwInput.value }),
+      });
+      if (res.ok) {
+        pwInput.value = '';
+        showPanel();
+      } else if (res.status === 429) {
+        errorEl.textContent = '// too many attempts — wait a few minutes';
+      } else {
+        errorEl.textContent = '// incorrect password';
+        pwInput.value = '';
+        pwInput.focus();
+      }
+    } catch {
+      errorEl.textContent = '// network error, try again';
+    } finally {
+      loginBtn.disabled = false;
+    }
+  }
+
+  function showPanel() {
+    loginEl.style.display = 'none';
+    panelEl.classList.add('visible');
+    loadSubCount();
+    loadLinks();
+    renderSchedule();
+    renderDrafts();
+  }
+
+  document.getElementById('admin-logout').addEventListener('click', async () => {
+    try {
+      await fetch('/api/admin-logout', { method: 'POST', credentials: 'same-origin' });
+    } catch {}
+    panelEl.classList.remove('visible');
+    loginEl.style.display = 'flex';
+  });
+
+  /* ════════════════════════════════════════════════════════
+     TABS
+  ════════════════════════════════════════════════════════ */
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('page-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* ════════════════════════════════════════════════════════
+     HELPERS
+  ════════════════════════════════════════════════════════ */
+  function setStatus(id, msg, type) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'admin-status ' + (type || '');
+  }
+
+  // Every admin fetch below MUST include credentials so the
+  // session cookie is sent, and should treat a 401 as "logged out".
+  async function adminFetch(url, options = {}) {
+    const res = await fetch(url, { ...options, credentials: 'same-origin' });
+    if (res.status === 401) {
+      panelEl.classList.remove('visible');
+      loginEl.style.display = 'flex';
+      errorEl.textContent = '// session expired, please log in again';
+    }
+    return res;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     SUBSCRIBERS
+  ════════════════════════════════════════════════════════ */
+  async function loadSubCount() {
+    try {
+      const res  = await adminFetch('/api/subscribers');
+      const data = await res.json();
+      document.getElementById('sub-count').textContent = data.count ?? '—';
+    } catch {
+      document.getElementById('sub-count').textContent = '—';
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     MUSIC DROP
+  ════════════════════════════════════════════════════════ */
+  document.getElementById('preview-music-btn').addEventListener('click', async () => {
+    setStatus('music-status', '// fetching latest release...', 'loading');
+    try {
+      const res  = await adminFetch('/api/announce?type=music&preview=1');
+      const data = await res.json();
+      const prev = document.getElementById('music-preview');
+      prev.innerHTML = data.preview;
+      prev.classList.add('visible');
+      document.getElementById('send-music-btn').style.display = 'inline-block';
+      document.getElementById('preview-music-btn').style.display = 'none';
+      setStatus('music-status', `// ready · ${data.count} subscribers`, 'success');
+    } catch {
+      setStatus('music-status', '// failed to load preview', 'error');
+    }
+  });
+
+  document.getElementById('send-music-btn').addEventListener('click', async () => {
+    if (!confirm('Send music drop email to all subscribers?')) return;
+    const btn = document.getElementById('send-music-btn');
+    btn.disabled = true;
+    btn.textContent = 'SENDING...';
+    setStatus('music-status', '// sending...', 'loading');
+    try {
+      const res  = await adminFetch('/api/announce?type=music', { method: 'POST' });
+      const data = await res.json();
+      setStatus('music-status', `// sent to ${data.sent} subscribers ✓`, 'success');
+      btn.textContent = 'SENT ✓';
+      document.getElementById('last-drop-name').textContent = data.releaseName || 'Music';
+      document.getElementById('last-drop-date').textContent = 'Just now';
+    } catch {
+      setStatus('music-status', '// send failed', 'error');
+      btn.disabled = false;
+      btn.textContent = 'SEND TO ALL SUBSCRIBERS';
+    }
+  });
+
+  document.getElementById('schedule-music-btn').addEventListener('click', () => {
+    switchToTab('schedule');
+    document.getElementById('sch-type').value = 'music';
+  });
+
+  /* ════════════════════════════════════════════════════════
+     MERCH DROP
+  ════════════════════════════════════════════════════════ */
+  document.getElementById('preview-merch-btn').addEventListener('click', async () => {
+    setStatus('merch-status', '// building preview...', 'loading');
+    try {
+      const res  = await adminFetch('/api/announce?type=merch&preview=1');
+      const data = await res.json();
+      const prev = document.getElementById('merch-preview');
+      prev.innerHTML = data.preview;
+      prev.classList.add('visible');
+      document.getElementById('send-merch-btn').style.display = 'inline-block';
+      document.getElementById('preview-merch-btn').style.display = 'none';
+      setStatus('merch-status', `// ready · ${data.count} subscribers`, 'success');
+    } catch {
+      setStatus('merch-status', '// failed to load preview', 'error');
+    }
+  });
+
+  document.getElementById('send-merch-btn').addEventListener('click', async () => {
+    if (!confirm('Send merch drop email to all subscribers?')) return;
+    const btn = document.getElementById('send-merch-btn');
+    btn.disabled = true;
+    btn.textContent = 'SENDING...';
+    setStatus('merch-status', '// sending...', 'loading');
+    try {
+      const res  = await adminFetch('/api/announce?type=merch', { method: 'POST' });
+      const data = await res.json();
+      setStatus('merch-status', `// sent to ${data.sent} subscribers ✓`, 'success');
+      btn.textContent = 'SENT ✓';
+    } catch {
+      setStatus('merch-status', '// send failed', 'error');
+      btn.disabled = false;
+      btn.textContent = 'SEND TO ALL SUBSCRIBERS';
+    }
+  });
+
+  document.getElementById('schedule-merch-btn').addEventListener('click', () => {
+    switchToTab('schedule');
+    document.getElementById('sch-type').value = 'merch';
+  });
+
+  /* ════════════════════════════════════════════════════════
+     CUSTOM EMAIL BUILDER — live preview
+  ════════════════════════════════════════════════════════ */
+  function updateLivePreview() {
+    const eyebrow  = document.getElementById('ce-eyebrow').value.trim()   || '// EYEBROW LABEL';
+    const headline = document.getElementById('ce-headline').value.trim()  || 'YOUR HEADLINE.';
+    const body     = document.getElementById('ce-body').value             || 'Your body copy will appear here as you type.';
+    const btnText  = document.getElementById('ce-btn-text').value.trim()  || 'BUTTON TEXT →';
+    const btnUrl   = document.getElementById('ce-btn-url').value.trim()   || '#';
+    const btnBg    = document.getElementById('ce-btn-bg').value;
+    const btnFg    = document.getElementById('ce-btn-fg').value;
+
+    document.getElementById('pv-eyebrow').textContent  = eyebrow;
+    document.getElementById('pv-headline').textContent = headline;
+    document.getElementById('pv-body').textContent     = body;
+
+    const btn = document.getElementById('pv-btn');
+    btn.textContent      = btnText;
+    btn.href             = btnUrl;
+    btn.style.background = btnBg;
+    btn.style.color      = btnFg;
+  }
+
+  ['ce-eyebrow','ce-headline','ce-body','ce-btn-text','ce-btn-url','ce-btn-bg','ce-btn-fg'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateLivePreview);
+  });
+
+  document.getElementById('ce-send-btn').addEventListener('click', async () => {
+    const subject = document.getElementById('ce-subject').value.trim();
+    if (!subject) { setStatus('ce-status', '// add a subject line first', 'error'); return; }
+    if (!confirm('Send custom email to all subscribers?')) return;
+
+    const btn = document.getElementById('ce-send-btn');
+    btn.disabled = true;
+    btn.textContent = 'SENDING...';
+    setStatus('ce-status', '// sending...', 'loading');
+
+    const payload = {
+      subject,
+      eyebrow:  document.getElementById('ce-eyebrow').value,
+      headline: document.getElementById('ce-headline').value,
+      body:     document.getElementById('ce-body').value,
+      btnText:  document.getElementById('ce-btn-text').value,
+      btnUrl:   document.getElementById('ce-btn-url').value,
+      btnBg:    document.getElementById('ce-btn-bg').value,
+      btnFg:    document.getElementById('ce-btn-fg').value,
+    };
+
+    try {
+      const res  = await adminFetch('/api/announce?type=custom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      setStatus('ce-status', `// sent to ${data.sent} subscribers ✓`, 'success');
+      btn.textContent = 'SENT ✓';
+    } catch {
+      setStatus('ce-status', '// send failed', 'error');
+      btn.disabled = false;
+      btn.textContent = 'SEND TO ALL';
+    }
+  });
+
+  /* ════════════════════════════════════════════════════════
+     SCHEDULE  (still local-only via localStorage — fine, since
+     it's just a personal reminder list, not a security boundary)
+  ════════════════════════════════════════════════════════ */
+  function getSchedule() {
+    return JSON.parse(localStorage.getItem('uxban-schedule') || '[]');
+  }
+
+  function saveSchedule(arr) {
+    localStorage.setItem('uxban-schedule', JSON.stringify(arr));
+    document.getElementById('sch-count').textContent = arr.length;
+  }
+
+  function renderSchedule() {
+    const arr  = getSchedule();
+    const list = document.getElementById('sch-list');
+    const empty = document.getElementById('sch-empty');
+    list.innerHTML = '';
+    document.getElementById('sch-count').textContent = arr.length;
+
+    if (!arr.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    arr.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'sch-item';
+      const typeLabel = { music: 'Music', merch: 'Merch', custom: 'Custom' }[item.type] || item.type;
+      div.innerHTML = `
+        <span class="sch-badge ${item.type}">${typeLabel}</span>
+        <span>${item.dateLabel}</span>
+        <span style="flex:1;color:rgba(255,255,255,0.2)">${item.note}</span>
+        <button class="admin-btn admin-btn-danger" style="padding:6px 10px;font-size:7px" data-index="${i}">Remove</button>
+      `;
+      div.querySelector('button').addEventListener('click', () => {
+        const updated = getSchedule();
+        updated.splice(i, 1);
+        saveSchedule(updated);
+        renderSchedule();
+      });
+      list.appendChild(div);
+    });
+  }
+
+  document.getElementById('sch-add-btn').addEventListener('click', () => {
+    const type = document.getElementById('sch-type').value;
+    const date = document.getElementById('sch-date').value;
+    const time = document.getElementById('sch-time').value;
+
+    if (!date) { setStatus('sch-status', '// pick a date first', 'error'); return; }
+
+    const d = new Date(date + 'T' + time);
+    const dateLabel = d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' }) + ', ' + time;
+    const noteMap = { music: 'Auto-pull latest Spotify release', merch: 'Merch drop blast', custom: 'Custom email blast' };
+
+    const arr = getSchedule();
+    arr.push({ type, date, time, dateLabel, note: noteMap[type] });
+    arr.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+    saveSchedule(arr);
+    renderSchedule();
+    setStatus('sch-status', `// scheduled for ${dateLabel}`, 'success');
+  });
+
+  /* ════════════════════════════════════════════════════════
+     LINK-IN-BIO
+  ════════════════════════════════════════════════════════ */
+  function loadLinks() {
+    const saved = JSON.parse(localStorage.getItem('uxban-links') || '{}');
+    document.querySelectorAll('#link-fields [data-platform]').forEach(input => {
+      if (saved[input.dataset.platform]) input.value = saved[input.dataset.platform];
+    });
+    const customs = JSON.parse(localStorage.getItem('uxban-custom-links') || '[]');
+    customs.forEach(cl => appendCustomLink(cl.name, cl.url));
+  }
+
+  function appendCustomLink(name, url) {
+    const fields = document.getElementById('link-fields');
+    const row = document.createElement('div');
+    row.className = 'link-row';
+    const span = document.createElement('span');
+    span.className = 'link-platform';
+    span.textContent = name;
+    const input = document.createElement('input');
+    input.className = 'admin-input';
+    input.value = url;
+    input.dataset.customName = name;
+    const btn = document.createElement('button');
+    btn.className = 'admin-btn admin-btn-danger';
+    btn.style = 'padding:10px 12px;font-size:8px;margin-left:6px';
+    btn.textContent = '✕';
+    btn.addEventListener('click', () => { row.remove(); persistCustomLinks(); });
+    row.append(span, input, btn);
+    fields.appendChild(row);
+  }
+
+  function persistCustomLinks() {
+    const rows = document.querySelectorAll('#link-fields [data-custom-name]');
+    const arr = Array.from(rows).map(i => ({ name: i.dataset.customName, url: i.value }));
+    localStorage.setItem('uxban-custom-links', JSON.stringify(arr));
+  }
+
+  document.getElementById('add-link-btn').addEventListener('click', () => {
+    const name = document.getElementById('custom-link-name').value.trim();
+    const url  = document.getElementById('custom-link-url').value.trim();
+    if (!name || !url) { setStatus('links-status', '// fill in both fields', 'error'); return; }
+    appendCustomLink(name, url);
+    document.getElementById('custom-link-name').value = '';
+    document.getElementById('custom-link-url').value  = '';
+  });
+
+  document.getElementById('save-links-btn').addEventListener('click', async () => {
+    const obj = {};
+    document.querySelectorAll('#link-fields [data-platform]').forEach(input => {
+      obj[input.dataset.platform] = input.value.trim();
+    });
+    localStorage.setItem('uxban-links', JSON.stringify(obj));
+    persistCustomLinks();
+
+    setStatus('links-status', '// saving...', 'loading');
+    try {
+      const res = await adminFetch('/api/links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          links: obj,
+          custom: JSON.parse(localStorage.getItem('uxban-custom-links') || '[]'),
+        }),
+      });
+      if (res.ok) {
+        setStatus('links-status', '// links saved ✓', 'success');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setStatus('links-status', `// ${data.error || 'save failed'}`, 'error');
+      }
+    } catch {
+      setStatus('links-status', '// saved locally (backend unreachable)', 'success');
+    }
+  });
+
+  /* ════════════════════════════════════════════════════════
+     BROADCAST
+  ════════════════════════════════════════════════════════ */
+  function getDrafts() {
+    return JSON.parse(localStorage.getItem('uxban-drafts') || '[]');
+  }
+
+  function saveDrafts(arr) {
+    localStorage.setItem('uxban-drafts', JSON.stringify(arr));
+  }
+
+  function renderDrafts() {
+    const arr   = getDrafts();
+    const list  = document.getElementById('draft-list');
+    const empty = document.getElementById('draft-empty');
+    list.innerHTML = '';
+
+    if (!arr.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    arr.forEach((d, i) => {
+      const div = document.createElement('div');
+      div.className = 'sch-item';
+      const span = document.createElement('span');
+      span.className = 'sch-badge draft';
+      span.textContent = 'Draft';
+      const subjSpan = document.createElement('span');
+      subjSpan.style = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+      subjSpan.textContent = d.subject;
+      const loadBtn = document.createElement('button');
+      loadBtn.className = 'admin-btn admin-btn-ghost';
+      loadBtn.style = 'padding:6px 10px;font-size:7px';
+      loadBtn.textContent = 'Load';
+      const delBtn = document.createElement('button');
+      delBtn.className = 'admin-btn admin-btn-danger';
+      delBtn.style = 'padding:6px 10px;font-size:7px';
+      delBtn.textContent = 'Del';
+
+      loadBtn.addEventListener('click', () => {
+        document.getElementById('bc-subject').value = d.subject;
+        document.getElementById('bc-body').value    = d.body;
+        setStatus('bc-status', '// draft loaded', 'success');
+      });
+      delBtn.addEventListener('click', () => {
+        const updated = getDrafts();
+        updated.splice(i, 1);
+        saveDrafts(updated);
+        renderDrafts();
+      });
+
+      div.append(span, subjSpan, loadBtn, delBtn);
+      list.appendChild(div);
+    });
+  }
+
+  document.getElementById('bc-send-btn').addEventListener('click', async () => {
+    const subject = document.getElementById('bc-subject').value.trim();
+    const body    = document.getElementById('bc-body').value.trim();
+    if (!subject || !body) { setStatus('bc-status', '// fill in subject and message', 'error'); return; }
+    if (!confirm('Send broadcast to all subscribers?')) return;
+
+    const btn = document.getElementById('bc-send-btn');
+    btn.disabled = true;
+    btn.textContent = 'SENDING...';
+    setStatus('bc-status', '// sending...', 'loading');
+
+    try {
+      const res  = await adminFetch('/api/announce?type=broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, body }),
+      });
+      const data = await res.json();
+      setStatus('bc-status', `// sent to ${data.sent} subscribers ✓`, 'success');
+      btn.textContent = 'SENT ✓';
+      document.getElementById('bc-subject').value = '';
+      document.getElementById('bc-body').value    = '';
+    } catch {
+      setStatus('bc-status', '// send failed', 'error');
+      btn.disabled = false;
+      btn.textContent = 'SEND BROADCAST';
+    }
+  });
+
+  document.getElementById('bc-draft-btn').addEventListener('click', () => {
+    const subject = document.getElementById('bc-subject').value.trim();
+    const body    = document.getElementById('bc-body').value.trim();
+    if (!subject) { setStatus('bc-status', '// add a subject first', 'error'); return; }
+    const arr = getDrafts();
+    arr.unshift({ subject, body, saved: new Date().toISOString() });
+    saveDrafts(arr);
+    renderDrafts();
+    setStatus('bc-status', '// draft saved', 'success');
+  });
+
+  /* ════════════════════════════════════════════════════════
+     UTILITY
+  ════════════════════════════════════════════════════════ */
+  function switchToTab(name) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.admin-tab[data-tab="${name}"]`).classList.add('active');
+    document.getElementById('page-' + name).classList.add('active');
+  }
+</script>
