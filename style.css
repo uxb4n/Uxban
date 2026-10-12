@@ -2358,67 +2358,79 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 20px;
   z-index: 2;
   pointer-events: none;
-  padding: 20px;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
 }
-.release-tile:hover .release-tile-overlay { pointer-events: auto; }
+.release-tile:hover .release-tile-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-/* Big centered play button */
+/* Badge fades out when overlay shows */
+.release-tile-badge {
+  transition: opacity 0.25s var(--ease);
+}
+.release-tile:hover .release-tile-badge {
+  opacity: 0;
+}
+
+/* Big white centered play button */
 .release-tile-play {
-  width: 60px;
-  height: 60px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: #fff;
+  background: #ffffff;
+  border: none;
+  color: #000;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  opacity: 0;
-  transform: translateY(10px) scale(0.85);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(12px) scale(0.9);
   transition:
-    opacity 0.3s var(--ease),
     transform 0.4s var(--spring),
     background 0.2s,
-    border-color 0.2s;
+    color 0.2s,
+    box-shadow 0.3s;
 }
 .release-tile:hover .release-tile-play {
-  opacity: 1;
   transform: translateY(0) scale(1);
 }
 .release-tile-play:hover {
   background: var(--accent);
-  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 12px 48px rgba(26, 58, 255, 0.5);
   transform: translateY(0) scale(1.08) !important;
 }
-.release-tile-play:active { transform: translateY(0) scale(0.96) !important; }
-
-/* Icons inside the button */
-.release-tile-play .icon-play { display: block; }
-.release-tile-play .icon-eq   { display: none; }
-
-.release-tile-play.playing .icon-play { display: none; }
-.release-tile-play.playing .icon-eq   { display: flex; }
-
-.release-tile-play .icon-play {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-  margin-left: 3px; /* optical centering for the triangle */
+.release-tile-play:active {
+  transform: translateY(0) scale(0.96) !important;
 }
 
+/* Icon toggle — EXACTLY ONE visible at a time */
+.release-tile-play .icon-play {
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  margin-left: 4px; /* optical centering for triangle */
+}
 .release-tile-play .icon-eq {
-  display: flex;
+  display: none;
   align-items: flex-end;
   gap: 3px;
-  height: 18px;
+  height: 22px;
 }
+.release-tile-play.playing .icon-play { display: none; }
+.release-tile-play.playing .icon-eq   { display: flex; }
+.release-tile-play.loading .icon-play { display: none; }
+.release-tile-play.loading .icon-eq   { display: none; }
+
 .release-tile-play .icon-eq span {
   display: block;
   width: 3px;
@@ -2426,23 +2438,22 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
   border-radius: 2px;
   animation: previewEq 0.9s ease-in-out infinite;
 }
-.release-tile-play .icon-eq span:nth-child(1) { height: 8px;  animation-delay: 0s;    }
-.release-tile-play .icon-eq span:nth-child(2) { height: 16px; animation-delay: 0.18s; }
-.release-tile-play .icon-eq span:nth-child(3) { height: 12px; animation-delay: 0.36s; }
+.release-tile-play .icon-eq span:nth-child(1) { height: 10px; animation-delay: 0s;    }
+.release-tile-play .icon-eq span:nth-child(2) { height: 20px; animation-delay: 0.18s; }
+.release-tile-play .icon-eq span:nth-child(3) { height: 14px; animation-delay: 0.36s; }
+
 @keyframes previewEq {
   0%, 100% { transform: scaleY(0.35); }
   50%      { transform: scaleY(1); }
 }
 
-/* Loading spinner state */
-.release-tile-play.loading .icon-play { display: none; }
-.release-tile-play.loading .icon-eq   { display: none; }
+/* Loading spinner */
 .release-tile-play.loading::after {
   content: '';
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #fff;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: #000;
   border-radius: 50%;
   animation: previewSpin 0.7s linear infinite;
 }
@@ -2450,55 +2461,73 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
 
 /* Unavailable flash */
 .release-tile-play.unavailable {
-  background: rgba(255, 68, 68, 0.2);
-  border-color: rgba(255, 68, 68, 0.6);
+  background: #ff4444;
+  color: #fff;
 }
+.release-tile-play.unavailable .icon-play,
+.release-tile-play.unavailable .icon-eq { display: none; }
 .release-tile-play.unavailable::after {
   content: '×';
-  font-size: 20px;
-  font-weight: 700;
-  color: #ff4444;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
 }
 
-/* Small platform icons row below the play button */
+/* Platform pill below the play button */
 .release-tile-platforms {
   display: flex;
-  gap: 8px;
-  opacity: 0;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   transform: translateY(14px);
-  transition: opacity 0.3s var(--ease), transform 0.4s var(--spring);
+  transition: transform 0.4s var(--spring) 0.05s;
 }
 .release-tile:hover .release-tile-platforms {
-  opacity: 1;
   transform: translateY(0);
 }
 
-/* The platform icon itself gets a bit smaller now */
 .release-tile-platforms .platform-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 36px;
   height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s var(--spring);
+}
+.release-tile-platforms .platform-icon:hover {
+  background: #fff;
+  color: #000;
+  transform: scale(1.08);
 }
 .release-tile-platforms .platform-icon svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
-/* On touch devices — small persistent play button, no platform row */
+/* Mobile — small persistent play button in the bottom-right */
 @media (hover: none) {
   .release-tile-overlay { display: none; }
-
-  .release-tile::after {
-    /* We use a separate always-visible button injected by JS */
-  }
 
   .release-tile-play-mobile {
     position: absolute;
     bottom: 14px;
     right: 14px;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
     cursor: pointer;
@@ -2509,7 +2538,33 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
     padding: 0;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
+  .release-tile-play-mobile .icon-play {
+    display: block;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    margin-left: 3px;
+  }
+  .release-tile-play-mobile .icon-eq {
+    display: none;
+    align-items: flex-end;
+    gap: 2px;
+    height: 16px;
+  }
+  .release-tile-play-mobile.playing .icon-play { display: none; }
+  .release-tile-play-mobile.playing .icon-eq   { display: flex; }
+  .release-tile-play-mobile .icon-eq span {
+    display: block;
+    width: 2px;
+    background: currentColor;
+    border-radius: 1px;
+    animation: previewEq 0.9s ease-in-out infinite;
+  }
+  .release-tile-play-mobile .icon-eq span:nth-child(1) { height: 6px;  animation-delay: 0s;    }
+  .release-tile-play-mobile .icon-eq span:nth-child(2) { height: 14px; animation-delay: 0.18s; }
+  .release-tile-play-mobile .icon-eq span:nth-child(3) { height: 10px; animation-delay: 0.36s; }
 }
 
 /* =========================
