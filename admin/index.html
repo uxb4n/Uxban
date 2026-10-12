@@ -720,7 +720,7 @@
   // We no longer trust sessionStorage — it proves nothing.
   (async function checkSession() {
     try {
-      const res = await fetch('/api/admin-check', { credentials: 'same-origin' });
+      const res = await fetch('/api/auth?action=admin-check', { credentials: 'same-origin' });
       if (res.ok) showPanel();
     } catch {}
   })();
@@ -733,7 +733,7 @@
     loginBtn.disabled = true;
     errorEl.textContent = '';
     try {
-      const res = await fetch('/api/admin-login', {
+      const res = await fetch('/api/auth?action=admin-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
@@ -767,7 +767,7 @@
 
   document.getElementById('admin-logout').addEventListener('click', async () => {
     try {
-      await fetch('/api/admin-logout', { method: 'POST', credentials: 'same-origin' });
+      await fetch('/api/auth?action=admin-logout', { method: 'POST', credentials: 'same-origin' });
     } catch {}
     panelEl.classList.remove('visible');
     loginEl.style.display = 'flex';

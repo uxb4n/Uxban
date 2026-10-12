@@ -471,7 +471,7 @@ function fmtDuration(ms) {
   let tracks = [];
   if (isAlbum && release.id) {
     try {
-      const tRes = await fetch(`/api/spotify-tracks?id=${release.id}`);
+      const tRes = await fetch(`/api/spotify?tracks=${release.id}`);
       if (tRes.ok) {
         const tData = await tRes.json();
         tracks = tData.tracks || [];
