@@ -22,7 +22,7 @@ window.UXBAN_BANNER = {
      Dismissing hides the banner for THIS version.
      Bump the version string to re-show to everyone. */
   dismissible: true,
-  version: 'back2me-v1',
+  version: 'on-you-v1',
 
   /* ── Content ─────────────────────────────────
      Array of segments, rendered left to right.
@@ -129,14 +129,18 @@ window.UXBAN_BANNER = {
 
   /* ── Rebuild contents ── */
   banner.innerHTML = '';
-  const intervals = []; // track countdown timers for cleanup on dismiss
+  const intervals = [];
 
   const inner = document.createElement('div');
   inner.className = 'site-banner-inner';
 
   (config.segments || []).forEach(seg => {
-    const node = renderSegment(seg);
-    if (node) inner.appendChild(node);
+    try {
+      const node = renderSegment(seg);
+      if (node) inner.appendChild(node);
+    } catch (err) {
+      console.error('[banner] segment render failed:', err, seg);
+    }
   });
 
   banner.appendChild(inner);
@@ -172,11 +176,8 @@ window.UXBAN_BANNER = {
   ════════════════════════════════════════════ */
   function renderSegment(seg) {
     if (!seg) return null;
-
     if (seg.type === 'countdown') return renderCountdown(seg);
-
     if (seg.href) return renderLink(seg);
-
     return renderText(seg);
   }
 
@@ -208,7 +209,29 @@ window.UXBAN_BANNER = {
     return a;
   }
 
+  function buildExpiredEl(seg) {
+    const expired = document.createElement('span');
+    if (seg.expiredHref) {
+      expired.className = 'site-banner-countdown-expired';
+      const target = seg.expiredHref.startsWith('http') ? ' target="_blank" rel="noopener"' : '';
+      expired.innerHTML = `<a href="${seg.expiredHref}"${target}>${seg.expiredText || 'OUT NOW'} →</a>`;
+    } else {
+      expired.className = 'cd-expired-text';
+      expired.textContent = seg.expiredText || 'OUT NOW';
+    }
+    return expired;
+  }
+
   function renderCountdown(seg) {
+    const target = new Date(seg.target).getTime();
+    const pad = n => String(n).padStart(2, '0');
+
+    /* Already past? Return the expired element instead of a live timer.
+       This is the fix for the crash — no detach/replace needed. */
+    if (!Number.isFinite(target) || Date.now() >= target) {
+      return buildExpiredEl(seg);
+    }
+
     const wrap = document.createElement('span');
     wrap.className = 'site-banner-countdown';
     if (seg.hideOnMobile) wrap.classList.add('hide-on-mobile');
@@ -223,27 +246,22 @@ window.UXBAN_BANNER = {
       <span class="cd-num" data-cd="secs">00</span><span class="cd-suffix">s</span>
     `;
 
-    const target = new Date(seg.target).getTime();
-    const pad = n => String(n).padStart(2, '0');
+    let timer = null;
 
     function tick() {
       const diff = target - Date.now();
 
       if (diff <= 0) {
-        // Replace with an "OUT NOW" link (or plain text if no href)
-        const expired = document.createElement('span');
-        if (seg.expiredHref) {
-          expired.className = 'site-banner-countdown-expired';
-          expired.innerHTML = `<a href="${seg.expiredHref}" ${seg.expiredHref.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>${seg.expiredText || 'OUT NOW'} →</a>`;
-        } else {
-          expired.className = 'cd-expired-text';
-          expired.textContent = seg.expiredText || 'OUT NOW';
+        // Swap to the expired element — but only if we're attached.
+        const expired = buildExpiredEl(seg);
+        if (wrap.parentNode) {
+          wrap.parentNode.replaceChild(expired, wrap);
         }
-        wrap.replaceWith(expired);
-        const idx = intervals.indexOf(timer);
-        if (idx !== -1) intervals.splice(idx, 1);
-        clearInterval(timer);
-        // Re-measure in case size changed
+        if (timer) {
+          const idx = intervals.indexOf(timer);
+          if (idx !== -1) intervals.splice(idx, 1);
+          clearInterval(timer);
+        }
         setTimeout(positionNav, 30);
         return;
       }
@@ -260,26 +278,25 @@ window.UXBAN_BANNER = {
       if (get('secs'))  get('secs').textContent  = pad(s);
     }
 
-    // If already expired on load, render the expired state immediately
-    if (Date.now() >= target) {
-      tick(); // triggers the expired branch
-      return wrap;
-    }
-
     tick();
-    const timer = setInterval(tick, 1000);
+    timer = setInterval(tick, 1000);
     intervals.push(timer);
 
     return wrap;
   }
 
   /* ════════════════════════════════════════════
-     BOOT
+     BOOT — position the nav once the banner has laid out
   ════════════════════════════════════════════ */
   positionNav();
+  requestAnimationFrame(positionNav);
+
   window.addEventListener('resize', positionNav, { passive: true });
   window.addEventListener('load', positionNav);
 
-  // Let other scripts know the banner is ready
+  // Belt and suspenders — if the top-bar appears later (rare),
+  // re-measure a couple times over the next second.
+  [50, 200, 500, 1000].forEach(ms => setTimeout(positionNav, ms));
+
   window.dispatchEvent(new Event('uxban:banner-rendered'));
 })();
