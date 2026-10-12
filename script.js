@@ -247,6 +247,10 @@ async function loadSpotifyData() {
 
   if (!gridEl && !featEl) return;
 
+  const PLAY_ICON = '<svg class="icon-play" viewBox="0 0 24 24"><polygon points="5,3 21,12 5,21"/></svg>';
+  const EQ_ICON   = '<span class="icon-eq"><span></span><span></span><span></span></span>';
+  const isTouch   = !window.matchMedia('(hover: hover)').matches;
+
   function setVisible(container, emptyEl, hasData) {
     if (container) container.style.display = hasData ? '' : 'none';
     if (emptyEl)   emptyEl.style.display   = hasData ? 'none' : '';
@@ -277,13 +281,24 @@ async function loadSpotifyData() {
         const slug = uxbanSlugify(release.name);
         const href = `/release/${slug}/`;
         const year = release.release_date?.slice(0, 4) || '';
+        const name = release.name;
+
         return `
-          <a class="grid-card spotlight-card" href="${href}">
+          <a class="grid-card spotlight-card" href="${href}" data-preview-name="${name}">
             <div class="grid-img">
-              <img src="${cover}" alt="${release.name}" loading="lazy">
+              <img src="${cover}" alt="${name}" loading="lazy">
+              <div class="release-tile-overlay">
+                <button class="release-tile-play" data-preview="1" data-name="${name}" aria-label="Play preview">
+                  ${PLAY_ICON}${EQ_ICON}
+                </button>
+              </div>
+              ${isTouch ? `
+                <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" aria-label="Play preview">
+                  ${PLAY_ICON}${EQ_ICON}
+                </button>` : ''}
             </div>
             <div class="grid-info">
-              <h3 class="grid-name">${release.name}</h3>
+              <h3 class="grid-name">${name}</h3>
               <p class="grid-price">${type} · ${year}</p>
             </div>
           </a>`;
@@ -292,6 +307,18 @@ async function loadSpotifyData() {
           <p class="grid-promo-eyebrow">BROWSE</p>
           <h3 class="grid-promo-title">ALL<br>RELEASES</h3>
         </a>`;
+
+      // Wire preview buttons
+      gridEl.querySelectorAll('[data-preview]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (window.UxbanPreview) {
+            window.UxbanPreview.toggle(btn, btn.dataset.name, 'Uxban');
+          }
+        });
+      });
+
       setVisible(gridEl, gridEmpty, true);
     } else {
       setVisible(gridEl, gridEmpty, false);

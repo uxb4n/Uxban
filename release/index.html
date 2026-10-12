@@ -24,19 +24,15 @@
 
   <script src="/listen/listen-config.js"></script>
   <script src="/release/release-config.js"></script>
+  <script src="/assets/preview-player.js" defer></script>
 
   <style>
-    /* =========================
-       RELEASE PAGE
-    ========================= */
-
     .rel-page {
       padding: 140px var(--pad-x) 0;
       max-width: var(--max-w);
       margin: 0 auto;
     }
 
-    /* ── HERO ── */
     .rel-hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -80,7 +76,6 @@
       transition: box-shadow 0.4s var(--ease);
     }
 
-    /* ── INFO ── */
     .rel-info { max-width: 560px; }
 
     .rel-badge {
@@ -134,10 +129,7 @@
       flex-wrap: wrap;
       gap: 16px;
     }
-    .rel-meta span {
-      display: inline-flex;
-      align-items: center;
-    }
+    .rel-meta span { display: inline-flex; align-items: center; }
     .rel-meta span + span::before {
       content: '·';
       margin-right: 16px;
@@ -152,7 +144,6 @@
       max-width: 480px;
     }
 
-    /* ── CTA ROW ── */
     .rel-cta-row {
       display: flex;
       align-items: center;
@@ -178,10 +169,7 @@
       cursor: pointer;
       transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
     }
-    .rel-cta:hover {
-      background: var(--accent);
-      color: #fff;
-    }
+    .rel-cta:hover { background: var(--accent); color: #fff; }
     .rel-cta:active { transform: scale(0.98); }
 
     .rel-platform-row {
@@ -213,7 +201,6 @@
     }
     .rel-platform svg { width: 18px; height: 18px; fill: currentColor; }
 
-    /* ── TRACKLIST ── */
     .rel-section {
       padding: 80px 0;
       border-bottom: 1px solid var(--border);
@@ -229,10 +216,7 @@
       display: block;
     }
 
-    .rel-tracklist {
-      display: flex;
-      flex-direction: column;
-    }
+    .rel-tracklist { display: flex; flex-direction: column; }
 
     .rel-track {
       display: flex;
@@ -249,14 +233,6 @@
     .rel-track:hover {
       background: rgba(255, 255, 255, 0.025);
       padding-left: 28px;
-    }
-
-    .rel-track-num {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      width: 32px;
-      flex-shrink: 0;
     }
 
     .rel-track-name {
@@ -289,7 +265,6 @@
       text-align: right;
     }
 
-    /* ── CREDITS ── */
     .rel-credits {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -314,16 +289,9 @@
       line-height: 1.5;
     }
 
-    /* ── RELATED ── */
-    .rel-related {
-      padding: 80px 0 40px;
-    }
+    .rel-related { padding: 80px 0 40px; }
+    .rel-related .grid { margin-top: 32px; }
 
-    .rel-related .grid {
-      margin-top: 32px;
-    }
-
-    /* ── SKELETON ── */
     .rel-skeleton {
       background: var(--bg-card);
       border-radius: 6px;
@@ -344,7 +312,6 @@
       text-transform: uppercase;
     }
 
-    /* ── ENTRANCE ── */
     @keyframes relFadeUp {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -355,22 +322,14 @@
     .rel-fade-3 { animation-delay: 0.25s; }
     .rel-fade-4 { animation-delay: 0.35s; }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .rel-page { padding: 120px var(--pad-x) 0; }
-      .rel-hero {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 30px 0 60px;
-      }
+      .rel-hero { grid-template-columns: 1fr; gap: 40px; padding: 30px 0 60px; }
       .rel-cover-wrap { max-width: 420px; }
       .rel-info { max-width: 100%; }
       .rel-title { font-size: clamp(2.2rem, 10vw, 4rem); }
       .rel-section { padding: 56px 0; }
-      .rel-platform-row {
-        padding-left: 0;
-        border-left: none;
-      }
+      .rel-platform-row { padding-left: 0; border-left: none; }
       .rel-track { gap: 16px; padding: 16px 12px; }
       .rel-track-feat { display: none; }
     }
@@ -430,14 +389,14 @@
 /* ══════════════════════════════════════════════
    UXBAN — RELEASE DETAIL PAGE
    URL: /release/{slug}/
-   Data from /api/spotify + /api/spotify-tracks
-   Content from /release/release-config.js
 ══════════════════════════════════════════════ */
 
 const ICONS = {
   spotify: '<svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>',
   apple:   '<svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>',
   youtube: '<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>',
+  play:    '<svg class="icon-play" viewBox="0 0 24 24"><polygon points="5,3 21,12 5,21"/></svg>',
+  eq:      '<span class="icon-eq"><span></span><span></span><span></span></span>',
 };
 
 function slugify(name) {
@@ -456,14 +415,11 @@ function fmtDuration(ms) {
 
 (async function init() {
 
-  /* ── 1. Slug from URL ───────────────────── */
   const parts = location.pathname.replace(/\/$/, '').split('/');
   const slug  = decodeURIComponent(parts[parts.length - 1] || '');
 
-  const notFoundEl = document.getElementById('rel-loading');
   if (!slug) return showNotFound();
 
-  /* ── 2. Fetch all releases ──────────────── */
   let release = null;
   let allReleases = [];
 
@@ -481,12 +437,10 @@ function fmtDuration(ms) {
 
   if (!release) return showNotFound();
 
-  /* ── 3. Merge config content ────────────── */
-  const cfg       = window.UXBAN_RELEASE_CONFIG || {};
-  const story     = (cfg.stories || {})[slug] || `${release.name} by Uxban.`;
-  const credits   = (cfg.credits || {})[slug] || cfg.defaultCredits || {};
+  const cfg     = window.UXBAN_RELEASE_CONFIG || {};
+  const story   = (cfg.stories || {})[slug] || `${release.name} by Uxban.`;
+  const credits = (cfg.credits || {})[slug] || cfg.defaultCredits || {};
 
-  /* ── 4. Field extraction ────────────────── */
   const cover   = release.images?.[0]?.url || '';
   const year    = release.release_date?.slice(0, 4) || '';
   const type    = release.album_type === 'album' ? 'ALBUM' : 'SINGLE';
@@ -499,7 +453,6 @@ function fmtDuration(ms) {
 
   const links = release.links || {};
 
-  /* ── 5. Meta tags ───────────────────────── */
   const pageUrl = `${location.origin}/release/${slug}/`;
   document.title = `Uxban — ${release.name}`;
   document.getElementById('page-title').textContent = `Uxban — ${release.name}`;
@@ -514,7 +467,7 @@ function fmtDuration(ms) {
     document.getElementById('tw-image').content = cover;
   }
 
-  /* ── 6. Tracklist (albums only) ─────────── */
+  // Fetch tracks for albums
   let tracks = [];
   if (isAlbum && release.id) {
     try {
@@ -526,17 +479,14 @@ function fmtDuration(ms) {
     } catch {}
   }
 
-  /* ── 7. Build CTA ───────────────────────── */
   const ctaText = isReleased ? 'LISTEN NOW' : 'PRE-SAVE NOW';
-  const ctaUrl  = `/listen/${slug}/`;   // goes through listen-config (respects overrides)
+  const ctaUrl  = `/listen/${slug}/`;
 
-  /* ── 8. Platform icons ──────────────────── */
   const platformBtns = [];
   if (links.spotify)      platformBtns.push(`<a class="rel-platform" href="${links.spotify}"      target="_blank" rel="noopener" aria-label="Spotify">${ICONS.spotify}</a>`);
   if (links.appleMusic)   platformBtns.push(`<a class="rel-platform" href="${links.appleMusic}"   target="_blank" rel="noopener" aria-label="Apple Music">${ICONS.apple}</a>`);
   if (links.youtubeMusic) platformBtns.push(`<a class="rel-platform" href="${links.youtubeMusic}" target="_blank" rel="noopener" aria-label="YouTube Music">${ICONS.youtube}</a>`);
 
-  /* ── 9. Related releases ────────────────── */
   const related = allReleases
     .filter(r => r.id !== release.id)
     .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
@@ -564,7 +514,6 @@ function fmtDuration(ms) {
       </div>
     </div>` : '';
 
-  /* ── 10. Render ─────────────────────────── */
   const root = document.getElementById('rel-page');
 
   root.innerHTML = `
@@ -591,6 +540,9 @@ function fmtDuration(ms) {
             ${ctaText}
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
+          <button class="rel-cta-outline" id="rel-preview-btn" data-preview="1" data-name="${release.name}">
+            ${ICONS.play} PREVIEW
+          </button>
           ${platformBtns.length ? `
             <div class="rel-platform-row">
               ${platformBtns.join('')}
@@ -603,15 +555,20 @@ function fmtDuration(ms) {
       <div class="rel-section">
         <span class="rel-section-label">// TRACKLIST</span>
         <div class="rel-tracklist">
-          ${tracks.map(t => `
-            <a class="rel-track" href="${ctaUrl}">
-              <span class="rel-track-num">${String(t.number).padStart(2, '0')}</span>
+          ${tracks.map((t, i) => `
+            <div class="rel-track" data-track-name="${t.name}" data-track-index="${i}">
+              <span class="rel-track-num">
+                <span class="track-num-text">${String(t.number).padStart(2, '0')}</span>
+                <button class="track-num-play" data-preview="1" data-name="${t.name}" aria-label="Play ${t.name} preview">
+                  ${ICONS.play}${ICONS.eq}
+                </button>
+              </span>
               <span class="rel-track-name">${t.name}</span>
               ${t.featuring && t.featuring.length
                 ? `<span class="rel-track-feat">FEAT. ${t.featuring.join(', ').toUpperCase()}</span>`
                 : ''}
               <span class="rel-track-dur">${fmtDuration(t.duration)}</span>
-            </a>
+            </div>
           `).join('')}
         </div>
       </div>
@@ -634,7 +591,34 @@ function fmtDuration(ms) {
     ${relatedHTML}
   `;
 
-  /* ── 11. Scroll-driven cover rotation ───── */
+  // Wire up preview buttons
+  root.querySelectorAll('[data-preview]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (window.UxbanPreview) {
+        window.UxbanPreview.toggle(btn, btn.dataset.name, 'Uxban');
+      }
+    });
+  });
+
+  // Track row click → listen page
+  root.querySelectorAll('.rel-track').forEach(row => {
+    row.addEventListener('click', e => {
+      // If they clicked the preview button, ignore (handled above)
+      if (e.target.closest('[data-preview]')) return;
+      window.location.href = ctaUrl;
+    });
+    // Hover state for the row's play button
+    row.addEventListener('mouseenter', () => {
+      const btn = row.querySelector('.track-num-play');
+      if (btn && !btn.classList.contains('playing')) {
+        // CSS handles the hover reveal
+      }
+    });
+  });
+
+  // Scroll-driven cover rotation
   const coverEl = document.getElementById('rel-cover');
   if (coverEl) {
     let ticking = false;
@@ -652,9 +636,18 @@ function fmtDuration(ms) {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  // Track preview button gets "playing" class via UxbanPreview
+  // But the .rel-track-num parent needs it too for the CSS to work
+  root.querySelectorAll('.track-num-play').forEach(btn => {
+    const observer = new MutationObserver(() => {
+      const isPlaying = btn.classList.contains('playing');
+      btn.closest('.rel-track-num')?.classList.toggle('playing', isPlaying);
+    });
+    observer.observe(btn, { attributes: true, attributeFilter: ['class'] });
+  });
+
 })();
 
-/* ── Not found state ────────────────────── */
 function showNotFound() {
   const root = document.getElementById('rel-page');
   if (root) {
@@ -666,7 +659,7 @@ function showNotFound() {
   }
 }
 
-/* ── Nav / banner / scroll-top (shared) ─── */
+/* ── Nav / banner / scroll-top ── */
 const scrollTop = document.getElementById('scroll-top');
 if (scrollTop) {
   window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400), { passive: true });
