@@ -41,19 +41,21 @@ window.UXBAN_BANNER = {
          type: 'countdown',
          target: '2026-08-21T16:00:00+12:00',   // any ISO date
          label: 'DROPS IN',                     // optional prefix
-         expiredText: 'OUT NOW',                // shown after the timer hits zero
-         expiredHref: 'https://too.fm/back2me', // where the expired state links
+         expiredStyle: 'hide',                  // 'hide' (default) | 'text' | 'link'
+         expiredText: 'OUT NOW',                // shown if expiredStyle is 'text' or 'link'
+         expiredHref: 'https://too.fm/back2me', // used if expiredStyle is 'link'
        }
 
      Every segment can also have:
        hideOnMobile: true   → hidden under 480px
   ────────────────────────────────────────────── */
   segments: [
-    { text: '// NEW SINGLE ON YOU', hideOnMobile: false },
+    { text: '// NEW SINGLE "ON YOU"', hideOnMobile: false },
     {
       type: 'countdown',
       target: '2026-10-02T16:00:00+13:00',
       label: 'DROPS IN',
+      expiredStyle: 'hide',   // 'hide' | 'text' | 'link'
       expiredText: 'OUT NOW',
       expiredHref: 'https://too.fm/on-you',
     },
@@ -209,13 +211,20 @@ window.UXBAN_BANNER = {
     return a;
   }
 
-  function buildExpiredEl(seg) {
+    function buildExpiredEl(seg) {
+    const style = seg.expiredStyle || 'hide';
+
+    // 'hide' → don't render anything, the segment just disappears
+    if (style === 'hide') return null;
+
     const expired = document.createElement('span');
-    if (seg.expiredHref) {
+
+    if (style === 'link' && seg.expiredHref) {
       expired.className = 'site-banner-countdown-expired';
       const target = seg.expiredHref.startsWith('http') ? ' target="_blank" rel="noopener"' : '';
       expired.innerHTML = `<a href="${seg.expiredHref}"${target}>${seg.expiredText || 'OUT NOW'} →</a>`;
     } else {
+      // 'text' (or 'link' with no href) → plain text, no arrow, no underline
       expired.className = 'cd-expired-text';
       expired.textContent = seg.expiredText || 'OUT NOW';
     }
@@ -226,8 +235,7 @@ window.UXBAN_BANNER = {
     const target = new Date(seg.target).getTime();
     const pad = n => String(n).padStart(2, '0');
 
-    /* Already past? Return the expired element instead of a live timer.
-       This is the fix for the crash — no detach/replace needed. */
+    // Already expired on load? Return the expired state (or null for 'hide').
     if (!Number.isFinite(target) || Date.now() >= target) {
       return buildExpiredEl(seg);
     }
@@ -252,10 +260,14 @@ window.UXBAN_BANNER = {
       const diff = target - Date.now();
 
       if (diff <= 0) {
-        // Swap to the expired element — but only if we're attached.
+        // Timer just hit zero — swap to the expired state (or remove the segment)
         const expired = buildExpiredEl(seg);
         if (wrap.parentNode) {
-          wrap.parentNode.replaceChild(expired, wrap);
+          if (expired) {
+            wrap.parentNode.replaceChild(expired, wrap);
+          } else {
+            wrap.parentNode.removeChild(wrap);
+          }
         }
         if (timer) {
           const idx = intervals.indexOf(timer);
