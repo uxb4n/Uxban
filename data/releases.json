@@ -1,0 +1,107 @@
+{
+  "_generated": "hand-built fallback",
+  "_note": "Run `node scripts/refresh-releases.js` when Spotify quota resets to regenerate with full data (proper cover URLs, all releases).",
+  "albums": [
+    {
+      "id": "62Qw3eFdZ9SpvHqsVDKuDt",
+      "name": "UXTRA",
+      "album_type": "album",
+      "release_date": "2026-01-01",
+      "total_tracks": 11,
+      "images": [{ "url": "/assets/images/cover1.jpg" }],
+      "external_urls": { "spotify": "https://open.spotify.com/album/62Qw3eFdZ9SpvHqsVDKuDt" },
+      "artists": [{ "id": "433lt9JbmTHzNzHqZtiK7C", "name": "Uxban" }],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/album/62Qw3eFdZ9SpvHqsVDKuDt",
+        "appleMusic": "https://music.apple.com/nz/album/1890788021",
+        "youtubeMusic": "https://music.youtube.com/playlist?list=OLAK5uy_m73sxIBNrIyaa6ScNtXQwPoLGZfn5GYeY"
+      }
+    },
+    {
+      "id": "6tENe37MOcfJKgNU9dZVF9",
+      "name": "UX",
+      "album_type": "album",
+      "release_date": "2025-04-06",
+      "total_tracks": 12,
+      "images": [{ "url": "/assets/images/cover3.jpg" }],
+      "external_urls": { "spotify": "https://open.spotify.com/album/6tENe37MOcfJKgNU9dZVF9" },
+      "artists": [{ "id": "433lt9JbmTHzNzHqZtiK7C", "name": "Uxban" }],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/album/6tENe37MOcfJKgNU9dZVF9",
+        "appleMusic": "https://music.apple.com/nz/album/1865750129",
+        "youtubeMusic": "https://music.youtube.com/playlist?list=OLAK5uy_k0Qj8sZ7f8xzFF9QNzJ1L15OPjnDGIrho"
+      }
+    }
+  ],
+  "singles": [
+    {
+      "id": "5GNic68ZHANOnMKxtuGyXL",
+      "name": "back2Me",
+      "album_type": "single",
+      "release_date": "2026-08-21",
+      "total_tracks": 1,
+      "images": [{ "url": "/assets/images/cover-back2me.jpg" }],
+      "external_urls": { "spotify": "https://open.spotify.com/track/5GNic68ZHANOnMKxtuGyXL" },
+      "artists": [{ "id": "433lt9JbmTHzNzHqZtiK7C", "name": "Uxban" }],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/track/5GNic68ZHANOnMKxtuGyXL",
+        "appleMusic": "https://music.apple.com/us/album/1895801290",
+        "youtubeMusic": "https://music.youtube.com/playlist?list=OLAK5uy_mseRsxvqY8hPT2QpppUNrebTDwyW7YAEU"
+      }
+    },
+    {
+      "id": "1yQixBb23SLoZirynDt6nW",
+      "name": "UNO",
+      "album_type": "single",
+      "release_date": "2026-07-03",
+      "total_tracks": 1,
+      "images": [{ "url": "/assets/images/cover-next.jpg" }],
+      "external_urls": { "spotify": "https://open.spotify.com/track/1yQixBb23SLoZirynDt6nW" },
+      "artists": [{ "id": "433lt9JbmTHzNzHqZtiK7C", "name": "Uxban" }],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/track/1yQixBb23SLoZirynDt6nW",
+        "appleMusic": "https://music.apple.com/us/song/uno/6781066550",
+        "youtubeMusic": "https://music.youtube.com/playlist?list=OLAK5uy_m00maI3WDPfJFhYbykTlI8SMQeJlH8wcs"
+      }
+    },
+    {
+      "id": "447IcV1QdO8wuzgESV9UBf",
+      "name": "SWITCH UP",
+      "album_type": "single",
+      "release_date": "2026-05-15",
+      "total_tracks": 1,
+      "images": [{ "url": "/assets/images/cover2.jpg" }],
+      "external_urls": { "spotify": "https://open.spotify.com/track/447IcV1QdO8wuzgESV9UBf" },
+      "artists": [
+        { "id": "433lt9JbmTHzNzHqZtiK7C", "name": "Uxban" },
+        { "id": "PRODANDREW_ID_PLACEHOLDER", "name": "ProdAndrew" }
+      ],
+      "featuring": ["ProdAndrew"],
+      "links": {
+        "spotify": "https://open.spotify.com/track/447IcV1QdO8wuzgESV9UBf",
+        "appleMusic": "https://music.apple.com/us/album/1895801290",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1CTU6z0vSGiEf8RyES9Xsi",
+      "name": "THINGS YOU CAN'T PROVE",
+      "album_type": "single",
+      "release_date": "2026-01-15",
+      "total_tracks": 1,
+      "images": [{ "url": "/assets/images/cover2.jpg" }],
+      "external_urls": { "spotify": "https://open.spotify.com/album/1CTU6z0vSGiEf8RyES9Xsi" },
+      "artists": [{ "id": "433lt9JbmTHzNzHqZtiK7C", "name": "Uxban" }],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/album/1CTU6z0vSGiEf8RyES9Xsi",
+        "appleMusic": "https://music.apple.com/nz/album/1886136281",
+        "youtubeMusic": "https://music.youtube.com/playlist?list=OLAK5uy_mOrNuzjwdwrYOjlqnf-ETg8V2VUwWXhMM"
+      }
+    }
+  ]
+}
