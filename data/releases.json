@@ -1,4 +1,416 @@
 {
-  "albums": [],
-  "singles": []
+  "albums": [
+    {
+      "id": "1890788021",
+      "name": "UXTRA",
+      "album_type": "album",
+      "release_date": "2026-04-06",
+      "total_tracks": 11,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/21/3f/cd/213fcd8a-3217-5ee3-7cd9-63e52e2fde3f/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/UXTRA%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/UXTRA%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/uxtra/1890788021?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "6807649597",
+      "name": "UX",
+      "album_type": "album",
+      "release_date": "2025-12-31",
+      "total_tracks": 12,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a6/78/c9/a678c999-bd6f-855a-1679-c533bc7e86b0/1337286.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/UX%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/UX%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/ux/6807649597?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1820471067",
+      "name": "More Than Days +",
+      "album_type": "album",
+      "release_date": "2025-05-30",
+      "total_tracks": 7,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c9/de/88/c9de883b-0be6-1e4c-1e14-5757e985cf7e/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/More%20Than%20Days%20%2B%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/More%20Than%20Days%20%2B%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/more-than-days/1820471067?uo=4",
+        "youtubeMusic": ""
+      }
+    }
+  ],
+  "singles": [
+    {
+      "id": "6817164124",
+      "name": "On You",
+      "album_type": "single",
+      "release_date": "2026-10-02",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/63/b4/56/63b45654-f2b0-d5d6-ec62-2351146eed0e/1438716.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/On%20You%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/On%20You%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/on-you-single/6817164124?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "6802825618",
+      "name": "back2Me",
+      "album_type": "single",
+      "release_date": "2026-08-21",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/2e/bf/29/2ebf298b-6285-2b7d-bf44-8a81c572104b/1298934.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/back2Me%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/back2Me%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/back2me-single/6802825618?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "6801646454",
+      "name": "Uno",
+      "album_type": "single",
+      "release_date": "2026-07-03",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/13/3d/91/133d91cf-c9bf-5a16-ee3f-98640cb52996/1296467.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/Uno%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/Uno%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/uno-single/6801646454?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "6817349630",
+      "name": "SWITCH UP",
+      "album_type": "single",
+      "release_date": "2026-05-15",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/59/1b/a6/591ba661-f7df-b092-3a1d-bc2ad80b0b22/1452537.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/SWITCH%20UP%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/SWITCH%20UP%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/switch-up-single/6817349630?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1886136281",
+      "name": "Things You Can't Prove",
+      "album_type": "single",
+      "release_date": "2026-03-27",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bc/61/6a/bc616abb-c284-10f0-5839-efdb1ae2c065/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/Things%20You%20Can't%20Prove%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/Things%20You%20Can't%20Prove%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/things-you-cant-prove-single/1886136281?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1879704694",
+      "name": "Freddy Krue",
+      "album_type": "single",
+      "release_date": "2026-02-27",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c4/12/1b/c4121be2-e875-1b93-6e1b-512b21286a46/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/Freddy%20Krue%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [
+        "VZee"
+      ],
+      "links": {
+        "spotify": "https://open.spotify.com/search/Freddy%20Krue%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/freddy-krue-feat-vzee-single/1879704694?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1880895489",
+      "name": "Dying Inna Red",
+      "album_type": "single",
+      "release_date": "2026-02-25",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/06/95/72/06957263-3dbf-ed23-914b-21519b34d334/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/Dying%20Inna%20Red%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/Dying%20Inna%20Red%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/dying-inna-red-single/1880895489?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1871039629",
+      "name": "everythinguwant",
+      "album_type": "single",
+      "release_date": "2026-02-13",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/70/0f/a7/700fa715-6a13-52e3-ea61-dbf10b365110/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/everythinguwant%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/everythinguwant%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/everythinguwant-single/1871039629?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1851584322",
+      "name": "miss me",
+      "album_type": "single",
+      "release_date": "2025-11-14",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f0/61/32/f06132ca-e5ff-126f-421b-0b4c7c510e91/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/miss%20me%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/miss%20me%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/miss-me-single/1851584322?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1833758354",
+      "name": "DANCER",
+      "album_type": "single",
+      "release_date": "2025-08-16",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/46/09/07/4609072e-f979-65d1-cea0-6f32e5cf160d/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/DANCER%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/DANCER%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/dancer-single/1833758354?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1832093353",
+      "name": "i hope",
+      "album_type": "single",
+      "release_date": "2025-08-07",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/94/fa/1d/94fa1dbc-830e-4cb5-0056-56f49864f764/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/i%20hope%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [
+        "THIRTEENTH GENERATION",
+        "RPprods"
+      ],
+      "links": {
+        "spotify": "https://open.spotify.com/search/i%20hope%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/i-hope-feat-thirteenth-generation-rpprods-single/1832093353?uo=4",
+        "youtubeMusic": ""
+      }
+    },
+    {
+      "id": "1827976037",
+      "name": "KICKED OUT",
+      "album_type": "single",
+      "release_date": "2025-07-19",
+      "total_tracks": 1,
+      "images": [
+        {
+          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f9/c1/0c/f9c10c4a-998b-60dc-4ec7-ce91e9316da4/artwork.jpg/1200x1200bb.jpg"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/search/KICKED%20OUT%20Uxban"
+      },
+      "artists": [
+        {
+          "id": "1757422943",
+          "name": "Uxban"
+        }
+      ],
+      "featuring": [],
+      "links": {
+        "spotify": "https://open.spotify.com/search/KICKED%20OUT%20Uxban",
+        "appleMusic": "https://music.apple.com/us/album/kicked-out-feat-uxban-single/1827976037?uo=4",
+        "youtubeMusic": ""
+      }
+    }
+  ]
 }
