@@ -135,7 +135,7 @@
       line-height: 0.92;
       text-transform: uppercase;
       margin-bottom: 24px;
-      white-space: pre-line; /* respects \n in config */
+      white-space: pre-line;
     }
 
     .unlock-desc {
@@ -486,6 +486,15 @@
    UXBAN — UNLOCK PAGE
    URL: /unlock/{slug}/
    Reads config from /unlock/unlock-config.js
+
+   Public flag:
+     If cfg.public === false, the page renders as "not found"
+     unless ?phase= or ?preview=1 is present. Use this to keep
+     an unreleased gate hidden until you're ready to launch.
+
+   Test overrides:
+     ?phase=locked|tooEarly|streaming|ended|unlocked
+     ?preview=1 → shows normal time-based phase even if private
 ══════════════════════════════════════════════ */
 
 (function () {
@@ -505,13 +514,14 @@
     return renderNotFound();
   }
 
-  /* ── Dev/test override: ?phase=locked|tooEarly|streaming|ended|unlocked ──
-     Only active when ?phase= is present in the URL. */
-  const forcedPhase = new URLSearchParams(location.search).get('phase');
+  /* ── URL params ── */
+  const params       = new URLSearchParams(location.search);
+  const forcedPhase  = params.get('phase');
+  const previewParam = params.get('preview');
 
   /* ── localStorage keys ── */
-  const UNLOCK_KEY   = `uxban-unlock-${slug}`;
-  const SESSION_KEY  = `uxban-unlock-clicked-${slug}`;
+  const UNLOCK_KEY  = `uxban-unlock-${slug}`;
+  const SESSION_KEY = `uxban-unlock-clicked-${slug}`;
 
   /* ── State helpers ── */
   function isUnlocked() {
@@ -547,10 +557,10 @@
     const dropAt   = parseTime(cfg.releaseDate);
     const closeAt  = parseTime(cfg.closeAt);
 
-    if (openAt && now < openAt)                              return 'tooEarly';
-    if (dropAt && now < dropAt)                              return 'locked';
-    if (closeAt && now > closeAt)                            return 'ended';
-    if (dropAt && now >= dropAt)                             return 'streaming';
+    if (openAt && now < openAt)              return 'tooEarly';
+    if (dropAt && now < dropAt)              return 'locked';
+    if (closeAt && now > closeAt)            return 'ended';
+    if (dropAt && now >= dropAt)             return 'streaming';
     return 'locked';
   }
 
@@ -561,7 +571,14 @@
     document.title = `Uxban — ${cfg.title}`;
     root.innerHTML = '';
 
-    // ── Forced phase for testing ──
+    /* ── Public gate ──
+       If cfg.public is false, block normal visitors.
+       Testers can still see it with ?phase= or ?preview=1. */
+    if (cfg.public === false && !forcedPhase && previewParam !== '1') {
+      return renderNotFound();
+    }
+
+    /* ── Forced phase for testing ── */
     if (forcedPhase) {
       switch (forcedPhase) {
         case 'tooEarly':   return renderTooEarly();
@@ -573,7 +590,7 @@
       }
     }
 
-    // If already unlocked, always show reward
+    /* ── If already unlocked, always show reward ── */
     if (isUnlocked()) {
       renderUnlocked();
       return;
@@ -782,34 +799,29 @@
 
     let manualFallbackTimer = null;
 
-    // Click the main CTA → open new tab, show waiting state
     btn.addEventListener('click', () => {
       markClicked();
       btn.setAttribute('disabled', 'disabled');
       btn.style.opacity = '0.6';
       waiting.classList.add('visible');
 
-      // Show manual fallback after 20s in case detection fails
       clearTimeout(manualFallbackTimer);
       manualFallbackTimer = setTimeout(() => {
         manualBtn.classList.add('visible');
       }, 20000);
     });
 
-    // Return detection — visibilitychange
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible') return;
       if (!wasClicked()) return;
       if (isUnlocked()) return;
 
-      // Wait 2 seconds to feel "verified"
       waiting.classList.add('visible');
       setTimeout(() => {
         doUnlock();
       }, 2000);
     });
 
-    // Manual fallback — if detection failed, user can self-unlock
     manualBtn.addEventListener('click', () => {
       if (!wasClicked()) return;
       doUnlock();
@@ -820,7 +832,6 @@
       markUnlocked();
       clearClicked();
 
-      // Small celebratory pause before revealing
       if (status) {
         status.textContent = '// UNLOCKED';
         status.classList.add('visible');
@@ -894,7 +905,6 @@
       }
 
       playBtn.addEventListener('click', () => {
-        // Pause other players
         if (currentAudio && currentAudio !== audio) {
           currentAudio.pause();
           currentCard.querySelector('[data-play]').classList.remove('playing');
@@ -931,7 +941,6 @@
      HELPERS
   ══════════════════════════════════════════════ */
   function escapeText(str) {
-    // We allow \n in titles (via white-space: pre-line) but strip other HTML
     return String(str || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 

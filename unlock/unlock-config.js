@@ -25,6 +25,7 @@ window.UXBAN_UNLOCK_CONFIG = {
   'velvet': {
     slug:  'velvet',
     title: 'VELVET',
+    public: false,
 
     // ── Artwork ────────────────────────────────
     coverImage: '/assets/images/velvet-cover.jpg',
@@ -32,7 +33,7 @@ window.UXBAN_UNLOCK_CONFIG = {
     // ── Pre-save / stream link (Too.fm) ────────
     // The same URL works pre + post release — Too.fm
     // auto-switches the landing page for you.
-    streamUrl: 'https://too.fm/on-you',
+    streamUrl: 'https://too.fm/velvet',
 
     // ── Timing ─────────────────────────────────
     openAt:      null,                              // always open
