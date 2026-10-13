@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uxban | About</title>
+  <meta name="description" content="Uxban — rapper and producer from Hamilton, New Zealand. Underground rap, atmospheric production, raw writing.">
+  <link rel="canonical" href="https://uxban.shop/about/">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://uxban.shop/about/">
+  <meta property="og:title"       content="Uxban — About">
+  <meta property="og:description" content="Rapper and producer from Hamilton, New Zealand.">
+  <meta property="og:image"       content="https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/63/b4/56/63b45654-f2b0-d5d6-ec62-2351146eed0e/1438716.jpg/1200x1200bb.jpg">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@uxbanwtf">
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script src="/assets/banner.js" defer></script>
+
+  <style>
+    .about-page {
+      padding: 160px var(--pad-x) 100px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .about-header {
+      margin-bottom: 72px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--border);
+    }
+    .about-header small {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 14px;
+    }
+    .about-header h1 {
+      font-family: var(--sans);
+      font-size: clamp(3rem, 12vw, 9rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 0.86;
+      text-transform: uppercase;
+    }
+    .about-header p {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 24px;
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── Bio section ── */
+    .about-bio {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-bottom: 96px;
+    }
+
+    .about-photo-wrap {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .about-photo {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(20%) contrast(1.05);
+      transition: transform 0.7s var(--ease), filter 0.5s;
+    }
+    .about-photo:hover {
+      transform: scale(1.03);
+      filter: grayscale(0%) contrast(1);
+    }
+    .about-photo-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: center;
+      padding: 24px;
+      line-height: 1.8;
+    }
+
+    .about-bio-content {
+      padding-top: 12px;
+    }
+
+    .about-bio-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 24px;
+    }
+
+    .about-bio-text {
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--fg-dim);
+      margin-bottom: 24px;
+    }
+    .about-bio-text:last-child { margin-bottom: 0; }
+    .about-bio-text strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Stats row ── */
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 96px;
+    }
+    .about-stat {
+      background: var(--bg-card);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .about-stat-value {
+      font-family: var(--sans);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .about-stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Section ── */
+    .about-section {
+      margin-bottom: 96px;
+    }
+    .about-section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      display: block;
+    }
+
+    /* ── Contact block ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .contact-line {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .contact-line-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .contact-line-value {
+      font-family: var(--sans);
+      font-size: 15px;
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+    a.contact-line-value:hover { color: var(--accent); }
+
+    /* ── Contact form ── */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .contact-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .contact-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .contact-input,
+    .contact-textarea {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 14px 16px;
+      outline: none;
+      border-radius: 6px;
+      transition: border-color 0.2s var(--ease);
+    }
+    .contact-textarea {
+      resize: vertical;
+      min-height: 140px;
+      line-height: 1.6;
+    }
+    .contact-input:focus,
+    .contact-textarea:focus {
+      border-color: var(--accent);
+    }
+    .contact-input::placeholder,
+    .contact-textarea::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    /* Honeypot — visually hidden */
+    .contact-honey {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .contact-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #fff;
+      color: #000;
+      border: none;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
+      margin-top: 8px;
+    }
+    .contact-submit:hover { background: var(--accent); color: #fff; }
+    .contact-submit:active { transform: scale(0.98); }
+    .contact-submit:disabled { opacity: 0.5; cursor: wait; }
+
+    .contact-status {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      min-height: 16px;
+      margin-top: 8px;
+    }
+    .contact-status.success { color: var(--accent); }
+    .contact-status.error   { color: #ff4b4b; }
+
+    /* ── Socials grid ── */
+    .about-socials {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .about-social-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      text-decoration: none;
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.15s var(--ease);
+    }
+    .about-social-link:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      transform: translateY(-2px);
+    }
+    .about-social-link svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      opacity: 0.4;
+      transition: opacity 0.2s, transform 0.2s var(--spring);
+    }
+    .about-social-link:hover svg {
+      opacity: 1;
+      transform: translate(2px, -2px);
+    }
+
+    /* ── Animations ── */
+    @keyframes aboutFade {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ab-fade   { animation: aboutFade 0.6s var(--ease) both; }
+    .ab-fade-1 { animation-delay: 0.05s; }
+    .ab-fade-2 { animation-delay: 0.15s; }
+    .ab-fade-3 { animation-delay: 0.25s; }
+
+    /* ── Mobile ── */
+    @media (max-width: 900px) {
+      .about-page { padding: 120px var(--pad-x) 80px; }
+      .about-bio { grid-template-columns: 1fr; gap: 40px; }
+      .about-photo-wrap { max-width: 420px; }
+      .about-stats { grid-template-columns: repeat(2, 1fr); }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .about-section { margin-bottom: 72px; }
+    }
+
+    @media (max-width: 480px) {
+      .about-stats { grid-template-columns: 1fr; }
+      .about-stat { padding: 24px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="/">HOME</a>
+  <a href="/releases/">RELEASES</a>
+  <a href="/events/">EVENTS</a>
+  <a href="/store/">STORE</a>
+  <a href="/about/" class="active">ABOUT</a>
+  <div class="mobile-nav-footer">© 2026 UXBAN</div>
+</nav>
+
+<nav class="top-bar" id="top-bar">
+  <a href="/"><img src="/assets/images/logo.png" class="nav-logo" alt="uxban"></a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="/releases/">RELEASES</a>
+    <a href="/events/">EVENTS</a>
+    <a href="/store/">STORE</a>
+    <a href="/about/" class="active">ABOUT</a>
+  </div>
+  <div class="nav-info">
+    <button class="nav-search" onclick="window.UxbanCmdk && window.UxbanCmdk.open()" aria-label="Search (⌘K)" title="Search (⌘K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="about-page">
+
+    <div class="about-header ab-fade">
+      <small>// ABOUT</small>
+      <h1>UXBAN</h1>
+      <p>Rapper and producer from Hamilton, New Zealand.</p>
+    </div>
+
+    <!-- ══ BIO ══ -->
+    <div class="about-bio">
+      <div class="about-photo-wrap ab-fade ab-fade-1">
+        <div class="about-photo" style="background-image:url('/assets/images/about-photo.jpg')"></div>
+        <!-- If the photo file doesn't exist yet, swap the line above with:
+             <div class="about-photo-placeholder">// PRESS PHOTO<br>COMING SOON</div> -->
+      </div>
+
+      <div class="about-bio-content ab-fade ab-fade-2">
+        <span class="about-bio-eyebrow">// THE STORY</span>
+
+        <p class="about-bio-text">
+          <strong>Uxban</strong> is a rapper and producer from Hamilton, New Zealand, born in 2010. He's recognized for his work in the underground rap scene — blending heavy, atmospheric production with personal, emotional, and aggressive lyrics.
+        </p>
+
+        <p class="about-bio-text">
+          He started self-producing in early high school, building entire projects on BandLab before moving into full studio production. His debut tape <strong>More Than Days +</strong> arrived in 2025, followed by a steady run of singles that balance melodic hooks with raw, unpolished delivery.
+        </p>
+
+        <p class="about-bio-text">
+          His sound sits between rage and quiet — the same tension that runs through the writing. <strong>UX</strong> (2025) and <strong>UXTRA</strong> (2026) expanded that world, and recent singles like <strong>On You</strong> and <strong>back2Me</strong> have pushed the production into new territory while keeping the writing as personal as it's always been.
+        </p>
+      </div>
+    </div>
+
+    <!-- ══ STATS ══ -->
+    <div class="about-stats ab-fade ab-fade-3">
+      <div class="about-stat">
+        <span class="about-stat-value">2025</span>
+        <span class="about-stat-label">Debut</span>
+      </div>
+      <div class="about-stat">
+        <span class="about-stat-value">NZ</span>
+        <span class="about-stat-label">Based in Hamilton</span>
+      </div>
+      <div class="about-stat">
+        <span class="about-stat-value">Self</span>
+        <span class="about-stat-label">Written &amp; Produced</span>
+      </div>
+      <div class="about-stat">
+        <span class="about-stat-value">Global</span>
+        <span class="about-stat-label">Streaming Everywhere</span>
+      </div>
+    </div>
+
+    <!-- ══ CONTACT ══ -->
+    <div class="about-section">
+      <span class="about-section-label">// CONTACT</span>
+
+      <div class="contact-grid">
+        <div class="contact-info ab-fade ab-fade-1">
+          <div class="contact-line">
+            <span class="contact-line-label">General &amp; Music</span>
+            <a class="contact-line-value" href="mailto:uxban@gmail.com">uxban@gmail.com</a>
+          </div>
+
+          <div class="contact-line">
+            <span class="contact-line-label">Bookings &amp; Live</span>
+            <a class="contact-line-value" href="mailto:uxban@gmail.com?subject=Booking%20Enquiry">uxban@gmail.com</a>
+          </div>
+
+          <div class="contact-line">
+            <span class="contact-line-label">Press &amp; Promo</span>
+            <a class="contact-line-value" href="mailto:uxban@gmail.com?subject=Press%20Enquiry">uxban@gmail.com</a>
+          </div>
+
+          <div class="contact-line">
+            <span class="contact-line-label">Response Time</span>
+            <span class="contact-line-value" style="color:var(--muted);font-weight:400;">Typically within 48 hours</span>
+          </div>
+        </div>
+
+        <form class="contact-form ab-fade ab-fade-2" id="contact-form">
+          <div class="contact-field">
+            <label class="contact-label" for="contact-name">Your name</label>
+            <input class="contact-input" id="contact-name" name="name" type="text" required maxlength="120" autocomplete="name">
+          </div>
+
+          <div class="contact-field">
+            <label class="contact-label" for="contact-email">Your email</label>
+            <input class="contact-input" id="contact-email" name="email" type="email" required maxlength="254" autocomplete="email">
+          </div>
+
+          <div class="contact-field">
+            <label class="contact-label" for="contact-subject">Subject</label>
+            <input class="contact-input" id="contact-subject" name="subject" type="text" maxlength="200" placeholder="Booking, collab, question…">
+          </div>
+
+          <div class="contact-field">
+            <label class="contact-label" for="contact-message">Message</label>
+            <textarea class="contact-textarea" id="contact-message" name="message" required maxlength="5000"></textarea>
+          </div>
+
+          <!-- Honeypot — do not fill -->
+          <input class="contact-honey" type="text" name="_honey" tabindex="-1" autocomplete="off">
+
+          <button class="contact-submit" id="contact-submit" type="submit">
+            Send Message
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+
+          <p class="contact-status" id="contact-status"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- ══ SOCIALS ══ -->
+    <div class="about-section">
+      <span class="about-section-label">// ELSEWHERE</span>
+
+      <div class="about-socials ab-fade ab-fade-3">
+        <a class="about-social-link" href="https://open.spotify.com/artist/433lt9JbmTHzNzHqZtiK7C" target="_blank" rel="noopener">
+          Spotify
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+        <a class="about-social-link" href="https://music.apple.com/us/artist/uxban/1757422943" target="_blank" rel="noopener">
+          Apple Music
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+        <a class="about-social-link" href="https://instagram.com/uxbanwtf" target="_blank" rel="noopener">
+          Instagram
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+        <a class="about-social-link" href="https://www.tiktok.com/@uxbanwtf" target="_blank" rel="noopener">
+          TikTok
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+        <a class="about-social-link" href="https://x.com/uxbanwtf" target="_blank" rel="noopener">
+          X / Twitter
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+        <a class="about-social-link" href="https://www.youtube.com/@uxban" target="_blank" rel="noopener">
+          YouTube
+          <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="scroll-top" id="scroll-top" aria-label="Back to top">↑</button>
+
+<script>
+/* ══════════════════════════════════════════════
+   UXBAN — ABOUT PAGE
+══════════════════════════════════════════════ */
+
+(function () {
+  'use strict';
+
+  const form      = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('contact-submit');
+  const statusEl  = document.getElementById('contact-status');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name    = form.querySelector('#contact-name').value.trim();
+    const email   = form.querySelector('#contact-email').value.trim();
+    const subject = form.querySelector('#contact-subject').value.trim();
+    const message = form.querySelector('#contact-message').value.trim();
+    const honey   = form.querySelector('[name="_honey"]').value;
+
+    statusEl.textContent = '';
+    statusEl.className   = 'contact-status';
+
+    if (!name || !email || !message) {
+      statusEl.textContent = '// Please fill in all required fields';
+      statusEl.classList.add('error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const origHTML = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Sending...';
+    statusEl.textContent = '// Sending...';
+
+    try {
+      const res = await fetch('/api/contact', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name, email, subject, message, _honey: honey }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
+        statusEl.textContent = '// Message sent. You\'ll hear back soon.';
+        statusEl.classList.add('success');
+        form.reset();
+      } else {
+        statusEl.textContent = '// ' + (data.error || 'Something went wrong');
+        statusEl.classList.add('error');
+      }
+    } catch (err) {
+      console.error('[contact]', err);
+      statusEl.textContent = '// Network error. Try again or email directly.';
+      statusEl.classList.add('error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origHtml;
+    }
+  });
+
+})();
+
+/* ── Nav / banner / scroll-top ── */
+const scrollTop = document.getElementById('scroll-top');
+if (scrollTop) {
+  window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400), { passive: true });
+  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobile-nav');
+if (hamburger && mobileNav) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+}
+
+const topBar = document.getElementById('top-bar');
+if (topBar) {
+  window.addEventListener('scroll', () => topBar.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+}
+
+function updateNavOffset() {
+  const banner = document.getElementById('site-banner');
+  const nav    = document.getElementById('top-bar');
+  if (!nav) return;
+  const visible = banner && banner.style.display !== 'none' && !banner.classList.contains('dismissed');
+  nav.style.top = visible ? banner.offsetHeight + 'px' : '0';
+}
+updateNavOffset();
+window.addEventListener('resize', updateNavOffset);
+document.addEventListener('uxban:banner-rendered', () => setTimeout(updateNavOffset, 10));
+</script>
+
+<script src="/assets/command-palette.js" defer></script>
+</body>
+</html>

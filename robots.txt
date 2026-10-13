@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Private / dynamic — keep out of search engines
+Disallow: /unlock/
+Disallow: /secret/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /events/?preview=1
+
+Sitemap: https://uxban.shop/sitemap.xml

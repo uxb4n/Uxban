@@ -19,6 +19,8 @@
     { group: 'Pages', title: 'Events',   href: '/events/',   keywords: 'shows live tour tickets gig concert' },
     { group: 'Pages', title: 'Store',    href: '/store/',    keywords: 'merch shop buy apparel' },
     { group: 'Pages', title: 'Links',    href: '/links/',    keywords: 'socials follow bio' },
+    { group: 'Pages', title: 'About',   href: '/about/',   keywords: 'bio contact booking press' },
+    { group: 'Pages', title: 'Privacy', href: '/privacy/', keywords: 'legal terms policy data' },
     { group: 'Links', title: 'Spotify',     href: 'https://open.spotify.com/artist/433lt9JbmTHzNzHqZtiK7C', external: true },
     { group: 'Links', title: 'Apple Music', href: 'https://music.apple.com/us/artist/uxban/1757422943',   external: true },
     { group: 'Links', title: 'Instagram',   href: 'https://instagram.com/uxbanwtf',      external: true },

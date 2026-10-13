@@ -97,6 +97,55 @@ function updateHomepageMeta(newest) {
   return true;
 }
 
+/* ════════════════════════════════════════════════
+   Regenerate sitemap.xml from current releases
+   ════════════════════════════════════════════════ */
+function updateSitemap(result) {
+  const SITEMAP_PATH = path.join(__dirname, '..', 'sitemap.xml');
+  const today = new Date().toISOString().slice(0, 10);
+  const base  = 'https://uxban.shop';
+
+  const staticPages = [
+    { loc: '/',         priority: '1.0' },
+    { loc: '/releases/',priority: '0.9' },
+    { loc: '/events/',  priority: '0.9' },
+    { loc: '/store/',   priority: '0.8' },
+    { loc: '/about/',   priority: '0.8' },
+    { loc: '/links/',   priority: '0.7' },
+    { loc: '/privacy/', priority: '0.3' },
+  ];
+
+  const slugify = (name) => String(name || '').toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  const releasePages = [
+    ...(result.albums  || []),
+    ...(result.singles || []),
+  ].map(r => ({
+    loc:      `/release/${slugify(r.name)}/`,
+    priority: '0.7',
+  }));
+
+  const all = [...staticPages, ...releasePages];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${all.map(p => `  <url>
+    <loc>${base}${p.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <priority>${p.priority}</priority>
+  </url>`).join('\n')}
+</urlset>
+`;
+
+  const old = fs.existsSync(SITEMAP_PATH) ? fs.readFileSync(SITEMAP_PATH, 'utf8') : '';
+  if (old === xml) return false;
+  fs.writeFileSync(SITEMAP_PATH, xml);
+  return true;
+}
+
 /* ── Main ── */
 async function main() {
   console.log(`→ Fetching Uxban catalog from iTunes (artist ${ITUNES_ARTIST_ID})...`);
@@ -232,6 +281,12 @@ async function main() {
     console.log('');
     console.log('   To upgrade: add to data/spotify-overrides.json');
     console.log('   To hide Spotify link: set value to null');
+  }
+
+    /* ── Regenerate sitemap ── */
+  const sitemapChanged = updateSitemap(result);
+  if (sitemapChanged) {
+    console.log(`✅ Regenerated sitemap.xml`);
   }
 }
 
