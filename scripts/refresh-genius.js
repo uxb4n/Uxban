@@ -47,10 +47,16 @@ function slugify(name) {
 function extractDescription(song) {
   const d = song.description;
   if (!d) return '';
-  if (typeof d === 'string') return d;
-  if (d.html) return d.html;
-  if (d.dom) return domToHtml(d.dom);
-  return '';
+  let html = '';
+  if (typeof d === 'string') html = d;
+  else if (d.html)           html = d.html;
+  else if (d.dom)            html = domToHtml(d.dom);
+
+  // Genius wraps in <root>...</root> — strip it
+  return html
+    .replace(/^\s*<root>\s*/i, '')
+    .replace(/\s*<\/root>\s*$/i, '')
+    .trim();
 }
 
 function domToHtml(node) {

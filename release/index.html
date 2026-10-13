@@ -133,17 +133,55 @@
       color: var(--border-2);
     }
 
+    /* ── Story: max 4 lines with fade + scroll ── */
+    .rel-story-wrap {
+      position: relative;
+      margin-bottom: 44px;
+      max-width: 480px;
+    }
+
     .rel-story {
       font-size: 16px;
       line-height: 1.75;
       color: var(--fg-dim);
-      margin-bottom: 44px;
-      max-width: 480px;
+      max-height: calc(1.75em * 4);   /* exactly 4 lines */
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-2) transparent;
+      overscroll-behavior: contain;
+      padding-right: 4px;
     }
+
+    .rel-story::-webkit-scrollbar { width: 4px; }
+    .rel-story::-webkit-scrollbar-track { background: transparent; }
+    .rel-story::-webkit-scrollbar-thumb {
+      background: var(--border-2);
+      border-radius: 2px;
+    }
+
     .rel-story p { margin: 0 0 14px; }
     .rel-story p:last-child { margin-bottom: 0; }
-    .rel-story a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+    .rel-story a {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
     .rel-story a:hover { color: var(--accent); }
+
+    /* Bottom fade — appears only when the story overflows */
+    .rel-story-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .rel-story-wrap.has-overflow::after { opacity: 1; }
 
     .rel-cta-row {
       display: flex;
@@ -517,6 +555,10 @@ function fmtDuration(ms) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+function stripHtml(html) {
+  return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 (async function init() {
 
   const parts = location.pathname.replace(/\/$/, '').split('/');
@@ -541,7 +583,6 @@ function fmtDuration(ms) {
 
   if (!release) return showNotFound();
 
-  /* ── Load release config (stories + credits) ── */
   const cfg = window.UXBAN_RELEASE_CONFIG || {};
 
   /* ── Load Genius description ── */
@@ -569,13 +610,11 @@ function fmtDuration(ms) {
   const overrideCredits = (cfg.credits || {})[slug] || {};
   const mergedCredits   = { ...baseCredits, ...overrideCredits };
 
-  // Featuring auto-add from release data — unless config already set it
   const featList = release.featuring || [];
   if (featList.length && !('Featuring' in overrideCredits)) {
     mergedCredits['Featuring'] = featList.join(' & ');
   }
 
-  // Strip any role explicitly disabled (false / null / empty)
   Object.keys(mergedCredits).forEach(k => {
     if (!mergedCredits[k]) delete mergedCredits[k];
   });
@@ -596,15 +635,17 @@ function fmtDuration(ms) {
   const links = release.links || {};
 
   /* ── Meta tags ── */
-  const pageUrl = `${location.origin}/release/${slug}/`;
+  const pageUrl     = `${location.origin}/release/${slug}/`;
+  const plainStory  = stripHtml(story).slice(0, 160);
+
   document.title = `Uxban — ${release.name}`;
   document.getElementById('page-title').textContent = `Uxban — ${release.name}`;
-  document.getElementById('meta-desc').content      = story.replace(/<[^>]+>/g, ' ').trim().slice(0, 160);
+  document.getElementById('meta-desc').content      = plainStory;
   document.getElementById('og-url').content         = pageUrl;
   document.getElementById('og-title').content       = `Uxban — ${release.name}`;
-  document.getElementById('og-desc').content        = story.replace(/<[^>]+>/g, ' ').trim().slice(0, 160);
+  document.getElementById('og-desc').content        = plainStory;
   document.getElementById('tw-title').content       = `Uxban — ${release.name}`;
-  document.getElementById('tw-desc').content        = story.replace(/<[^>]+>/g, ' ').trim().slice(0, 160);
+  document.getElementById('tw-desc').content        = plainStory;
   if (cover) {
     document.getElementById('og-image').content = cover;
     document.getElementById('tw-image').content = cover;
@@ -680,7 +721,9 @@ function fmtDuration(ms) {
           ${tracks.length ? `<span>${tracks.length} TRACK${tracks.length !== 1 ? 'S' : ''}</span>` : ''}
           ${!isReleased && release.release_date ? `<span>DROPS ${new Date(release.release_date).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }).toUpperCase()}</span>` : ''}
         </div>
-        <div class="rel-story rel-fade rel-fade-3">${story}</div>
+        <div class="rel-story-wrap rel-fade rel-fade-3">
+          <div class="rel-story" id="rel-story">${story}</div>
+        </div>
         <div class="rel-cta-row rel-fade rel-fade-3">
           <a class="rel-cta" href="${ctaUrl}">
             ${ctaText}
@@ -736,6 +779,20 @@ function fmtDuration(ms) {
 
     ${relatedHTML}
   `;
+
+  /* ── Overflow detection for the story fade ── */
+  const storyEl   = document.getElementById('rel-story');
+  const storyWrap = document.querySelector('.rel-story-wrap');
+  if (storyEl && storyWrap) {
+    const checkOverflow = () => {
+      const hasOverflow = storyEl.scrollHeight > storyEl.clientHeight + 2;
+      const atBottom    = storyEl.scrollTop + storyEl.clientHeight >= storyEl.scrollHeight - 4;
+      storyWrap.classList.toggle('has-overflow', hasOverflow && !atBottom);
+    };
+    checkOverflow();
+    storyEl.addEventListener('scroll', checkOverflow, { passive: true });
+    window.addEventListener('resize', checkOverflow, { passive: true });
+  }
 
   /* ── Wire preview buttons ── */
   root.querySelectorAll('[data-preview]').forEach(btn => {
