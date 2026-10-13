@@ -810,22 +810,36 @@ function lyricsBlockHTML(raw) {
   let singleLyrics = null;
   let albumLyrics  = null;
 
-  if (isAlbum && tracks.length) {
-    const results = await Promise.all(
-      tracks.map(async (t) => {
-        const trackSlug = slugify(t.name);
-        try {
-          const res = await fetch(`/lyrics/${slug}/${trackSlug}.txt`);
-          if (res.ok) {
-            const text = (await res.text()).trim();
-            if (text) return { name: t.name, number: t.number, lyrics: text };
-          }
-        } catch {}
-        return null;
-      })
-    );
-    const found = results.filter(Boolean);
-    if (found.length) albumLyrics = found;
+  if (release.album_type === 'album') {
+    // Fetch track list (Vercel caches this response, so it's instant)
+    let albumTracks = [];
+    if (release.id) {
+      try {
+        const tRes = await fetch(`/api/spotify?tracks=${release.id}`);
+        if (tRes.ok) {
+          const tData = await tRes.json();
+          albumTracks = tData.tracks || [];
+        }
+      } catch {}
+    }
+
+    if (albumTracks.length) {
+      const results = await Promise.all(
+        albumTracks.map(async (t) => {
+          const trackSlug = slugify(t.name);
+          try {
+            const res = await fetch(`/lyrics/${slug}/${trackSlug}.txt`);
+            if (res.ok) {
+              const text = (await res.text()).trim();
+              if (text) return { name: t.name, number: t.number, lyrics: text };
+            }
+          } catch {}
+          return null;
+        })
+      );
+      const found = results.filter(Boolean);
+      if (found.length) albumLyrics = found;
+    }
   } else {
     try {
       const res = await fetch(`/lyrics/${slug}.txt`);
