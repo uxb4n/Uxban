@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uxban | Shows</title>
+  <meta name="description" content="Uxban live shows and upcoming events.">
+  <link rel="canonical" href="https://uxban.shop/events/">
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script defer src="/_vercel/insights/script.js"></script>
+
+  <script src="/events/events-config.js"></script>
+  <script src="/assets/banner.js" defer></script>
+
+  <style>
+    /* =========================
+       EVENTS PAGE
+    ========================= */
+    .events-page {
+      padding: 160px var(--pad-x) 100px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .events-header {
+      margin-bottom: 64px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .events-header small {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .events-header h1 {
+      font-family: var(--sans);
+      font-size: clamp(3rem, 11vw, 8rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.88;
+      text-transform: uppercase;
+    }
+    .events-header p {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 20px;
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── Section headers ── */
+    .events-section { margin-bottom: 64px; }
+    .events-section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    /* ── Featured event (the next show) ── */
+    .event-featured {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-card);
+      margin-bottom: 48px;
+    }
+
+    .event-featured-poster {
+      position: relative;
+      background-color: #0a0a0a;
+      background-size: cover;
+      background-position: center;
+      min-height: 420px;
+    }
+
+    .event-featured-poster::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 55%, var(--bg-card) 100%);
+      pointer-events: none;
+    }
+
+    .event-featured-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--sans);
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.08);
+      text-align: center;
+      padding: 20px;
+      line-height: 0.95;
+    }
+
+    .event-featured-info {
+      padding: 48px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Countdown ── */
+    .event-countdown {
+      display: flex;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+    .event-cd-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 56px;
+      padding-right: 16px;
+      margin-right: 16px;
+      border-right: 1px solid var(--border);
+    }
+    .event-cd-unit:last-child {
+      border-right: none;
+      padding-right: 0;
+      margin-right: 0;
+    }
+    .event-cd-num {
+      font-family: var(--sans);
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: #fff;
+    }
+    .event-cd-tag {
+      font-family: var(--mono);
+      font-size: 8.5px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ── Ticket status badge ── */
+    .ticket-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      width: fit-content;
+      margin-bottom: 18px;
+    }
+    .ticket-badge.onsale   { background: var(--accent); color: #fff; }
+    .ticket-badge.presale  { background: #fff; color: #000; }
+    .ticket-badge.soldout  { background: rgba(255,255,255,0.06); border: 1px solid var(--border-2); color: var(--muted); }
+    .ticket-badge.free     { background: rgba(0,255,106,0.12); border: 1px solid rgba(0,255,106,0.35); color: #00ff6a; }
+    .ticket-badge.soon     { background: rgba(255,255,255,0.06); border: 1px solid var(--border-2); color: rgba(255,255,255,0.6); }
+    .ticket-badge.tba      { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--muted); }
+    .ticket-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ── Event title/meta ── */
+    .event-title {
+      font-family: var(--sans);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .event-when {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .event-where {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .event-where strong { color: #fff; font-weight: 500; }
+
+    .event-desc {
+      font-size: 14px;
+      color: var(--fg-dim);
+      line-height: 1.7;
+      margin-bottom: 28px;
+      max-width: 400px;
+    }
+
+    .event-lineup {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .event-lineup strong { color: #fff; font-weight: 500; }
+
+    /* ── CTA row ── */
+    .event-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .event-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 24px;
+      border: 1px solid #fff;
+      cursor: pointer;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
+    }
+    .event-cta:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .event-cta:active { transform: scale(0.98); }
+    .event-cta svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
+
+    .event-cta.outline {
+      background: transparent;
+      color: #fff;
+      border-color: var(--border-2);
+    }
+    .event-cta.outline:hover { border-color: #fff; background: rgba(255,255,255,0.04); color: #fff; }
+
+    .event-cta.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ── Event list (upcoming, non-featured) ── */
+    .event-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 32px;
+      align-items: center;
+      padding: 28px 24px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s var(--ease), padding-left 0.3s var(--ease);
+    }
+    .event-row:first-child { border-top: 1px solid var(--border); }
+    .event-row:hover {
+      background: rgba(255, 255, 255, 0.025);
+      padding-left: 36px;
+    }
+
+    .event-row-date {
+      font-family: var(--sans);
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+    .event-row-date small {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .event-row-body { min-width: 0; }
+
+    .event-row-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .event-row-venue {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-row-badge { flex-shrink: 0; }
+
+    /* ── Past events grid ── */
+    .past-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .past-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 20px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .past-card:hover {
+      border-color: var(--border-2);
+      transform: translateY(-2px);
+    }
+    .past-card-date {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .past-card-venue {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.005em;
+      text-transform: uppercase;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .past-card-city {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Empty state ── */
+    .events-empty {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 80px 32px;
+      text-align: center;
+      background: var(--bg-card);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .events-empty-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .events-empty-title {
+      font-family: var(--sans);
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      text-transform: uppercase;
+      max-width: 480px;
+    }
+    .events-empty-desc {
+      font-size: 14px;
+      color: var(--fg-dim);
+      line-height: 1.6;
+      max-width: 400px;
+    }
+    .events-empty-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 40px;
+      margin-top: 12px;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .events-empty-cta:hover { background: var(--accent); color: #fff; }
+
+    /* ── Not found ── */
+    .events-notfound {
+      padding: 200px var(--pad-x);
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Animations ── */
+    @keyframes evFadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ev-fade   { animation: evFadeUp 0.6s var(--ease) both; }
+    .ev-fade-1 { animation-delay: 0.05s; }
+    .ev-fade-2 { animation-delay: 0.15s; }
+    .ev-fade-3 { animation-delay: 0.25s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .events-page { padding: 120px var(--pad-x) 80px; }
+      .event-featured { grid-template-columns: 1fr; }
+      .event-featured-poster { min-height: 260px; }
+      .event-featured-poster::after {
+        background: linear-gradient(to top, var(--bg-card) 0%, transparent 60%);
+      }
+      .event-featured-info { padding: 32px 24px 40px; }
+      .event-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 24px 16px;
+      }
+      .event-row-date {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        font-size: 1rem;
+      }
+      .event-row-date small { margin-top: 0; }
+      .event-row-badge { margin-top: 4px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="/">HOME</a>
+  <a href="/releases/">RELEASES</a>
+  <a href="/events/" class="active">SHOWS</a>
+  <a href="/store/">STORE</a>
+  <div class="mobile-nav-footer">© 2026 UXBAN</div>
+</nav>
+
+<nav class="top-bar" id="top-bar">
+  <a href="/"><img src="/assets/images/logo.png" class="nav-logo" alt="uxban"></a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="/releases/">RELEASES</a>
+    <a href="/events/" class="active">SHOWS</a>
+    <a href="/store/">STORE</a>
+  </div>
+  <div class="nav-info">
+    <button class="nav-search" onclick="window.UxbanCmdk && window.UxbanCmdk.open()" aria-label="Search (⌘K)" title="Search (⌘K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="events-page" id="events-page">
+    <div class="events-notfound">// LOADING</div>
+  </div>
+</div>
+
+<button class="scroll-top" id="scroll-top" aria-label="Back to top">↑</button>
+
+<script>
+/* ══════════════════════════════════════════════
+   UXBAN — EVENTS PAGE
+   Reads from /events/events-config.js
+
+   Public flag:
+     cfg.public === false hides the page from everyone
+     unless ?preview=1 is present.
+══════════════════════════════════════════════ */
+
+(function () {
+  'use strict';
+
+  const root   = document.getElementById('events-page');
+  const config = window.UXBAN_EVENTS_CONFIG || {};
+
+  /* ── Public gate ── */
+  const previewParam = new URLSearchParams(location.search).get('preview');
+  if (config.public === false && previewParam !== '1') {
+    return renderNotFound();
+  }
+
+  /* ── Prep events ── */
+  const allEvents = (config.events || []).map(e => ({
+    ...e,
+    _time: new Date(e.date).getTime(),
+  })).sort((a, b) => a._time - b._time);
+
+  const now       = Date.now();
+  const upcoming  = allEvents.filter(e => e._time > now);
+  const past      = allEvents.filter(e => e._time <= now).reverse(); // most recent first
+
+  /* ── Helpers ── */
+  function fmtDateParts(iso, opts) {
+    const d = new Date(iso);
+    const month = d.toLocaleString('en-NZ', { month: 'short' }).toUpperCase();
+    const day   = d.getDate();
+    const year  = d.getFullYear();
+    const dow   = d.toLocaleString('en-NZ', { weekday: 'short' }).toUpperCase();
+    const time  = d.toLocaleString('en-NZ', { hour: 'numeric', minute: '2-digit', hour12: true }).toUpperCase();
+    return { month, day, year, dow, time, dateObj: d };
+  }
+
+  function ticketBadgeHTML(status) {
+    const labels = {
+      onsale:  'On Sale',
+      presale: 'Presale',
+      soldout: 'Sold Out',
+      free:    'Free Entry',
+      soon:    'Tickets Soon',
+      tba:     'Tickets TBA',
+    };
+    const s = status || 'tba';
+    return `<span class="ticket-badge ${s}">${labels[s] || labels.tba}</span>`;
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function isTicketsAvailable(status) {
+    return status === 'onsale' || status === 'presale' || status === 'free';
+  }
+
+  /* ── Build .ics file for Add to Calendar ── */
+  function buildICS(event) {
+    const start = new Date(event.date);
+    const end   = new Date(start.getTime() + 3 * 60 * 60 * 1000); // +3h default
+
+    const pad = n => String(n).padStart(2, '0');
+    const fmtUTC = d =>
+      `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+
+    const uid  = `${event.id || 'event'}-uxban.shop`;
+    const loc  = [event.venue, event.address, event.city, event.country].filter(Boolean).join(', ');
+    const desc = [event.description, event.ticketsUrl ? `Tickets: ${event.ticketsUrl}` : ''].filter(Boolean).join('\\n\\n');
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//uxban.shop//Events//EN',
+      'CALSCALE:GREGORIAN',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${fmtUTC(new Date())}`,
+      `DTSTART:${fmtUTC(start)}`,
+      `DTEND:${fmtUTC(end)}`,
+      `SUMMARY:Uxban — ${event.title || 'Live'}`,
+      `LOCATION:${loc.replace(/,/g, '\\,')}`,
+      `DESCRIPTION:${desc.replace(/\n/g, '\\n')}`,
+      event.ticketsUrl ? `URL:${event.ticketsUrl}` : '',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].filter(Boolean).join('\r\n');
+
+    return new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  }
+
+  function downloadICS(event) {
+    const blob = buildICS(event);
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `uxban-${event.id || 'event'}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  /* ── Render: not found ── */
+  function renderNotFound() {
+    root.innerHTML = `
+      <div class="events-notfound">
+        <p style="margin-bottom:16px">// NOTHING HERE YET</p>
+        <a href="/" style="color:var(--accent);text-decoration:none;">← BACK TO HOME</a>
+      </div>`;
+  }
+
+  /* ── Render: no events but page is public ── */
+  function emptyStateHTML() {
+    return `
+      <div class="events-empty ev-fade">
+        <p class="events-empty-label">// NO UPCOMING SHOWS</p>
+        <h3 class="events-empty-title">Nothing scheduled right now.</h3>
+        <p class="events-empty-desc">Sign up below and you'll be the first to know when dates drop.</p>
+        <a class="events-empty-cta" href="/#signup">GET NOTIFIED →</a>
+      </div>`;
+  }
+
+  /* ── Render: featured event card ── */
+  function featuredHTML(event) {
+    const d   = fmtDateParts(event.date);
+    const has = isTicketsAvailable(event.ticketsStatus);
+
+    const posterStyle = event.posterImage
+      ? `style="background-image:url('${event.posterImage}')"`
+      : '';
+
+    const fallback = !event.posterImage
+      ? `<div class="event-featured-fallback">${escapeHtml(event.city || 'LIVE')}</div>`
+      : '';
+
+    const lineupHTML = event.lineup && event.lineup.length
+      ? `<p class="event-lineup"><strong>${event.lineup.map(escapeHtml).join(' · ')}</strong></p>`
+      : '';
+
+    const descHTML = event.description
+      ? `<p class="event-desc">${escapeHtml(event.description)}</p>`
+      : '';
+
+    const ticketsBtn = has && event.ticketsUrl
+      ? `<a class="event-cta" href="${event.ticketsUrl}" target="_blank" rel="noopener">
+           ${event.ticketsStatus === 'free' ? 'RSVP FREE' : 'GET TICKETS'}
+           <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+         </a>`
+      : `<span class="event-cta disabled">
+           ${event.ticketsStatus === 'soldout' ? 'SOLD OUT' : 'TICKETS TBA'}
+         </span>`;
+
+    const mapsUrl = event.address || event.venue
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          [event.venue, event.address, event.city, event.country].filter(Boolean).join(' ')
+        )}`
+      : '';
+
+    const directionsBtn = mapsUrl
+      ? `<a class="event-cta outline" href="${mapsUrl}" target="_blank" rel="noopener">
+           GET DIRECTIONS
+           <svg viewBox="0 0 24 24"><path d="M12 2L4 14h6l-2 8 8-12h-6l2-8z" fill="currentColor" stroke="none"/></svg>
+         </a>`
+      : '';
+
+    const calendarBtn = `<button class="event-cta outline" id="add-to-calendar" data-event-id="${event.id}">
+      ADD TO CALENDAR
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    </button>`;
+
+    return `
+      <div class="event-featured ev-fade ev-fade-1">
+        <div class="event-featured-poster" ${posterStyle}>
+          ${fallback}
+        </div>
+        <div class="event-featured-info">
+          ${ticketBadgeHTML(event.ticketsStatus)}
+
+          <div class="event-countdown" id="event-countdown" data-target="${event.date}">
+            <div class="event-cd-unit"><span class="event-cd-num" data-cd="days">00</span><span class="event-cd-tag">Days</span></div>
+            <div class="event-cd-unit"><span class="event-cd-num" data-cd="hours">00</span><span class="event-cd-tag">Hrs</span></div>
+            <div class="event-cd-unit"><span class="event-cd-num" data-cd="mins">00</span><span class="event-cd-tag">Mins</span></div>
+            <div class="event-cd-unit"><span class="event-cd-num" data-cd="secs">00</span><span class="event-cd-tag">Secs</span></div>
+          </div>
+
+          <h2 class="event-title">${escapeHtml(event.title || 'Live in Concert')}</h2>
+          <p class="event-when">${d.dow} · ${d.month} ${d.day}, ${d.year} · ${d.time}</p>
+          <p class="event-where"><strong>${escapeHtml(event.venue || 'TBA')}</strong> · ${escapeHtml(event.city || '')}${event.ageRestriction ? ` · ${escapeHtml(event.ageRestriction)}` : ''}</p>
+
+          ${descHTML}
+          ${lineupHTML}
+
+          <div class="event-ctas">
+            ${ticketsBtn}
+            ${directionsBtn}
+            ${calendarBtn}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /* ── Render: compact row for other upcoming events ── */
+  function rowHTML(event) {
+    const d = fmtDateParts(event.date);
+    const has = isTicketsAvailable(event.ticketsStatus);
+
+    const href = has && event.ticketsUrl ? event.ticketsUrl : '#';
+    const tag  = has && event.ticketsUrl ? 'a' : 'div';
+    const attr = has && event.ticketsUrl ? `href="${event.ticketsUrl}" target="_blank" rel="noopener"` : '';
+
+    return `
+      <${tag} class="event-row ev-fade" ${attr}>
+        <div class="event-row-date">
+          ${d.day} ${d.month}
+          <small>${d.dow} · ${d.time}</small>
+        </div>
+        <div class="event-row-body">
+          <p class="event-row-title">${escapeHtml(event.title || 'Live')}</p>
+          <p class="event-row-venue">${escapeHtml(event.venue || 'TBA')} · ${escapeHtml(event.city || '')}</p>
+        </div>
+        <div class="event-row-badge">${ticketBadgeHTML(event.ticketsStatus)}</div>
+      </${tag}>`;
+  }
+
+  /* ── Render: past event card ── */
+  function pastCardHTML(event) {
+    const d = fmtDateParts(event.date);
+    return `
+      <div class="past-card">
+        <p class="past-card-date">${d.day} ${d.month} ${d.year}</p>
+        <p class="past-card-venue">${escapeHtml(event.venue || 'Venue')}</p>
+        <p class="past-card-city">${escapeHtml(event.city || '')}</p>
+      </div>`;
+  }
+
+  /* ══════════════════════════════════════════════
+     RENDER — entry point
+  ══════════════════════════════════════════════ */
+  function render() {
+    document.title = 'Uxban | Shows';
+
+    const nextEvent   = upcoming[0] || null;
+    const restUpcoming = upcoming.slice(1);
+
+    let html = `
+      <div class="events-header ev-fade">
+        <small>// LIVE</small>
+        <h1>SHOWS</h1>
+        <p>Upcoming dates and past performances. Come through.</p>
+      </div>
+    `;
+
+    // Upcoming shows
+    if (nextEvent) {
+      html += `
+        <div class="events-section">
+          <span class="events-section-label">// NEXT SHOW</span>
+          ${featuredHTML(nextEvent)}
+        </div>
+      `;
+
+      if (restUpcoming.length) {
+        html += `
+          <div class="events-section">
+            <span class="events-section-label">// ALSO UPCOMING</span>
+            <div class="event-list">
+              ${restUpcoming.map(rowHTML).join('')}
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      html += `<div class="events-section">${emptyStateHTML()}</div>`;
+    }
+
+    // Past shows
+    if (past.length) {
+      html += `
+        <div class="events-section">
+          <span class="events-section-label">// PAST SHOWS</span>
+          <div class="past-grid">
+            ${past.map(pastCardHTML).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    root.innerHTML = html;
+    initCountdown();
+    bindCalendarButtons();
+  }
+
+  /* ── Countdown ── */
+  function initCountdown() {
+    const el = document.getElementById('event-countdown');
+    if (!el) return;
+    const target = new Date(el.dataset.target).getTime();
+    const pad = n => String(n).padStart(2, '0');
+
+    function tick() {
+      const diff = target - Date.now();
+      if (diff <= 0) return;
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const set = (k, v) => { const x = el.querySelector(`[data-cd="${k}"]`); if (x) x.textContent = v; };
+      set('days', pad(d));
+      set('hours', pad(h));
+      set('mins', pad(m));
+      set('secs', pad(s));
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  /* ── Calendar buttons ── */
+  function bindCalendarButtons() {
+    const btn = document.getElementById('add-to-calendar');
+    if (!btn) return;
+    const event = allEvents.find(e => e.id === btn.dataset.eventId);
+    if (!event) return;
+    btn.addEventListener('click', () => downloadICS(event));
+  }
+
+  /* ── Boot ── */
+  render();
+
+})();
+
+/* ── Nav / banner / scroll-top (site-wide patterns) ── */
+const scrollTop = document.getElementById('scroll-top');
+if (scrollTop) {
+  window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400), { passive: true });
+  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobile-nav');
+if (hamburger && mobileNav) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+}
+
+const topBar = document.getElementById('top-bar');
+if (topBar) {
+  window.addEventListener('scroll', () => topBar.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+}
+
+function updateNavOffset() {
+  const banner = document.getElementById('site-banner');
+  const nav    = document.getElementById('top-bar');
+  if (!nav) return;
+  const visible = banner && banner.style.display !== 'none' && !banner.classList.contains('dismissed');
+  nav.style.top = visible ? banner.offsetHeight + 'px' : '0';
+}
+updateNavOffset();
+window.addEventListener('resize', updateNavOffset);
+document.addEventListener('uxban:banner-rendered', () => setTimeout(updateNavOffset, 10));
+</script>
+
+<script src="/assets/command-palette.js" defer></script>
+</body>
+</html>

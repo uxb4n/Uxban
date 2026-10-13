@@ -4,6 +4,7 @@
     { "src": "/listen/.*",  "dest": "/listen/index.html" },
     { "src": "/release/.*", "dest": "/release/index.html" },
     { "src": "/unlock/.*",  "dest": "/unlock/index.html" },
+    { "src": "/events/.*",  "dest": "/events/index.html" },
     { "src": "/(.*)",       "dest": "/404.html" }
   ]
 }
