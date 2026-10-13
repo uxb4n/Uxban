@@ -455,7 +455,7 @@ function buildTile(item, index) {
       <img src="${cover}" alt="${name}" loading="lazy">
       <span class="release-tile-badge ${type.toLowerCase()}">${type}</span>
       <div class="release-tile-overlay">
-        <button class="release-tile-play" data-preview="1" data-name="${name}" aria-label="Play preview">
+        <button class="release-tile-play" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
           ${ICONS.play}
           ${ICONS.eq}
         </button>
@@ -466,7 +466,7 @@ function buildTile(item, index) {
         </div>
       </div>
       ${isTouch ? `
-        <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" aria-label="Play preview">
+        <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
           ${ICONS.play}
           ${ICONS.eq}
         </button>` : ''}

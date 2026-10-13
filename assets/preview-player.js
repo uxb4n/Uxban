@@ -3,13 +3,19 @@
    One shared <audio> element for every preview
    button on the page. Starting a new preview
    auto-stops the previous one.
+
+   Buttons can carry:
+     data-preview      → mark as preview button
+     data-name         → track name (for API lookup)
+     data-id           → iTunes collection ID (exact match)
+     data-track-index  → optional 1-based track index
    ============================================== */
 (function () {
   'use strict';
 
   let audio = null;
   let currentBtn = null;
-  const urlCache = new Map(); // "name__artist" -> previewUrl (or null)
+  const urlCache = new Map();
 
   function getAudio() {
     if (audio) return audio;
@@ -29,12 +35,18 @@
     currentBtn = null;
   }
 
-  async function fetchPreview(name, artist) {
-    const key = `${name}__${artist || 'Uxban'}`.toLowerCase();
+  async function fetchPreview({ id, name, artist, trackIndex }) {
+    const key = `${id || ''}__${name || ''}__${trackIndex ?? ''}`.toLowerCase();
     if (urlCache.has(key)) return urlCache.get(key);
 
+    const params = new URLSearchParams();
+    if (id)         params.set('id', id);
+    if (name)       params.set('name', name);
+    if (artist)     params.set('artist', artist);
+    if (trackIndex != null) params.set('trackIndex', trackIndex);
+
     try {
-      const res  = await fetch(`/api/preview?name=${encodeURIComponent(name)}&artist=${encodeURIComponent(artist || 'Uxban')}`);
+      const res  = await fetch(`/api/preview?${params.toString()}`);
       const data = await res.json();
       urlCache.set(key, data.previewUrl);
       return data.previewUrl;
@@ -61,16 +73,24 @@
       resetBtn();
     }
 
-    // Loading state
     btn.classList.add('loading');
     btn.setAttribute('aria-label', 'Loading preview');
 
-    const url = await fetchPreview(name, artist);
+    // Read everything from the button
+    const id         = btn.dataset.id || null;
+    const trackIndex = btn.dataset.trackIndex || null;
+    const trackName  = name || btn.dataset.name || null;
+
+    const url = await fetchPreview({
+      id,
+      name: trackName,
+      artist: artist || 'Uxban',
+      trackIndex,
+    });
 
     btn.classList.remove('loading');
 
     if (!url) {
-      // "Unavailable" flash
       btn.classList.add('unavailable');
       btn.setAttribute('aria-label', 'Preview unavailable');
       setTimeout(() => {

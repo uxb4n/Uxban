@@ -288,12 +288,12 @@ async function loadSpotifyData() {
             <div class="grid-img">
               <img src="${cover}" alt="${name}" loading="lazy">
               <div class="release-tile-overlay">
-                <button class="release-tile-play" data-preview="1" data-name="${name}" aria-label="Play preview">
+                <button class="release-tile-play" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
                   ${PLAY_ICON}${EQ_ICON}
                 </button>
               </div>
               ${isTouch ? `
-                <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" aria-label="Play preview">
+                <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
                   ${PLAY_ICON}${EQ_ICON}
                 </button>` : ''}
             </div>
