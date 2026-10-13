@@ -25,7 +25,7 @@
 
   <script src="/listen/listen-config.js"></script>
   <script src="/release/release-config.js"></script>
-  <script src="/assets/preview-player.js" defer></script>
+  <script src="/assets/preview-player.js?v=2" defer></script>
 
   <style>
     .rel-page {
@@ -536,7 +536,7 @@ function fmtDuration(ms) {
             ${ctaText}
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
-          <button class="rel-cta-outline" id="rel-preview-btn" data-preview="1" data-name="${release.name}">
+          <button class="rel-cta-outline" id="rel-preview-btn" data-preview="1" data-name="${release.name}" data-id="${release.id}">
             ${ICONS.play} PREVIEW
           </button>
           ${platformBtns.length ? `
@@ -555,7 +555,7 @@ function fmtDuration(ms) {
             <div class="rel-track" data-track-name="${t.name}" data-track-index="${i}">
               <span class="rel-track-num">
                 <span class="track-num-text">${String(t.number).padStart(2, '0')}</span>
-                <button class="track-num-play" data-preview="1" data-name="${t.name}" aria-label="Play ${t.name} preview">
+                <button class="track-num-play" data-preview="1" data-name="${t.name}" data-id="${release.id}" data-track-index="${t.number}" aria-label="Play ${t.name} preview">
                   ${ICONS.play}${ICONS.eq}
                 </button>
               </span>
