@@ -407,6 +407,32 @@ if (scrollTopBtn) {
     });
   }
 
+    /* ---------- SEARCH BUTTON → COMMAND PALETTE ---------- */
+  (function bindSearchButton() {
+    function wire() {
+      const btn = document.querySelector('.nav-search');
+      if (!btn || btn.dataset.cmdkBound) return;
+      btn.dataset.cmdkBound = '1';
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.UxbanCmdk && typeof window.UxbanCmdk.open === 'function') {
+          window.UxbanCmdk.open();
+        } else {
+          console.warn('[search] Command palette not loaded yet');
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', wire);
+    } else {
+      wire();
+    }
+
+    // In case the button appears later (deferred HTML)
+    window.addEventListener('load', wire);
+  })();
+
   document.addEventListener('pointermove', (e) => {
     lastEvent = e;
     if (rafId === null) rafId = requestAnimationFrame(update);

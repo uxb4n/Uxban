@@ -1,8 +1,9 @@
 {
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/listen/.*", "dest": "/listen/index.html" },
+    { "src": "/listen/.*",  "dest": "/listen/index.html" },
     { "src": "/release/.*", "dest": "/release/index.html" },
-    { "src": "/(.*)", "dest": "/404.html" }
+    { "src": "/unlock/.*",  "dest": "/unlock/index.html" },
+    { "src": "/(.*)",       "dest": "/404.html" }
   ]
 }

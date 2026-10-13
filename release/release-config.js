@@ -19,7 +19,7 @@ window.UXBAN_RELEASE_CONFIG = {
     // 'back2me':   'A return to form. Recorded in Auckland over the winter, mixed late at night.',
     'uxtra':     'The debut album. Eleven tracks mapping the space between rage and quiet.',
     'ux':        '“UX” by Uxban is his 1st ever debut album was released December 31st 2025, following his EP “More Than Days” on May 30th 2025.',
-    'switch-up': 'A collab with prod.andrew that flips the tempo on its head.',
+    //'switch-up': 'A collab with prod.andrew that flips the tempo on its head.',
     'more-than-days': `"More Than Days +" is Uxban's debut project and first official release on major streaming platforms. The tape blends Hip-Hop and underground rap influences, with tracks like "Billie" and "Crazy" highlighting his experimental approach to structure and sound. Notably, the entire project was self-produced using BandLab, underscoring its raw, independent creative process.`,
   },
 
