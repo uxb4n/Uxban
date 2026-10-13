@@ -13,9 +13,10 @@
   let activeIdx = 0;
   let releasesCache = null;
 
-    const STATIC = [
+  const STATIC = [
     { group: 'Pages', title: 'Home',     href: '/',          keywords: 'start' },
     { group: 'Pages', title: 'Releases', href: '/releases/', keywords: 'discography music albums singles' },
+    { group: 'Pages', title: 'Events',   href: '/events/',   keywords: 'shows live tour tickets gig concert' },
     { group: 'Pages', title: 'Store',    href: '/store/',    keywords: 'merch shop buy apparel' },
     { group: 'Pages', title: 'Links',    href: '/links/',    keywords: 'socials follow bio' },
     { group: 'Links', title: 'Spotify',     href: 'https://open.spotify.com/artist/433lt9JbmTHzNzHqZtiK7C', external: true },
@@ -70,7 +71,7 @@
           group:       r._type === 'ALBUM' ? 'Albums' : 'Singles',
           title:       r.name,
           description: `${r._type} · ${r.release_date?.slice(0, 4) || ''}`,
-          href:        `/listen/${slugify(r.name)}/`,
+          href:        `/release/${slugify(r.name)}/`,
           external:    false,
         }));
         releasesCache = releaseItems;
