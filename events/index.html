@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uxban | Shows</title>
+  <title>Uxban | Events</title>
   <meta name="description" content="Uxban live shows and upcoming events.">
   <link rel="canonical" href="https://uxban.shop/events/">
 
@@ -242,6 +242,12 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      position: relative;
+    }
+
+    .event-cta-group {
+      position: relative;
+      display: inline-flex;
     }
 
     .event-cta {
@@ -275,6 +281,57 @@
     .event-cta.disabled {
       opacity: 0.4;
       pointer-events: none;
+    }
+
+    /* ── Calendar dropdown ── */
+    .calendar-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      min-width: 240px;
+      background: #0a0a0a;
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: opacity 0.15s var(--ease), transform 0.15s var(--ease);
+      z-index: 20;
+    }
+    .calendar-menu.open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .calendar-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 16px;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .calendar-menu-item:last-child { border-bottom: none; }
+    .calendar-menu-item:hover { background: rgba(255,255,255,0.06); }
+    .calendar-menu-item svg {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+      fill: currentColor;
     }
 
     /* ── Event list (upcoming, non-featured) ── */
@@ -483,6 +540,7 @@
       }
       .event-row-date small { margin-top: 0; }
       .event-row-badge { margin-top: 4px; }
+      .calendar-menu { left: 0; right: auto; }
     }
   </style>
 </head>
@@ -494,7 +552,7 @@
 <nav class="mobile-nav" id="mobile-nav">
   <a href="/">HOME</a>
   <a href="/releases/">RELEASES</a>
-  <a href="/events/" class="active">SHOWS</a>
+  <a href="/events/" class="active">EVENTS</a>
   <a href="/store/">STORE</a>
   <div class="mobile-nav-footer">© 2026 UXBAN</div>
 </nav>
@@ -504,7 +562,7 @@
   <div class="nav-links">
     <a href="/">HOME</a>
     <a href="/releases/">RELEASES</a>
-    <a href="/events/" class="active">SHOWS</a>
+    <a href="/events/" class="active">EVENTS</a>
     <a href="/store/">STORE</a>
   </div>
   <div class="nav-info">
@@ -529,10 +587,6 @@
 /* ══════════════════════════════════════════════
    UXBAN — EVENTS PAGE
    Reads from /events/events-config.js
-
-   Public flag:
-     cfg.public === false hides the page from everyone
-     unless ?preview=1 is present.
 ══════════════════════════════════════════════ */
 
 (function () {
@@ -555,17 +609,17 @@
 
   const now       = Date.now();
   const upcoming  = allEvents.filter(e => e._time > now);
-  const past      = allEvents.filter(e => e._time <= now).reverse(); // most recent first
+  const past      = allEvents.filter(e => e._time <= now).reverse();
 
   /* ── Helpers ── */
-  function fmtDateParts(iso, opts) {
+  function fmtDateParts(iso) {
     const d = new Date(iso);
     const month = d.toLocaleString('en-NZ', { month: 'short' }).toUpperCase();
     const day   = d.getDate();
     const year  = d.getFullYear();
     const dow   = d.toLocaleString('en-NZ', { weekday: 'short' }).toUpperCase();
     const time  = d.toLocaleString('en-NZ', { hour: 'numeric', minute: '2-digit', hour12: true }).toUpperCase();
-    return { month, day, year, dow, time, dateObj: d };
+    return { month, day, year, dow, time };
   }
 
   function ticketBadgeHTML(status) {
@@ -591,18 +645,21 @@
     return status === 'onsale' || status === 'presale' || status === 'free';
   }
 
-  /* ── Build .ics file for Add to Calendar ── */
+  function locationString(event) {
+    return [event.venue, event.address, event.city, event.country].filter(Boolean).join(', ');
+  }
+
+  /* ── ICS file (for Apple / desktop) ── */
   function buildICS(event) {
     const start = new Date(event.date);
-    const end   = new Date(start.getTime() + 3 * 60 * 60 * 1000); // +3h default
-
-    const pad = n => String(n).padStart(2, '0');
+    const end   = new Date(start.getTime() + 3 * 60 * 60 * 1000);
+    const pad   = n => String(n).padStart(2, '0');
     const fmtUTC = d =>
       `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
 
     const uid  = `${event.id || 'event'}-uxban.shop`;
-    const loc  = [event.venue, event.address, event.city, event.country].filter(Boolean).join(', ');
-    const desc = [event.description, event.ticketsUrl ? `Tickets: ${event.ticketsUrl}` : ''].filter(Boolean).join('\\n\\n');
+    const loc  = locationString(event);
+    const desc = [event.description, event.ticketsUrl ? `Tickets: ${event.ticketsUrl}` : ''].filter(Boolean).join('\n\n');
 
     const ics = [
       'BEGIN:VCALENDAR',
@@ -637,6 +694,40 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  /* ── Google Calendar URL ── */
+  function buildGoogleUrl(event) {
+    const start = new Date(event.date);
+    const end   = new Date(start.getTime() + 3 * 60 * 60 * 1000);
+    const pad   = n => String(n).padStart(2, '0');
+    const fmt   = d =>
+      `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+
+    const params = new URLSearchParams({
+      action:   'TEMPLATE',
+      text:     `Uxban — ${event.title || 'Live'}`,
+      dates:    `${fmt(start)}/${fmt(end)}`,
+      location: locationString(event),
+      details:  [event.description, event.ticketsUrl ? `Tickets: ${event.ticketsUrl}` : ''].filter(Boolean).join('\n\n'),
+    });
+    return `https://calendar.google.com/calendar/render?${params}`;
+  }
+
+  /* ── Outlook URL ── */
+  function buildOutlookUrl(event) {
+    const start = new Date(event.date);
+    const end   = new Date(start.getTime() + 3 * 60 * 60 * 1000);
+    const params = new URLSearchParams({
+      path:     '/calendar/action/compose',
+      rru:      'addevent',
+      subject:  `Uxban — ${event.title || 'Live'}`,
+      startdt:  start.toISOString(),
+      enddt:    end.toISOString(),
+      location: locationString(event),
+      body:     [event.description, event.ticketsUrl ? `Tickets: ${event.ticketsUrl}` : ''].filter(Boolean).join('\n\n'),
+    });
+    return `https://outlook.live.com/calendar/0/deeplink/compose?${params}`;
+  }
+
   /* ── Render: not found ── */
   function renderNotFound() {
     root.innerHTML = `
@@ -646,18 +737,18 @@
       </div>`;
   }
 
-  /* ── Render: no events but page is public ── */
+  /* ── Render: empty ── */
   function emptyStateHTML() {
     return `
       <div class="events-empty ev-fade">
-        <p class="events-empty-label">// NO UPCOMING SHOWS</p>
+        <p class="events-empty-label">// NO UPCOMING EVENTS</p>
         <h3 class="events-empty-title">Nothing scheduled right now.</h3>
         <p class="events-empty-desc">Sign up below and you'll be the first to know when dates drop.</p>
         <a class="events-empty-cta" href="/#signup">GET NOTIFIED →</a>
       </div>`;
   }
 
-  /* ── Render: featured event card ── */
+  /* ── Render: featured event ── */
   function featuredHTML(event) {
     const d   = fmtDateParts(event.date);
     const has = isTicketsAvailable(event.ticketsStatus);
@@ -687,23 +778,35 @@
            ${event.ticketsStatus === 'soldout' ? 'SOLD OUT' : 'TICKETS TBA'}
          </span>`;
 
-    const mapsUrl = event.address || event.venue
-      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-          [event.venue, event.address, event.city, event.country].filter(Boolean).join(' ')
-        )}`
-      : '';
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationString(event))}`;
 
-    const directionsBtn = mapsUrl
-      ? `<a class="event-cta outline" href="${mapsUrl}" target="_blank" rel="noopener">
-           GET DIRECTIONS
-           <svg viewBox="0 0 24 24"><path d="M12 2L4 14h6l-2 8 8-12h-6l2-8z" fill="currentColor" stroke="none"/></svg>
-         </a>`
-      : '';
+    const directionsBtn = `
+      <a class="event-cta outline" href="${mapsUrl}" target="_blank" rel="noopener">
+        GET DIRECTIONS
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 14h6l-2 8 8-12h-6l2-8z" fill="currentColor" stroke="none"/></svg>
+      </a>`;
 
-    const calendarBtn = `<button class="event-cta outline" id="add-to-calendar" data-event-id="${event.id}">
-      ADD TO CALENDAR
-      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-    </button>`;
+    const calendarBtn = `
+      <div class="event-cta-group">
+        <button class="event-cta outline" id="add-to-calendar" data-event-id="${event.id}">
+          ADD TO CALENDAR
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        </button>
+        <div class="calendar-menu" id="calendar-menu">
+          <a class="calendar-menu-item" id="cal-google" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z"/></svg>
+            Google Calendar
+          </a>
+          <button class="calendar-menu-item" id="cal-apple" type="button">
+            <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            Apple Calendar
+          </button>
+          <a class="calendar-menu-item" id="cal-outlook" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M7 4h11a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm-4 4h2v8H3a1 1 0 01-1-1V9a1 1 0 011-1z"/></svg>
+            Outlook
+          </a>
+        </div>
+      </div>`;
 
     return `
       <div class="event-featured ev-fade ev-fade-1">
@@ -736,7 +839,7 @@
       </div>`;
   }
 
-  /* ── Render: compact row for other upcoming events ── */
+  /* ── Render: compact row ── */
   function rowHTML(event) {
     const d = fmtDateParts(event.date);
     const has = isTicketsAvailable(event.ticketsStatus);
@@ -759,7 +862,7 @@
       </${tag}>`;
   }
 
-  /* ── Render: past event card ── */
+  /* ── Render: past card ── */
   function pastCardHTML(event) {
     const d = fmtDateParts(event.date);
     return `
@@ -771,27 +874,26 @@
   }
 
   /* ══════════════════════════════════════════════
-     RENDER — entry point
+     RENDER
   ══════════════════════════════════════════════ */
   function render() {
-    document.title = 'Uxban | Shows';
+    document.title = 'Uxban | Events';
 
-    const nextEvent   = upcoming[0] || null;
+    const nextEvent    = upcoming[0] || null;
     const restUpcoming = upcoming.slice(1);
 
     let html = `
       <div class="events-header ev-fade">
         <small>// LIVE</small>
-        <h1>SHOWS</h1>
+        <h1>EVENTS</h1>
         <p>Upcoming dates and past performances. Come through.</p>
       </div>
     `;
 
-    // Upcoming shows
     if (nextEvent) {
       html += `
         <div class="events-section">
-          <span class="events-section-label">// NEXT SHOW</span>
+          <span class="events-section-label">// NEXT EVENT</span>
           ${featuredHTML(nextEvent)}
         </div>
       `;
@@ -810,11 +912,10 @@
       html += `<div class="events-section">${emptyStateHTML()}</div>`;
     }
 
-    // Past shows
     if (past.length) {
       html += `
         <div class="events-section">
-          <span class="events-section-label">// PAST SHOWS</span>
+          <span class="events-section-label">// PAST EVENTS</span>
           <div class="past-grid">
             ${past.map(pastCardHTML).join('')}
           </div>
@@ -824,7 +925,7 @@
 
     root.innerHTML = html;
     initCountdown();
-    bindCalendarButtons();
+    bindCalendar();
   }
 
   /* ── Countdown ── */
@@ -852,13 +953,51 @@
     setInterval(tick, 1000);
   }
 
-  /* ── Calendar buttons ── */
-  function bindCalendarButtons() {
-    const btn = document.getElementById('add-to-calendar');
-    if (!btn) return;
+  /* ══════════════════════════════════════════════
+     CALENDAR DROPDOWN
+  ══════════════════════════════════════════════ */
+  function bindCalendar() {
+    const btn       = document.getElementById('add-to-calendar');
+    const menu      = document.getElementById('calendar-menu');
+    const gBtn      = document.getElementById('cal-google');
+    const aBtn      = document.getElementById('cal-apple');
+    const oBtn      = document.getElementById('cal-outlook');
+    if (!btn || !menu) return;
+
     const event = allEvents.find(e => e.id === btn.dataset.eventId);
     if (!event) return;
-    btn.addEventListener('click', () => downloadICS(event));
+
+    // Precompute the URLs
+    gBtn.href = buildGoogleUrl(event);
+    oBtn.href = buildOutlookUrl(event);
+
+    // Toggle menu
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+
+    // Apple → download .ics (this is how Apple expects it — file opens in Calendar on macOS/iOS)
+    aBtn.addEventListener('click', () => {
+      downloadICS(event);
+      menu.classList.remove('open');
+    });
+
+    // Google / Outlook links close the menu on click
+    gBtn.addEventListener('click', () => menu.classList.remove('open'));
+    oBtn.addEventListener('click', () => menu.classList.remove('open'));
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target) && e.target !== btn) {
+        menu.classList.remove('open');
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') menu.classList.remove('open');
+    });
   }
 
   /* ── Boot ── */
@@ -866,7 +1005,7 @@
 
 })();
 
-/* ── Nav / banner / scroll-top (site-wide patterns) ── */
+/* ── Nav / banner / scroll-top ── */
 const scrollTop = document.getElementById('scroll-top');
 if (scrollTop) {
   window.addEventListener('scroll', () => scrollTop.classList.toggle('visible', window.scrollY > 400), { passive: true });
