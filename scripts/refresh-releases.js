@@ -27,7 +27,9 @@ function normalizeKey(str) {
 
 function upscaleArtwork(url) {
   if (!url) return '';
-  return url.replace(/\/\d+x\d+bb\.(jpg|png)$/i, '/1200x1200bb.$1');
+  // 600x600 is plenty for grid tiles and featured card.
+  // Detail pages can request 1200x1200 on demand if needed.
+  return url.replace(/\/\d+x\d+bb\.(jpg|png)$/i, '/600x600bb.$1');
 }
 
 function parseName(raw) {
