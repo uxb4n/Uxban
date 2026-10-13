@@ -2,18 +2,18 @@
    UXBAN — /api/spotify
    Serves data/releases.json (catalog) OR
    ?tracks=ALBUM_ID for a tracklist.
+   Track lookup uses iTunes (matches the catalog IDs).
    ============================================== */
 
 const fs   = require('fs');
 const path = require('path');
 
 const DATA_PATH = path.join(process.cwd(), 'data', 'releases.json');
-const ARTIST_ID = '433lt9JbmTHzNzHqZtiK7C';
 const TRACKS_TTL = 1000 * 60 * 60 * 24; // 24h
 
 let catalogCache = null;
 let catalogMtime = 0;
-const tracksCache = {}; // id -> { time, data }
+const tracksCache = {};
 
 async function handleCatalog(res) {
   try {
@@ -50,41 +50,33 @@ async function handleTracks(id, res) {
   }
 
   try {
-    const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + Buffer.from(
-          `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-        ).toString('base64'),
-      },
-      body: 'grant_type=client_credentials',
+    const url = `https://itunes.apple.com/lookup?id=${encodeURIComponent(id)}&entity=song&limit=200`;
+    const r = await fetch(url, {
+      headers: { 'User-Agent': 'uxban.shop/1.0' },
     });
 
-    if (!tokenRes.ok) throw new Error('Token fetch failed');
-    const { access_token } = await tokenRes.json();
+    if (!r.ok) throw new Error(`iTunes returned ${r.status}`);
+    const data = await r.json();
 
-    const albumRes = await fetch(`https://api.spotify.com/v1/albums/${id}?market=NZ`, {
-      headers: { 'Authorization': `Bearer ${access_token}` },
-    });
+    // iTunes returns the album first, then every track
+    const allItems = data.results || [];
+    const tracks = allItems
+      .filter(x => x.wrapperType === 'track')
+      .map((t, i) => ({
+        number:    t.trackNumber || (i + 1),
+        name:      t.trackName,
+        duration:  t.trackTimeMillis || 0,
+        featuring: [],
+      }));
 
-    if (!albumRes.ok) throw new Error(`Album fetch failed: ${albumRes.status}`);
-    const album = await albumRes.json();
+    if (!tracks.length) throw new Error('No tracks in album');
 
-    const tracks = (album.tracks?.items || []).map((t, i) => ({
-      number:    i + 1,
-      name:      t.name,
-      duration:  t.duration_ms,
-      featuring: (t.artists || [])
-        .filter(a => a.id !== ARTIST_ID)
-        .map(a => a.name),
-    }));
-
-    const data = { tracks, total: album.tracks?.total || tracks.length };
-    tracksCache[id] = { time: Date.now(), data };
+    const result = { tracks, total: tracks.length };
+    tracksCache[id] = { time: Date.now(), data: result };
 
     res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=3600');
-    return res.status(200).json(data);
+    return res.status(200).json(result);
+
   } catch (err) {
     console.error('[spotify tracks]', err.message);
     return res.status(500).json({ error: 'Failed to fetch tracks', detail: err.message });
