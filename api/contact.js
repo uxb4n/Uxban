@@ -9,7 +9,7 @@ const WINDOW_MS = 60 * 60 * 1000;   // 1 hour
 const MAX_PER_WINDOW = 3;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const DESTINATION = 'uxban@gmail.com';   // ← where contact emails land
+const DESTINATION = 'uuxban@gmail.com';   // ← where contact emails land
 
 function getIp(req) {
   const fwd = req.headers['x-forwarded-for'];
