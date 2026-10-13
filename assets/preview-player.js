@@ -1,20 +1,15 @@
 /* ==============================================
    UXBAN — Preview Player
-   One shared <audio> element for every preview
-   button on the page. Starting a new preview
-   auto-stops the previous one.
-
-   Buttons can carry:
-     data-preview      → mark as preview button
-     data-name         → track name (for API lookup)
-     data-id           → iTunes collection ID (exact match)
-     data-track-index  → optional 1-based track index
+   Shared <audio> element. One preview at a time.
+   Updates --preview-progress on the active button
+   so the UI can show a left-to-right fill.
    ============================================== */
 (function () {
   'use strict';
 
   let audio = null;
   let currentBtn = null;
+  let rafId = null;
   const urlCache = new Map();
 
   function getAudio() {
@@ -24,14 +19,41 @@
     audio.preload = 'none';
     audio.addEventListener('ended', resetBtn);
     audio.addEventListener('error', resetBtn);
+    audio.addEventListener('play',  startProgress);
+    audio.addEventListener('pause', stopProgress);
     return audio;
+  }
+
+  function startProgress() {
+    if (rafId) cancelAnimationFrame(rafId);
+    const tick = () => {
+      if (!currentBtn || !audio || audio.paused || audio.ended) {
+        rafId = null;
+        return;
+      }
+      if (audio.duration) {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        currentBtn.style.setProperty('--preview-progress', pct.toFixed(2) + '%');
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function stopProgress() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
   }
 
   function resetBtn() {
     if (currentBtn) {
       currentBtn.classList.remove('playing', 'loading');
       currentBtn.setAttribute('aria-label', 'Play preview');
+      currentBtn.style.setProperty('--preview-progress', '0%');
     }
+    stopProgress();
     currentBtn = null;
   }
 
@@ -59,33 +81,41 @@
   async function toggle(btn, name, artist) {
     const a = getAudio();
 
-    // Same button — pause
+    // Same button — pause / resume
     if (currentBtn === btn && !a.paused) {
       a.pause();
-      resetBtn();
+      // Keep the fill where it is — the pause event stops tracking
+      btn.classList.remove('playing');
+      btn.setAttribute('aria-label', 'Resume preview');
+      currentBtn = null;
       return;
     }
 
-    // Different button — stop previous
+    // Different button — stop previous fully
     if (currentBtn && currentBtn !== btn) {
       a.pause();
       a.currentTime = 0;
       resetBtn();
     }
 
+    // Resume a paused preview on the same button
+    if (btn.dataset._loadedSrc && a.src && a.currentTime > 0 && a.paused) {
+      a.play();
+      currentBtn = btn;
+      btn.classList.add('playing');
+      btn.setAttribute('aria-label', 'Stop preview');
+      return;
+    }
+
     btn.classList.add('loading');
     btn.setAttribute('aria-label', 'Loading preview');
 
-    // Read everything from the button
     const id         = btn.dataset.id || null;
     const trackIndex = btn.dataset.trackIndex || null;
     const trackName  = name || btn.dataset.name || null;
 
     const url = await fetchPreview({
-      id,
-      name: trackName,
-      artist: artist || 'Uxban',
-      trackIndex,
+      id, name: trackName, artist: artist || 'Uxban', trackIndex,
     });
 
     btn.classList.remove('loading');
@@ -102,6 +132,8 @@
 
     a.src = url;
     a.currentTime = 0;
+    btn.dataset._loadedSrc = url;
+    btn.style.setProperty('--preview-progress', '0%');
 
     try {
       await a.play();

@@ -24,7 +24,7 @@
 
   <script src="/listen/listen-config.js"></script>
   <script src="/release/release-config.js"></script>
-  <script src="/assets/preview-player.js?v=2" defer></script>
+  <script src="/assets/preview-player.js?v=3" defer></script>
   <script src="/assets/banner.js" defer></script>
 
   <style>
@@ -134,48 +134,33 @@
       color: var(--border-2);
     }
 
-    /* ── Story: max 4 lines with fade + scroll ── */
     .rel-story-wrap {
       position: relative;
       margin-bottom: 44px;
       max-width: 480px;
     }
-
     .rel-story {
       font-size: 16px;
       line-height: 1.75;
       color: var(--fg-dim);
-      max-height: calc(1.75em * 4);   /* exactly 4 lines */
+      max-height: calc(1.75em * 4);
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: var(--border-2) transparent;
       overscroll-behavior: contain;
       padding-right: 4px;
     }
-
     .rel-story::-webkit-scrollbar { width: 4px; }
     .rel-story::-webkit-scrollbar-track { background: transparent; }
-    .rel-story::-webkit-scrollbar-thumb {
-      background: var(--border-2);
-      border-radius: 2px;
-    }
-
+    .rel-story::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
     .rel-story p { margin: 0 0 14px; }
     .rel-story p:last-child { margin-bottom: 0; }
-    .rel-story a {
-      color: #fff;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
+    .rel-story a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
     .rel-story a:hover { color: var(--accent); }
-
-    /* Bottom fade — appears only when the story overflows */
     .rel-story-wrap::after {
       content: '';
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       height: 32px;
       background: linear-gradient(to bottom, transparent, var(--bg) 85%);
       pointer-events: none;
@@ -304,6 +289,7 @@
       display: block;
     }
 
+    /* ── Tracklist ── */
     .rel-tracklist { display: flex; flex-direction: column; }
 
     .rel-track {
@@ -409,12 +395,12 @@
       text-align: right;
     }
 
+    /* ── Credits ── */
     .rel-credits {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 40px;
     }
-
     .rel-credit-group h4 {
       font-family: var(--mono);
       font-size: 10px;
@@ -424,7 +410,6 @@
       margin-bottom: 14px;
       font-weight: 500;
     }
-
     .rel-credit-group p {
       font-family: var(--sans);
       font-size: 15px;
@@ -433,18 +418,192 @@
       line-height: 1.5;
     }
 
+    /* ═══════════════════════════════════════════
+       LYRICS
+    ═══════════════════════════════════════════ */
+    .lyrics-wrap {
+      max-width: 720px;
+    }
+
+    .lyrics-block {
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--fg);
+      letter-spacing: -0.005em;
+    }
+
+    .lyrics-section {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin: 40px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .lyrics-section:first-child { margin-top: 0; }
+    .lyrics-section::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--border-2), transparent);
+    }
+
+    .lyrics-line {
+      margin: 0 0 4px;
+      color: var(--fg-dim);
+      padding: 2px 0 2px 0;
+      position: relative;
+      transition: color 0.2s var(--ease), padding-left 0.2s var(--ease);
+      opacity: 0;
+      animation: lyricLineIn 0.5s var(--ease) forwards;
+    }
+    .lyrics-line::before {
+      content: '';
+      position: absolute;
+      left: -16px;
+      top: 50%;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transform: translateY(-50%) scale(0.5);
+      transition: opacity 0.2s, transform 0.25s var(--spring);
+    }
+    .lyrics-block:hover .lyrics-line { color: rgba(255,255,255,0.4); }
+    .lyrics-line:hover {
+      color: #fff;
+      padding-left: 6px;
+    }
+    .lyrics-line:hover::before {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+
+    .lyrics-break { height: 20px; }
+
+    @keyframes lyricLineIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stagger the entrance */
+    .lyrics-line:nth-child(1)  { animation-delay: 0.00s; }
+    .lyrics-line:nth-child(2)  { animation-delay: 0.02s; }
+    .lyrics-line:nth-child(3)  { animation-delay: 0.04s; }
+    .lyrics-line:nth-child(4)  { animation-delay: 0.06s; }
+    .lyrics-line:nth-child(5)  { animation-delay: 0.08s; }
+    .lyrics-line:nth-child(6)  { animation-delay: 0.10s; }
+    .lyrics-line:nth-child(7)  { animation-delay: 0.12s; }
+    .lyrics-line:nth-child(8)  { animation-delay: 0.14s; }
+    .lyrics-line:nth-child(9)  { animation-delay: 0.16s; }
+    .lyrics-line:nth-child(n+10) { animation-delay: 0.18s; }
+
+    /* ── Copy button ── */
+    .lyrics-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .lyrics-header-row .rel-section-label { margin-bottom: 0; }
+
+    .lyrics-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid var(--border-2);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .lyrics-copy:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.04); }
+    .lyrics-copy.copied {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .lyrics-copy svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+    /* ── Album accordion ── */
+    .album-lyrics-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .album-lyrics-track {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      overflow: hidden;
+      transition: border-color 0.2s var(--ease);
+    }
+    .album-lyrics-track:hover { border-color: var(--border-2); }
+    .album-lyrics-track[open] { border-color: var(--border-2); }
+
+    .album-lyrics-summary {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 24px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .album-lyrics-summary::-webkit-details-marker { display: none; }
+
+    .album-lyrics-num {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      width: 28px;
+      flex-shrink: 0;
+    }
+    .album-lyrics-name {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .album-lyrics-chevron {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--muted);
+      transition: transform 0.3s var(--spring), color 0.2s;
+    }
+    .album-lyrics-track[open] .album-lyrics-chevron {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
+
+    .album-lyrics-body {
+      padding: 8px 24px 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Related ── */
     .rel-related { padding: 80px 0 40px; }
     .rel-related .grid { margin-top: 32px; }
-
-    .rel-skeleton {
-      background: var(--bg-card);
-      border-radius: 6px;
-      animation: rel-shimmer 1.4s ease-in-out infinite;
-    }
-    @keyframes rel-shimmer {
-      0%, 100% { opacity: 0.5; }
-      50%      { opacity: 0.9; }
-    }
 
     .rel-not-found {
       padding: 200px var(--pad-x);
@@ -475,6 +634,8 @@
       .rel-platform-row { padding-left: 0; border-left: none; }
       .rel-track { gap: 16px; padding: 16px 12px; }
       .rel-track-feat { display: none; }
+      .lyrics-block { font-size: 15px; }
+      .lyrics-section { margin-top: 32px; }
     }
 
     @media (max-width: 480px) {
@@ -489,14 +650,9 @@
 
 <div class="noise"></div>
 
-<div class="site-banner" id="site-banner">
-  <span class="site-banner-text"></span>
-  <button class="site-banner-close" aria-label="Close banner">✕</button>
-</div>
-
 <nav class="mobile-nav" id="mobile-nav">
   <a href="/">HOME</a>
-  <a href="/releases/" class="active">RELEASES</a>
+  <a href="/releases/">RELEASES</a>
   <a href="/events/">EVENTS</a>
   <a href="/store/">STORE</a>
   <div class="mobile-nav-footer">© 2026 UXBAN</div>
@@ -506,7 +662,7 @@
   <a href="/"><img src="/assets/images/logo.png" class="nav-logo" alt="uxban"></a>
   <div class="nav-links">
     <a href="/">HOME</a>
-    <a href="/releases/" class="active">RELEASES</a>
+    <a href="/releases/">RELEASES</a>
     <a href="/events/">EVENTS</a>
     <a href="/store/">STORE</a>
   </div>
@@ -523,7 +679,7 @@
 <div class="page-wrap">
   <div class="rel-page" id="rel-page">
     <div class="rel-not-found" id="rel-loading">
-      <span class="rel-skeleton" style="display:inline-block;width:200px;height:12px;"></span>
+      <span style="display:inline-block;width:200px;height:12px;background:var(--bg-card);"></span>
     </div>
   </div>
 </div>
@@ -533,7 +689,6 @@
 <script>
 /* ══════════════════════════════════════════════
    UXBAN — RELEASE DETAIL PAGE
-   URL: /release/{slug}/
 ══════════════════════════════════════════════ */
 
 const ICONS = {
@@ -542,6 +697,8 @@ const ICONS = {
   youtube: '<svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>',
   play:    '<svg class="icon-play" viewBox="0 0 24 24"><polygon points="5,3 21,12 5,21"/></svg>',
   eq:      '<span class="icon-eq"><span></span><span></span><span></span></span>',
+  copy:    '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>',
+  chevron: '<svg class="album-lyrics-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
 };
 
 function slugify(name) {
@@ -562,14 +719,49 @@ function stripHtml(html) {
   return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* ── Parse raw lyrics string into structured lines ── */
+function parseLyrics(raw) {
+  const out = [];
+  const lines = String(raw || '').trim().split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      out.push({ type: 'break' });
+    } else if (/^\[.+\]$/.test(trimmed)) {
+      out.push({ type: 'section', label: trimmed.slice(1, -1) });
+    } else {
+      out.push({ type: 'line', text: trimmed });
+    }
+  }
+  return out;
+}
+
+/* ── Render a lyrics block from parsed lines ── */
+function lyricsBlockHTML(raw) {
+  const parts = parseLyrics(raw);
+  if (!parts.length) return '';
+
+  const inner = parts.map(p => {
+    if (p.type === 'section') return `<p class="lyrics-section">${escapeHtml(p.label)}</p>`;
+    if (p.type === 'break')   return `<div class="lyrics-break"></div>`;
+    return `<p class="lyrics-line">${escapeHtml(p.text)}</p>`;
+  }).join('');
+
+  return `<div class="lyrics-block">${inner}</div>`;
+}
+
 (async function init() {
 
   const parts = location.pathname.replace(/\/$/, '').split('/');
   const slug  = decodeURIComponent(parts[parts.length - 1] || '');
-
   if (!slug) return showNotFound();
 
-  /* ── Load release catalog ── */
   let release = null;
   let allReleases = [];
   try {
@@ -588,27 +780,19 @@ function stripHtml(html) {
 
   const cfg = window.UXBAN_RELEASE_CONFIG || {};
 
-  /* ── Load Genius description ── */
+  /* ── Story: manual > Genius > fallback ── */
   let geniusDesc = null;
   try {
     const gRes = await fetch('/data/genius.json');
     if (gRes.ok) {
       const gData = await gRes.json();
       geniusDesc = (gData.descriptions && gData.descriptions[slug]) || null;
-      console.log('[release] Genius lookup:', slug, geniusDesc ? 'found' : 'not found');
-    } else {
-      console.warn('[release] genius.json returned', gRes.status);
     }
-  } catch (err) {
-    console.warn('[release] genius.json fetch failed:', err.message);
-  }
+  } catch {}
 
-  /* ── Story priority: manual > Genius > fallback ── */
-  const story = (cfg.stories || {})[slug]
-    || geniusDesc
-    || `${release.name} by Uxban.`;
+  const story = (cfg.stories || {})[slug] || geniusDesc || `${release.name} by Uxban.`;
 
-  /* ── Credits: defaults + overrides + featuring ── */
+  /* ── Credits ── */
   const baseCredits     = { ...(cfg.defaultCredits || {}) };
   const overrideCredits = (cfg.credits || {})[slug] || {};
   const mergedCredits   = { ...baseCredits, ...overrideCredits };
@@ -617,30 +801,55 @@ function stripHtml(html) {
   if (featList.length && !('Featuring' in overrideCredits)) {
     mergedCredits['Featuring'] = featList.join(' & ');
   }
-
-  Object.keys(mergedCredits).forEach(k => {
-    if (!mergedCredits[k]) delete mergedCredits[k];
-  });
-
+  Object.keys(mergedCredits).forEach(k => { if (!mergedCredits[k]) delete mergedCredits[k]; });
   const credits = mergedCredits;
 
-  /* ── Field extraction ── */
+  /* ── Load lyrics from /lyrics/ folder ──
+     Singles:  /lyrics/{slug}.txt
+     Albums:   /lyrics/{album-slug}/{track-slug}.txt */
+  let singleLyrics = null;
+  let albumLyrics  = null;
+
+  if (isAlbum && tracks.length) {
+    const results = await Promise.all(
+      tracks.map(async (t) => {
+        const trackSlug = slugify(t.name);
+        try {
+          const res = await fetch(`/lyrics/${slug}/${trackSlug}.txt`);
+          if (res.ok) {
+            const text = (await res.text()).trim();
+            if (text) return { name: t.name, number: t.number, lyrics: text };
+          }
+        } catch {}
+        return null;
+      })
+    );
+    const found = results.filter(Boolean);
+    if (found.length) albumLyrics = found;
+  } else {
+    try {
+      const res = await fetch(`/lyrics/${slug}.txt`);
+      if (res.ok) {
+        const text = (await res.text()).trim();
+        if (text) singleLyrics = text;
+      }
+    } catch {}
+  }
+
+  /* ── Fields ── */
   const cover   = release.images?.[0]?.url || '';
   const year    = release.release_date?.slice(0, 4) || '';
   const type    = release.album_type === 'album' ? 'ALBUM' : 'SINGLE';
   const typeLc  = type.toLowerCase();
   const isAlbum = type === 'ALBUM';
-
   const isReleased = release.release_date
     ? new Date(release.release_date) <= new Date()
     : true;
-
   const links = release.links || {};
 
-  /* ── Meta tags ── */
-  const pageUrl     = `${location.origin}/release/${slug}/`;
-  const plainStory  = stripHtml(story).slice(0, 160);
-
+  /* ── Meta ── */
+  const pageUrl    = `${location.origin}/release/${slug}/`;
+  const plainStory = stripHtml(story).slice(0, 160);
   document.title = `Uxban — ${release.name}`;
   document.getElementById('page-title').textContent = `Uxban — ${release.name}`;
   document.getElementById('meta-desc').content      = plainStory;
@@ -654,7 +863,7 @@ function stripHtml(html) {
     document.getElementById('tw-image').content = cover;
   }
 
-  /* ── Tracklist (albums only) ── */
+  /* ── Tracklist ── */
   let tracks = [];
   if (isAlbum && release.id) {
     try {
@@ -675,7 +884,7 @@ function stripHtml(html) {
   if (links.appleMusic)   platformBtns.push(`<a class="rel-platform" href="${links.appleMusic}"   target="_blank" rel="noopener" aria-label="Apple Music">${ICONS.apple}</a>`);
   if (links.youtubeMusic) platformBtns.push(`<a class="rel-platform" href="${links.youtubeMusic}" target="_blank" rel="noopener" aria-label="YouTube Music">${ICONS.youtube}</a>`);
 
-  /* ── Related releases ── */
+  /* ── Related ── */
   const related = allReleases
     .filter(r => r.id !== release.id)
     .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
@@ -702,6 +911,43 @@ function stripHtml(html) {
         }).join('')}
       </div>
     </div>` : '';
+
+  /* ── Lyrics HTML ── */
+  let lyricsHTML = '';
+
+  if (singleLyrics) {
+    lyricsHTML = `
+      <div class="rel-section">
+        <div class="lyrics-header-row">
+          <span class="rel-section-label">// LYRICS</span>
+          <button class="lyrics-copy" id="lyrics-copy-btn">
+            ${ICONS.copy} COPY
+          </button>
+        </div>
+        <div class="lyrics-wrap">
+          ${lyricsBlockHTML(singleLyrics)}
+        </div>
+      </div>`;
+  } else if (albumLyrics && albumLyrics.length) {
+    lyricsHTML = `
+      <div class="rel-section">
+        <span class="rel-section-label">// LYRICS</span>
+        <div class="album-lyrics-list">
+          ${albumLyrics.map(({ name, number, lyrics }) => `
+            <details class="album-lyrics-track">
+              <summary class="album-lyrics-summary">
+                <span class="album-lyrics-num">${String(number).padStart(2, '0')}</span>
+                <span class="album-lyrics-name">${escapeHtml(name)}</span>
+                ${ICONS.chevron}
+              </summary>
+              <div class="album-lyrics-body">
+                ${lyricsBlockHTML(lyrics)}
+              </div>
+            </details>
+          `).join('')}
+        </div>
+      </div>`;
+  }
 
   /* ── Render ── */
   const root = document.getElementById('rel-page');
@@ -780,21 +1026,39 @@ function stripHtml(html) {
       </div>
     ` : ''}
 
+    ${lyricsHTML}
+
     ${relatedHTML}
   `;
 
-  /* ── Overflow detection for the story fade ── */
+  /* ── Wire lyrics copy buttons ── */
+  const copyBtn = document.getElementById('lyrics-copy-btn');
+  if (copyBtn && singleLyrics) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(singleLyrics.trim()).then(() => {
+        const orig = copyBtn.innerHTML;
+        copyBtn.classList.add('copied');
+        copyBtn.innerHTML = `${ICONS.copy} COPIED`;
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.innerHTML = orig;
+        }, 1800);
+      });
+    });
+  }
+
+  /* ── Story overflow ── */
   const storyEl   = document.getElementById('rel-story');
   const storyWrap = document.querySelector('.rel-story-wrap');
   if (storyEl && storyWrap) {
-    const checkOverflow = () => {
+    const check = () => {
       const hasOverflow = storyEl.scrollHeight > storyEl.clientHeight + 2;
       const atBottom    = storyEl.scrollTop + storyEl.clientHeight >= storyEl.scrollHeight - 4;
       storyWrap.classList.toggle('has-overflow', hasOverflow && !atBottom);
     };
-    checkOverflow();
-    storyEl.addEventListener('scroll', checkOverflow, { passive: true });
-    window.addEventListener('resize', checkOverflow, { passive: true });
+    check();
+    storyEl.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
   }
 
   /* ── Wire preview buttons ── */
@@ -808,7 +1072,7 @@ function stripHtml(html) {
     });
   });
 
-  /* ── Track row click → listen page ── */
+  /* ── Track row click → listen ── */
   root.querySelectorAll('.rel-track').forEach(row => {
     row.addEventListener('click', e => {
       if (e.target.closest('[data-preview]')) return;
@@ -816,7 +1080,7 @@ function stripHtml(html) {
     });
   });
 
-  /* ── Track number playing state ── */
+  /* ── Track num playing state ── */
   root.querySelectorAll('.track-num-play').forEach(btn => {
     const obs = new MutationObserver(() => {
       btn.closest('.rel-track-num')?.classList.toggle('playing', btn.classList.contains('playing'));
@@ -824,7 +1088,7 @@ function stripHtml(html) {
     obs.observe(btn, { attributes: true, attributeFilter: ['class'] });
   });
 
-  /* ── Scroll-driven cover rotation ── */
+  /* ── Scroll-driven cover ── */
   const coverEl = document.getElementById('rel-cover');
   if (coverEl) {
     let ticking = false;
@@ -844,7 +1108,6 @@ function stripHtml(html) {
 
 })();
 
-/* ── Not found state ── */
 function showNotFound() {
   const root = document.getElementById('rel-page');
   if (root) {
@@ -881,19 +1144,12 @@ function updateNavOffset() {
   const banner = document.getElementById('site-banner');
   const nav    = document.getElementById('top-bar');
   if (!nav) return;
-  const visible = banner && banner.style.display !== 'none';
+  const visible = banner && banner.style.display !== 'none' && !banner.classList.contains('dismissed');
   nav.style.top = visible ? banner.offsetHeight + 'px' : '0';
 }
 updateNavOffset();
 window.addEventListener('resize', updateNavOffset);
-
-const bannerClose = document.querySelector('.site-banner-close');
-if (bannerClose) {
-  bannerClose.addEventListener('click', () => {
-    document.getElementById('site-banner').style.display = 'none';
-    setTimeout(updateNavOffset, 30);
-  });
-}
+document.addEventListener('uxban:banner-rendered', () => setTimeout(updateNavOffset, 10));
 </script>
 
 <script src="/assets/command-palette.js" defer></script>

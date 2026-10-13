@@ -2977,6 +2977,71 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
   transform: translateY(-50%) rotate(90deg);
 }
 
+/* =========================
+   PREVIEW BUTTON PROGRESS FILL
+   A left-to-right fill that grows as the preview
+   plays. Driven by --preview-progress (set by
+   preview-player.js).
+========================= */
+
+/* Every preview button needs a positioning context */
+.release-tile-play,
+.release-tile-play-mobile,
+.rel-cta-outline,
+.track-num-play {
+  position: relative;
+  overflow: hidden;
+}
+
+/* The fill layer */
+.release-tile-play::before,
+.release-tile-play-mobile::before,
+.rel-cta-outline::before,
+.track-num-play::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: var(--preview-progress, 0%);
+  background: var(--accent);
+  opacity: 0.4;
+  pointer-events: none;
+  transition: width 0.15s linear;
+  z-index: 0;
+}
+
+/* Slightly stronger tint on the small circular tile button */
+.release-tile-play::before,
+.release-tile-play-mobile::before {
+  opacity: 0.5;
+}
+
+/* Lighter tint on the wide outline button */
+.rel-cta-outline::before {
+  opacity: 0.28;
+}
+
+/* Smaller tint for tiny tracklist buttons */
+.track-num-play::before {
+  opacity: 0.55;
+}
+
+/* Keep icons + text above the fill */
+.release-tile-play > *,
+.release-tile-play-mobile > *,
+.rel-cta-outline > *,
+.track-num-play > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Reset the transition when not playing (instant snap-back) */
+.release-tile-play:not(.playing)::before,
+.release-tile-play-mobile:not(.playing)::before,
+.rel-cta-outline:not(.playing)::before,
+.track-num-play:not(.playing)::before {
+  transition: width 0.35s var(--ease);
+}
+
 /* ── Hide-on-mobile helper ── */
 @media (max-width: 480px) {
   .site-banner .hide-on-mobile { display: none; }
