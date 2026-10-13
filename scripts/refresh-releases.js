@@ -35,16 +35,45 @@ function upscaleArtwork(url) {
 function parseName(raw) {
   let name = String(raw || '').trim();
   const featuring = [];
+  let featuredOn = false;   // true if Uxban is the feature, not the primary
+
   const featMatch = name.match(/\(feat\.\s*([^)]+)\)/i);
   if (featMatch) {
-    featMatch[1].split(/,|&/).forEach(a => {
-      const clean = a.trim().replace(/^Uxban$/i, '').trim();
-      if (clean) featuring.push(clean);
-    });
+    const artists = featMatch[1].split(/,|&/).map(a => a.trim());
+
+    // Is Uxban in the feat list? If yes, this is someone else's track
+    const uxbanIsFeatured = artists.some(a => /^uxban$/i.test(a));
+
+    if (uxbanIsFeatured) {
+      featuredOn = true;
+      // featuring array stays empty — Uxban IS the feature
+      artists.forEach(a => {
+        const clean = a.trim();
+        if (clean && !/^uxban$/i.test(clean)) featuring.push(clean);
+      });
+    } else {
+      // Uxban is primary; the feat list are the guests
+      artists.forEach(a => {
+        const clean = a.trim();
+        if (clean && !/^uxban$/i.test(clean)) featuring.push(clean);
+      });
+    }
+
     name = name.replace(/\s*\(feat\.[^)]+\)/i, '').trim();
   }
+
   name = name.replace(/\s+-\s+(Single|EP|Album)$/i, '').trim();
-  return { name, featuring };
+  return { name, featuring, featuredOn };
+}
+
+/* Extract the primary (non-Uxban) artist from an iTunes artistName.
+   e.g. "Somebody & Uxban" → "Somebody" */
+function extractPrimaryArtist(artistName) {
+  return String(artistName || '')
+    .split(/\s*&\s*|\s*,\s*/)
+    .map(s => s.trim())
+    .filter(s => s && !/^uxban$/i.test(s))
+    .join(' & ');
 }
 
 function loadOverrides() {
@@ -190,11 +219,14 @@ async function main() {
   const missingSpotify = [];
 
   for (const item of releases) {
-    const { name, featuring } = parseName(item.collectionName);
+    const { name, featuring, featuredOn } = parseName(item.collectionName);
     const key = normalizeKey(name);
 
-    const type   = (item.trackCount || 1) <= 3 ? 'single' : 'album';
+    // Featured-on releases are always singles in our taxonomy
+    const type   = featuredOn ? 'single' : ((item.trackCount || 1) <= 3 ? 'single' : 'album');
     const bucket = type === 'single' ? singles : albums;
+
+    const primaryArtist = featuredOn ? extractPrimaryArtist(item.artistName) : 'Uxban';
 
     // Override handling:
     //   null → hide spotify link (empty string)
@@ -236,8 +268,10 @@ async function main() {
       total_tracks:  item.trackCount || 1,
       images:        [{ url: upscaleArtwork(item.artworkUrl100) }],
       external_urls: { spotify: spotifyUrl },
-      artists:       [{ id: ITUNES_ARTIST_ID, name: 'Uxban' }],
+      artists:       [{ id: ITUNES_ARTIST_ID, name: primaryArtist }],
       featuring,
+      featuredOn,           // ← new: true if Uxban is the guest
+      primaryArtist,        // ← new: who the track actually belongs to
       links: {
         spotify:      spotifyUrl,
         appleMusic:   item.collectionViewUrl || '',

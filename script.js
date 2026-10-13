@@ -277,32 +277,24 @@ async function loadSpotifyData() {
     if (all.length > 1) {
       const gridItems = all.slice(1, 8);
 
-      gridEl.innerHTML = gridItems.map(({ release, cover, type }) => {
-        const slug = uxbanSlugify(release.name);
-        const href = `/release/${slug}/`;
-        const year = release.release_date?.slice(0, 4) || '';
-        const name = release.name;
-
-        return `
-          <a class="grid-card spotlight-card" href="${href}" data-preview-name="${name}">
-            <div class="grid-img">
-              <img src="${cover}" alt="${name}" loading="lazy">
-              <div class="release-tile-overlay">
-                <button class="release-tile-play" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
-                  ${PLAY_ICON}${EQ_ICON}
-                </button>
-              </div>
-              ${isTouch ? `
-                <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
-                  ${PLAY_ICON}${EQ_ICON}
-                </button>` : ''}
-            </div>
-            <div class="grid-info">
-              <h3 class="grid-name">${name}</h3>
-              <p class="grid-price">${type} · ${year}</p>
-            </div>
-          </a>`;
-      }).join('') + `
+            gridEl.innerHTML = gridItems.map(({ release, cover, type }) => {
+              const slug   = uxbanSlugify(release.name);
+              const href   = `/release/${slug}/`;
+              const year   = release.release_date?.slice(0, 4) || '';
+              const metaLabel = release.featuredOn
+                ? `FEAT. · ${(release.primaryArtist || '').toUpperCase()}`
+                : `${type} · ${year}`;
+              return `
+                <a class="grid-card spotlight-card" href="${href}">
+                  <div class="grid-img">
+                    <img src="${cover}" alt="${release.name}" loading="lazy">
+                  </div>
+                  <div class="grid-info">
+                    <h3 class="grid-name">${release.name}</h3>
+                    <p class="grid-price">${metaLabel}</p>
+                  </div>
+                </a>`;
+            }).join('') + `
         <a class="grid-promo" href="/releases/">
           <p class="grid-promo-eyebrow">BROWSE</p>
           <h3 class="grid-promo-title">ALL<br>RELEASES</h3>

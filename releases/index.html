@@ -212,6 +212,10 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
+    .release-tile-badge.feat {
+      background: #fff;
+      color: #000;
+    }
 
     .release-tile-info {
       padding: 18px 20px 20px;
@@ -362,6 +366,7 @@
       <button class="filter-pill active" data-filter="all">ALL</button>
       <button class="filter-pill" data-filter="album">ALBUMS</button>
       <button class="filter-pill" data-filter="single">SINGLES</button>
+      <button class="filter-pill" data-filter="featured" id="filter-pill-featured" style="display:none;">FEATURED ON</button>
     </div>
 
     <div class="sort-pills">
@@ -423,9 +428,18 @@ let state = { filter: 'all', sort: 'newest' };
 
 function applyFilterSort() {
   let list = [...allReleases];
-  if (state.filter !== 'all') {
-    list = list.filter(r => r.type.toLowerCase() === state.filter);
+
+  if (state.filter === 'featured') {
+    // Only featured-on releases
+    list = list.filter(r => r.release.featuredOn === true);
+  } else {
+    // Everything EXCEPT featured-on releases
+    list = list.filter(r => r.release.featuredOn !== true);
+    if (state.filter !== 'all') {
+      list = list.filter(r => r.type.toLowerCase() === state.filter);
+    }
   }
+
   switch (state.sort) {
     case 'newest': list.sort((a, b) => new Date(b.release.release_date) - new Date(a.release.release_date)); break;
     case 'oldest': list.sort((a, b) => new Date(a.release.release_date) - new Date(b.release.release_date)); break;
@@ -440,6 +454,14 @@ function buildTile(item, index) {
   const year = release.release_date?.slice(0, 4) || '';
   const name = release.name;
 
+  const isFeatured = release.featuredOn === true;
+  const primaryArtist = release.primaryArtist || '';
+  const badgeType = isFeatured ? 'feat' : type.toLowerCase();
+  const badgeLabel = isFeatured ? 'FEAT.' : type;
+  const metaLabel = isFeatured
+    ? `BY ${(primaryArtist || 'Various Artists').toUpperCase()}`
+    : type;
+
   const slug    = slugify(release.name);
   const tileUrl = `/release/${slug}/`;
 
@@ -448,16 +470,14 @@ function buildTile(item, index) {
   tile.dataset.id   = release.id;
   tile.dataset.type = type;
   tile.dataset.date = release.release_date || '';
-  tile.dataset.name = name.toLowerCase();
+  tile.dataset.name = release.name.toLowerCase();
   tile.dataset.url  = tileUrl;
   tile.style.setProperty('--i', index);
-
-  const isTouch = !window.matchMedia('(hover: hover)').matches;
 
   tile.innerHTML = `
     <div class="release-tile-img">
       <img src="${cover}" alt="${name}" loading="lazy">
-      <span class="release-tile-badge ${type.toLowerCase()}">${type}</span>
+      <span class="release-tile-badge ${badgeType}">${badgeLabel}</span>
       <div class="release-tile-overlay">
         <button class="release-tile-play" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
           ${ICONS.play}
@@ -469,36 +489,28 @@ function buildTile(item, index) {
           <a class="platform-icon" href="${urls.youtube}" target="_blank" rel="noopener" aria-label="YouTube Music" data-platform="youtube">${ICONS.youtube}</a>
         </div>
       </div>
-      ${isTouch ? `
-        <button class="release-tile-play-mobile" data-preview="1" data-name="${name}" data-id="${release.id}" aria-label="Play preview">
-          ${ICONS.play}
-          ${ICONS.eq}
-        </button>` : ''}
     </div>
     <div class="release-tile-info">
       <div style="min-width:0;flex:1;">
-        <h3 class="release-tile-name">${name}</h3>
-        <p class="release-tile-meta">${type}</p>
+        <h3 class="release-tile-name">${release.name}</h3>
+        <p class="release-tile-meta">${metaLabel}</p>
       </div>
       <span class="release-tile-year">${year}</span>
     </div>`;
 
-  // Preview buttons stop propagation (they shouldn't navigate)
   tile.querySelectorAll('[data-preview]').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       if (window.UxbanPreview) {
-        window.UxbanPreview.toggle(btn, name, 'Uxban');
+        window.UxbanPreview.toggle(btn, name, primaryArtist || 'Uxban');
       }
     });
   });
 
-  // Platform icons stop propagation too
   tile.querySelectorAll('.platform-icon').forEach(icon => {
     icon.addEventListener('click', e => e.stopPropagation());
   });
 
-  // Tile click → release page
   tile.addEventListener('click', () => { window.location.href = tile.dataset.url; });
 
   return tile;
@@ -601,6 +613,11 @@ async function loadReleases() {
       ...(data.albums  || []).map(r => ({ release: r, cover: r.images?.[0]?.url || '', type: 'ALBUM'  })),
       ...(data.singles || []).map(r => ({ release: r, cover: r.images?.[0]?.url || '', type: 'SINGLE' })),
     ];
+
+        /* Reveal the FEATURED ON pill only if we have any */
+    const hasFeatured = allReleases.some(r => r.release.featuredOn === true);
+    const featPill = document.getElementById('filter-pill-featured');
+    if (featPill) featPill.style.display = hasFeatured ? '' : 'none';
 
     if (!allReleases.length) {
       count.textContent = '// CATALOG SYNCING';

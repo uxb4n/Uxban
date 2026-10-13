@@ -21,6 +21,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/album/62Qw3eFdZ9SpvHqsVDKuDt",
         "appleMusic": "https://music.apple.com/us/album/uxtra/1890788021?uo=4",
@@ -48,6 +50,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/album/6tENe37MOcfJKgNU9dZVF9",
         "appleMusic": "https://music.apple.com/us/album/ux/6807649597?uo=4",
@@ -75,6 +79,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/album/3QCyhSXN4yDG2w3JRfAfAQ",
         "appleMusic": "https://music.apple.com/us/album/more-than-days/1820471067?uo=4",
@@ -104,6 +110,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/1oWySnaThEsLbqcEHMWvPH",
         "appleMusic": "https://music.apple.com/us/album/on-you-single/6817164124?uo=4",
@@ -131,6 +139,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/5GNic68ZHANOnMKxtuGyXL",
         "appleMusic": "https://music.apple.com/us/album/back2me-single/6802825618?uo=4",
@@ -158,6 +168,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/1yQixBb23SLoZirynDt6nW",
         "appleMusic": "https://music.apple.com/us/album/uno-single/6801646454?uo=4",
@@ -185,6 +197,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/447IcV1QdO8wuzgESV9UBf",
         "appleMusic": "https://music.apple.com/us/album/switch-up-single/6817349630?uo=4",
@@ -212,6 +226,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/album/1CTU6z0vSGiEf8RyES9Xsi",
         "appleMusic": "https://music.apple.com/us/album/things-you-cant-prove-single/1886136281?uo=4",
@@ -241,6 +257,8 @@
       "featuring": [
         "VZee"
       ],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/0wVOJgeOcsUG6pxc1ziRBw",
         "appleMusic": "https://music.apple.com/us/album/freddy-krue-feat-vzee-single/1879704694?uo=4",
@@ -268,6 +286,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/3KEJIAyxsdYpkQGMIJIfHy",
         "appleMusic": "https://music.apple.com/us/album/dying-inna-red-single/1880895489?uo=4",
@@ -295,6 +315,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/1AezLh8MPoskE4Iq3eiyeR",
         "appleMusic": "https://music.apple.com/us/album/everythinguwant-single/1871039629?uo=4",
@@ -322,6 +344,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": "https://open.spotify.com/track/5axxKJ11n6WuUt1fIPO4jP",
         "appleMusic": "https://music.apple.com/us/album/miss-me-single/1851584322?uo=4",
@@ -349,6 +373,8 @@
         }
       ],
       "featuring": [],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": null,
         "appleMusic": "https://music.apple.com/us/album/dancer-single/1833758354?uo=4",
@@ -379,6 +405,8 @@
         "THIRTEENTH GENERATION",
         "RPprods"
       ],
+      "featuredOn": false,
+      "primaryArtist": "Uxban",
       "links": {
         "spotify": null,
         "appleMusic": "https://music.apple.com/us/album/i-hope-feat-thirteenth-generation-rpprods-single/1832093353?uo=4",
@@ -402,10 +430,12 @@
       "artists": [
         {
           "id": "1757422943",
-          "name": "Uxban"
+          "name": "THIRTEENTH GENERATION"
         }
       ],
       "featuring": [],
+      "featuredOn": true,
+      "primaryArtist": "THIRTEENTH GENERATION",
       "links": {
         "spotify": null,
         "appleMusic": "https://music.apple.com/us/album/kicked-out-feat-uxban-single/1827976037?uo=4",
