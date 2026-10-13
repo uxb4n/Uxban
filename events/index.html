@@ -78,9 +78,11 @@
       gap: 0;
       border: 1px solid var(--border);
       border-radius: 12px;
-      overflow: hidden;
+      /* overflow intentionally NOT set — allows dropdown to escape */
       background: var(--bg-card);
       margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
     }
 
     .event-featured-poster {
@@ -89,6 +91,7 @@
       background-size: cover;
       background-position: center;
       min-height: 420px;
+      border-radius: 11px 0 0 11px;
     }
 
     .event-featured-poster::after {
@@ -122,7 +125,8 @@
       flex-direction: column;
       justify-content: center;
       position: relative;
-      z-index: 1;
+      z-index: 2;
+      border-radius: 0 11px 11px 0;
     }
 
     /* ── Countdown ── */
@@ -245,11 +249,6 @@
       position: relative;
     }
 
-    .event-cta-group {
-      position: relative;
-      display: inline-flex;
-    }
-
     .event-cta {
       display: inline-flex;
       align-items: center;
@@ -298,12 +297,18 @@
       transform: translateY(-4px);
       pointer-events: none;
       transition: opacity 0.15s var(--ease), transform 0.15s var(--ease);
-      z-index: 20;
+      z-index: 100;
     }
     .calendar-menu.open {
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
+    }
+
+    .event-cta-group {
+      position: relative;
+      display: inline-flex;
+      z-index: 5;
     }
 
     .calendar-menu-item {
@@ -519,25 +524,36 @@
     .ev-fade-3 { animation-delay: 0.25s; }
 
     /* ── Responsive ── */
-    @media (max-width: 900px) {
+        @media (max-width: 900px) {
       .events-page { padding: 120px var(--pad-x) 80px; }
       .event-featured { grid-template-columns: 1fr; }
-      .event-featured-poster { min-height: 260px; }
+      .event-featured-poster {
+        min-height: 260px;
+        border-radius: 11px 11px 0 0;
+      }
+
       .event-featured-poster::after {
         background: linear-gradient(to top, var(--bg-card) 0%, transparent 60%);
       }
-      .event-featured-info { padding: 32px 24px 40px; }
+
+      .event-featured-info {
+        padding: 32px 24px 40px;
+        border-radius: 0 0 11px 11px;
+      }
+
       .event-row {
         grid-template-columns: 1fr;
         gap: 12px;
         padding: 24px 16px;
       }
+
       .event-row-date {
         display: flex;
         align-items: baseline;
         gap: 12px;
         font-size: 1rem;
       }
+
       .event-row-date small { margin-top: 0; }
       .event-row-badge { margin-top: 4px; }
       .calendar-menu { left: 0; right: auto; }
