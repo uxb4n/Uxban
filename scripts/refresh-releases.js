@@ -157,7 +157,7 @@ async function main() {
 
     if (rawOverride === null) {
       // Explicitly hide Spotify — no link at all
-      spotifyUrl = '';
+      spotifyUrl = null;   // ← real null, not empty string
     } else if (typeof rawOverride === 'string' && rawOverride) {
       spotifyUrl = rawOverride;
       hasDirectSpotify = true;
