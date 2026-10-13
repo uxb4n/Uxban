@@ -1,18 +1,6 @@
 /* ==============================================
    UXBAN — Refresh Releases (iTunes edition)
    Run: node scripts/refresh-releases.js
-
-   Fully automatic. Pulls the entire catalog
-   from iTunes — no auth, no key, no quota.
-
-   Spotify links:
-     • Default → auto search URL (works instantly)
-     • Optional → add direct album URLs to
-       data/spotify-overrides.json (keyed by
-       release name) to upgrade specific ones
-
-   YouTube Music links:
-     • Optional overrides via the same JSON file
    ============================================== */
 
 const fs   = require('fs');
@@ -22,8 +10,17 @@ const ITUNES_ARTIST_ID = '1757422943';
 
 const OUT_PATH       = path.join(__dirname, '..', 'data', 'releases.json');
 const OVERRIDES_PATH = path.join(__dirname, '..', 'data', 'spotify-overrides.json');
+const INDEX_PATH     = path.join(__dirname, '..', 'index.html');
 
-/* ── Helpers ──────────────────────────────── */
+/* ── Releases to exclude from the site entirely ──
+   Add a name here if a release shouldn't appear anywhere. */
+const IGNORED_RELEASES = [
+  // 'i hope',
+  // 'dancer',
+  // 'kicked out',
+];
+
+/* ── Helpers ── */
 function normalizeKey(str) {
   return String(str || '').toLowerCase().trim();
 }
@@ -33,12 +30,8 @@ function upscaleArtwork(url) {
   return url.replace(/\/\d+x\d+bb\.(jpg|png)$/i, '/1200x1200bb.$1');
 }
 
-/* Strip " - Single" / " - EP" / " - Album" suffixes.
-   Extract "(feat. X)" into the featuring array. */
 function parseName(raw) {
   let name = String(raw || '').trim();
-
-  // Extract featuring before stripping
   const featuring = [];
   const featMatch = name.match(/\(feat\.\s*([^)]+)\)/i);
   if (featMatch) {
@@ -48,16 +41,10 @@ function parseName(raw) {
     });
     name = name.replace(/\s*\(feat\.[^)]+\)/i, '').trim();
   }
-
-  // Strip release-type suffixes
-  name = name
-    .replace(/\s+-\s+(Single|EP|Album)$/i, '')
-    .trim();
-
+  name = name.replace(/\s+-\s+(Single|EP|Album)$/i, '').trim();
   return { name, featuring };
 }
 
-/* ── Load optional overrides ──────────────── */
 function loadOverrides() {
   try {
     if (!fs.existsSync(OVERRIDES_PATH)) return {};
@@ -71,7 +58,46 @@ function loadOverrides() {
   }
 }
 
-/* ── Main ─────────────────────────────────── */
+/* ════════════════════════════════════════════════
+   Update homepage OG meta tags from newest release
+   ════════════════════════════════════════════════ */
+function updateHomepageMeta(newest) {
+  if (!newest) return false;
+  if (!fs.existsSync(INDEX_PATH)) return false;
+
+  let html = fs.readFileSync(INDEX_PATH, 'utf8');
+  const original = html;
+
+  const title = `Uxban — ${newest.name}`;
+  const desc  = `New ${newest.album_type} out now. Stream everywhere.`;
+  const cover = newest.images?.[0]?.url || '';
+
+  function setMeta(html, prop, value) {
+    const re = new RegExp(
+      `(<meta\\s+(?:property|name)="${prop}"\\s+content=")[^"]*(")`,
+      'i'
+    );
+    return html.replace(re, `$1${value}$2`);
+  }
+
+  html = setMeta(html, 'og:title',            title);
+  html = setMeta(html, 'og:description',      desc);
+  html = setMeta(html, 'twitter:title',       title);
+  html = setMeta(html, 'twitter:description', desc);
+  html = setMeta(html, 'description',         `Uxban — NZ artist. New ${newest.album_type} "${newest.name}", out now.`);
+
+  if (cover) {
+    html = setMeta(html, 'og:image',      cover);
+    html = setMeta(html, 'twitter:image', cover);
+  }
+
+  if (html === original) return false;
+
+  fs.writeFileSync(INDEX_PATH, html);
+  return true;
+}
+
+/* ── Main ── */
 async function main() {
   console.log(`→ Fetching Uxban catalog from iTunes (artist ${ITUNES_ARTIST_ID})...`);
 
@@ -86,10 +112,22 @@ async function main() {
   }
 
   const data = await r.json();
-  const releases = (data.results || []).filter(x => x.wrapperType === 'collection');
+  let releases = (data.results || []).filter(x => x.wrapperType === 'collection');
+
+  // Filter ignored releases
+  if (IGNORED_RELEASES.length) {
+    const ignoredLower = IGNORED_RELEASES.map(n => n.toLowerCase().trim());
+    const before = releases.length;
+    releases = releases.filter(item => {
+      const cleanName = parseName(item.collectionName).name.toLowerCase().trim();
+      return !ignoredLower.includes(cleanName);
+    });
+    const removed = before - releases.length;
+    if (removed > 0) console.log(`→ Filtered out ${removed} ignored release(s)`);
+  }
 
   if (releases.length === 0) {
-    console.error('❌ iTunes returned zero releases — leaving releases.json untouched');
+    console.error('❌ iTunes returned zero releases — leaving files untouched');
     process.exit(1);
   }
 
@@ -104,19 +142,40 @@ async function main() {
     const { name, featuring } = parseName(item.collectionName);
     const key = normalizeKey(name);
 
-    // 1-3 tracks = single, 4+ = album
     const type   = (item.trackCount || 1) <= 3 ? 'single' : 'album';
     const bucket = type === 'single' ? singles : albums;
 
-    // Spotify: try override, else auto search URL
-    const override      = overrides[key] || {};
-    const spotifyDirect = override.spotify || '';
-    const spotifyUrl    = spotifyDirect || `https://open.spotify.com/search/${encodeURIComponent(name + ' Uxban')}`;
+    // Override handling:
+    //   null → hide spotify link (empty string)
+    //   string → direct spotify URL
+    //   object → { spotify, youtubeMusic }
+    //   undefined → auto search fallback
+    const rawOverride = overrides[key];
+    let spotifyUrl = '';
+    let youtubeMusic = '';
+    let hasDirectSpotify = false;
 
-    if (!spotifyDirect) missingSpotify.push(name);
+    if (rawOverride === null) {
+      // Explicitly hide Spotify — no link at all
+      spotifyUrl = '';
+    } else if (typeof rawOverride === 'string' && rawOverride) {
+      spotifyUrl = rawOverride;
+      hasDirectSpotify = true;
+    } else if (rawOverride && typeof rawOverride === 'object') {
+      spotifyUrl      = rawOverride.spotify || '';
+      youtubeMusic    = rawOverride.youtubeMusic || '';
+      hasDirectSpotify = !!rawOverride.spotify;
+    }
 
-    // YouTube: override only (rarely used)
-    const youtubeUrl = override.youtubeMusic || '';
+    // If no override at all → fall back to search URL
+    if (rawOverride === undefined) {
+      spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(name + ' Uxban')}`;
+      missingSpotify.push(name);
+    } else if (rawOverride !== null && !hasDirectSpotify) {
+      // Object override with no spotify field → still missing
+      spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(name + ' Uxban')}`;
+      missingSpotify.push(name);
+    }
 
     bucket.push({
       id:            String(item.collectionId || ''),
@@ -131,19 +190,14 @@ async function main() {
       links: {
         spotify:      spotifyUrl,
         appleMusic:   item.collectionViewUrl || '',
-        youtubeMusic: youtubeUrl,
+        youtubeMusic: youtubeMusic,
       },
-      _spotifyDirect: !!spotifyDirect, // internal flag, stripped below
     });
   }
 
-  // Sort newest first
   const byDate = (a, b) => new Date(b.release_date) - new Date(a.release_date);
   albums.sort(byDate);
   singles.sort(byDate);
-
-  // Strip internal flag before writing
-  [...albums, ...singles].forEach(r => delete r._spotifyDirect);
 
   const result  = { albums, singles };
   const newJson = JSON.stringify(result, null, 2);
@@ -158,14 +212,26 @@ async function main() {
     console.log(`   ${albums.length} album(s), ${singles.length} single(s)`);
   }
 
+  /* ── Update homepage OG tags ── */
+  const newest = [...albums, ...singles]
+    .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))[0];
+
+  if (newest) {
+    const updated = updateHomepageMeta(newest);
+    if (updated) {
+      console.log(`✅ Updated homepage OG tags → "${newest.name}"`);
+    } else {
+      console.log(`ℹ️  Homepage OG tags already current ("${newest.name}")`);
+    }
+  }
+
   if (missingSpotify.length) {
     console.log('');
     console.log(`ℹ️  ${missingSpotify.length} release(s) using auto Spotify search URL:`);
     missingSpotify.forEach(n => console.log(`   • ${n}`));
     console.log('');
-    console.log('   To upgrade any of these to a direct Spotify album link,');
-    console.log('   add an entry to data/spotify-overrides.json:');
-    console.log('   { "release name lowercased": "https://open.spotify.com/album/..." }');
+    console.log('   To upgrade: add to data/spotify-overrides.json');
+    console.log('   To hide Spotify link: set value to null');
   }
 }
 
