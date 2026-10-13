@@ -462,9 +462,9 @@ function buildTile(item, index) {
           ${ICONS.eq}
         </button>
         <div class="release-tile-platforms">
-          ${urls.spotify !== null ? `<a class="platform-icon" href="${urls.spotify}" target="_blank" rel="noopener" aria-label="Spotify" data-platform="spotify">${ICONS.spotify}</a>` : ''}
-          ${urls.apple ? `<a class="platform-icon" href="${urls.apple}" target="_blank" rel="noopener" aria-label="Apple Music" data-platform="apple">${ICONS.apple}</a>` : ''}
-          ${urls.youtube ? `<a class="platform-icon" href="${urls.youtube}" target="_blank" rel="noopener" aria-label="YouTube Music" data-platform="youtube">${ICONS.youtube}</a>` : ''}
+          <a class="platform-icon" href="${urls.spotify}" target="_blank" rel="noopener" aria-label="Spotify" data-platform="spotify">${ICONS.spotify}</a>
+          <a class="platform-icon" href="${urls.apple}"   target="_blank" rel="noopener" aria-label="Apple Music" data-platform="apple">${ICONS.apple}</a>
+          <a class="platform-icon" href="${urls.youtube}" target="_blank" rel="noopener" aria-label="YouTube Music" data-platform="youtube">${ICONS.youtube}</a>
         </div>
       </div>
       ${isTouch ? `

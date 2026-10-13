@@ -95,7 +95,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "https://open.spotify.com/track/1oWySnaThEsLbqcEHMWvPH?si=80a01b1e1afc4490"
+        "spotify": "https://open.spotify.com/track/1oWySnaThEsLbqcEHMWvPH"
       },
       "artists": [
         {
@@ -105,7 +105,7 @@
       ],
       "featuring": [],
       "links": {
-        "spotify": "https://open.spotify.com/track/1oWySnaThEsLbqcEHMWvPH?si=80a01b1e1afc4490",
+        "spotify": "https://open.spotify.com/track/1oWySnaThEsLbqcEHMWvPH",
         "appleMusic": "https://music.apple.com/us/album/on-you-single/6817164124?uo=4",
         "youtubeMusic": ""
       }
@@ -230,7 +230,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "https://open.spotify.com/track/0wVOJgeOcsUG6pxc1ziRBw?si=cbd02b23c7ed46a5"
+        "spotify": "https://open.spotify.com/track/0wVOJgeOcsUG6pxc1ziRBw"
       },
       "artists": [
         {
@@ -242,7 +242,7 @@
         "VZee"
       ],
       "links": {
-        "spotify": "https://open.spotify.com/track/0wVOJgeOcsUG6pxc1ziRBw?si=cbd02b23c7ed46a5",
+        "spotify": "https://open.spotify.com/track/0wVOJgeOcsUG6pxc1ziRBw",
         "appleMusic": "https://music.apple.com/us/album/freddy-krue-feat-vzee-single/1879704694?uo=4",
         "youtubeMusic": ""
       }
@@ -259,7 +259,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "https://open.spotify.com/track/3KEJIAyxsdYpkQGMIJIfHy?si=4352f8352ffd411f"
+        "spotify": "https://open.spotify.com/track/3KEJIAyxsdYpkQGMIJIfHy"
       },
       "artists": [
         {
@@ -269,7 +269,7 @@
       ],
       "featuring": [],
       "links": {
-        "spotify": "https://open.spotify.com/track/3KEJIAyxsdYpkQGMIJIfHy?si=4352f8352ffd411f",
+        "spotify": "https://open.spotify.com/track/3KEJIAyxsdYpkQGMIJIfHy",
         "appleMusic": "https://music.apple.com/us/album/dying-inna-red-single/1880895489?uo=4",
         "youtubeMusic": ""
       }
@@ -286,7 +286,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "https://open.spotify.com/track/1AezLh8MPoskE4Iq3eiyeR?si=4a7ee8b8382e491a"
+        "spotify": "https://open.spotify.com/track/1AezLh8MPoskE4Iq3eiyeR"
       },
       "artists": [
         {
@@ -296,7 +296,7 @@
       ],
       "featuring": [],
       "links": {
-        "spotify": "https://open.spotify.com/track/1AezLh8MPoskE4Iq3eiyeR?si=4a7ee8b8382e491a",
+        "spotify": "https://open.spotify.com/track/1AezLh8MPoskE4Iq3eiyeR",
         "appleMusic": "https://music.apple.com/us/album/everythinguwant-single/1871039629?uo=4",
         "youtubeMusic": ""
       }
@@ -313,7 +313,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "https://open.spotify.com/track/5axxKJ11n6WuUt1fIPO4jP?si=d6869c77e2a54c76"
+        "spotify": "https://open.spotify.com/track/5axxKJ11n6WuUt1fIPO4jP"
       },
       "artists": [
         {
@@ -323,7 +323,7 @@
       ],
       "featuring": [],
       "links": {
-        "spotify": "https://open.spotify.com/track/5axxKJ11n6WuUt1fIPO4jP?si=d6869c77e2a54c76",
+        "spotify": "https://open.spotify.com/track/5axxKJ11n6WuUt1fIPO4jP",
         "appleMusic": "https://music.apple.com/us/album/miss-me-single/1851584322?uo=4",
         "youtubeMusic": ""
       }
@@ -340,7 +340,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "null"
+        "spotify": null
       },
       "artists": [
         {
@@ -350,7 +350,7 @@
       ],
       "featuring": [],
       "links": {
-        "spotify": "null",
+        "spotify": null,
         "appleMusic": "https://music.apple.com/us/album/dancer-single/1833758354?uo=4",
         "youtubeMusic": ""
       }
@@ -367,7 +367,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "null"
+        "spotify": null
       },
       "artists": [
         {
@@ -380,7 +380,7 @@
         "RPprods"
       ],
       "links": {
-        "spotify": "null",
+        "spotify": null,
         "appleMusic": "https://music.apple.com/us/album/i-hope-feat-thirteenth-generation-rpprods-single/1832093353?uo=4",
         "youtubeMusic": ""
       }
@@ -397,7 +397,7 @@
         }
       ],
       "external_urls": {
-        "spotify": "null"
+        "spotify": null
       },
       "artists": [
         {
@@ -407,7 +407,7 @@
       ],
       "featuring": [],
       "links": {
-        "spotify": "null",
+        "spotify": null,
         "appleMusic": "https://music.apple.com/us/album/kicked-out-feat-uxban-single/1827976037?uo=4",
         "youtubeMusic": ""
       }
