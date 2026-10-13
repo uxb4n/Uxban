@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Uxban | About</title>
-  <meta name="description" content="Uxban — rapper and producer from Hamilton, New Zealand. Underground rap, atmospheric production, raw writing.">
+  <meta name="description" content="Uxban — rapper and producer from Hamilton, New Zealand. Underground hip-hop, trap, and rage. Self-produced. Born 2010.">
   <link rel="canonical" href="https://uxban.shop/about/">
 
   <meta property="og:type"        content="website">
@@ -132,6 +132,10 @@
     .about-bio-text strong {
       color: #fff;
       font-weight: 600;
+    }
+    .about-bio-text em {
+      color: var(--fg);
+      font-style: italic;
     }
 
     /* ── Stats row ── */
@@ -423,7 +427,7 @@
     <div class="about-bio">
       <div class="about-photo-wrap ab-fade ab-fade-1">
         <div class="about-photo" style="background-image:url('/assets/images/about-photo.jpg')"></div>
-        <!-- If the photo file doesn't exist yet, swap the line above with:
+        <!-- If you don't have a photo yet, swap the line above with:
              <div class="about-photo-placeholder">// PRESS PHOTO<br>COMING SOON</div> -->
       </div>
 
@@ -431,15 +435,23 @@
         <span class="about-bio-eyebrow">// THE STORY</span>
 
         <p class="about-bio-text">
-          <strong>Uxban</strong> is a rapper and producer from Hamilton, New Zealand, born in 2010. He's recognized for his work in the underground rap scene — blending heavy, atmospheric production with personal, emotional, and aggressive lyrics.
+          <strong>Blake Taylor</strong> (born April 6, 2010), known professionally as <strong>Uxban</strong>, is a rapper and producer from Hamilton, New Zealand. At 12, he began making music under the name Blakeotaylor Music — but quickly evolved into one of the younger, emerging voices in hip-hop, rap, and trap.
         </p>
 
         <p class="about-bio-text">
-          He started self-producing in early high school, building entire projects on BandLab before moving into full studio production. His debut tape <strong>More Than Days +</strong> arrived in 2025, followed by a steady run of singles that balance melodic hooks with raw, unpolished delivery.
+          What started as curiosity — experimenting with sounds, recording basic demos, and learning production at home — became a deeper creative drive. He eventually rebranded to <strong>Uxban</strong>, a name that reflected the darker, sharper, more authentic direction his music was taking.
         </p>
 
         <p class="about-bio-text">
-          His sound sits between rage and quiet — the same tension that runs through the writing. <strong>UX</strong> (2025) and <strong>UXTRA</strong> (2026) expanded that world, and recent singles like <strong>On You</strong> and <strong>back2Me</strong> have pushed the production into new territory while keeping the writing as personal as it's always been.
+          "A friend of mine was in social studies thinking of artist names and came up with <strong>Uxban</strong>. It instantly clicked — it sounded different, matched my style, and also connected to the urban environment I come from, which influences a lot of what I create."
+        </p>
+
+        <p class="about-bio-text">
+          Asked what sets him apart: <em>"I stay true to myself. I'm not trying to copy what's trending. I talk about what I know, how I feel, and I'm always experimenting. I make everything myself, so when people hear my music, they're hearing exactly what I intended."</em>
+        </p>
+
+        <p class="about-bio-text">
+          Uxban's sound blends heavy, atmospheric production with raw, personal lyrics. Mixing emotion and aggression, his music offers a window into the mind of a young artist navigating life, pressure, identity, and growth — one release at a time.
         </p>
       </div>
     </div>
@@ -447,20 +459,20 @@
     <!-- ══ STATS ══ -->
     <div class="about-stats ab-fade ab-fade-3">
       <div class="about-stat">
-        <span class="about-stat-value">2025</span>
-        <span class="about-stat-label">Debut</span>
+        <span class="about-stat-value">2010</span>
+        <span class="about-stat-label">Born</span>
       </div>
       <div class="about-stat">
-        <span class="about-stat-value">NZ</span>
-        <span class="about-stat-label">Based in Hamilton</span>
+        <span class="about-stat-value">2022</span>
+        <span class="about-stat-label">Started Making Music</span>
+      </div>
+      <div class="about-stat">
+        <span class="about-stat-value">Hamilton</span>
+        <span class="about-stat-label">Based In</span>
       </div>
       <div class="about-stat">
         <span class="about-stat-value">Self</span>
         <span class="about-stat-label">Written &amp; Produced</span>
-      </div>
-      <div class="about-stat">
-        <span class="about-stat-value">Global</span>
-        <span class="about-stat-label">Streaming Everywhere</span>
       </div>
     </div>
 
@@ -621,7 +633,7 @@
       statusEl.classList.add('error');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = origHtml;
+      submitBtn.innerHTML = origHTML;
     }
   });
 
