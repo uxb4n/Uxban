@@ -435,7 +435,28 @@ function fmtDuration(ms) {
 
   const cfg     = window.UXBAN_RELEASE_CONFIG || {};
   const story   = (cfg.stories || {})[slug] || `${release.name} by Uxban.`;
-  const credits = (cfg.credits || {})[slug] || cfg.defaultCredits || {};
+
+  // ── Build credits automatically ──
+  //  1. Start with defaults
+  //  2. Layer per-release overrides on top
+  //  3. Add featuring from release data
+  //  4. Strip any roles set to `false`
+  const baseCredits     = { ...(cfg.defaultCredits || {}) };
+  const overrideCredits = (cfg.credits || {})[slug] || {};
+  const mergedCredits   = { ...baseCredits, ...overrideCredits };
+
+  // Featuring — auto-add from iTunes ONLY if you didn't already set it
+  const featList = release.featuring || [];
+  if (featList.length && !('Featuring' in overrideCredits)) {
+    mergedCredits['Featuring'] = featList.join(' & ');
+  }
+
+  // Remove any role explicitly disabled with `false`
+  Object.keys(mergedCredits).forEach(k => {
+    if (!mergedCredits[k]) delete mergedCredits[k];
+  });
+
+  const credits = mergedCredits;
 
   const cover   = release.images?.[0]?.url || '';
   const year    = release.release_date?.slice(0, 4) || '';
