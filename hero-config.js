@@ -1,53 +1,63 @@
 /* ==============================================
-   UXBAN — HERO CONFIG
-   Controls what shows in the homepage hero.
+   UXBAN — HERO + FEATURED CONFIG
+   Controls the homepage hero AND the featured
+   release card.
 
-   Two modes:
-   1) AUTO   → flip useCustom:false, pulls the newest release from Spotify
-   2) CUSTOM → flip useCustom:true, uses the `custom` block below
+   ── HOW TO SWITCH BETWEEN STATES ──
 
-   Edit this file whenever you want to change the hero.
-   No other files need touching.
+   UPCOMING (before release):
+     useCustom: true
+     featuredOverride.active: true
+     Fill in the custom + featuredOverride blocks
+     with cover art, title, and (later) presave URL.
+
+   LIVE (after release is on streaming):
+     useCustom: false
+     featuredOverride.active: false
+     The site auto-pulls the newest release from iTunes.
    ============================================== */
 
 window.UXBAN_HERO = {
 
-  /* ── Mode ───────────────────────────────── */
-  useCustom: false,   // false = auto newest release, true = use `custom` block
+  /* ═══════════════════════════════════════════
+     HERO (top of homepage)
+  ═══════════════════════════════════════════ */
+  useCustom: true,   // ← true = show upcoming below, false = auto iTunes
 
-  /* ── CUSTOM HERO (used when useCustom:true) ──
-     Good for: music videos, announcements, pre-saves,
-     anything you want to pin up top for a while. */
   custom: {
-    eyebrow:    'NEW SINGLE',
-    title:      'BACK2ME',
-    subtitle:   'The new single from Uxban. Dropping Aug 21, 4PM NZT.',
-    ctaText:    'PRE-SAVE NOW',
-    ctaLink:    'https://distrokid.com/hyperfollow/uxban/back2me?ref=release',
-    background: '/assets/images/cover-back2me.jpg',
+    eyebrow:    'COMING SOON',
+    title:      'VELVET',
+    subtitle:   'The new single from Uxban.',
+    ctaText:    'COMING SOON',                    // shown until you have a URL
+    ctaLink:    '',                               // empty = disabled button
+    background: '/assets/images/velvet-cover.jpg',
   },
 
-  /* ── AUTO MODE OPTIONS ──────────────────────
-     When useCustom is false, the hero uses the newest release
-     from /api/spotify. Optionally pin a specific release by
-     name (case-insensitive, partial match works).
 
-     Examples:
-       pin: null,           → newest release
-       pin: 'uxtra',        → always feature UXTRA
-       pin: 'switch up',    → always feature SWITCH UP */
+  /* ═══════════════════════════════════════════
+     FEATURED RELEASE CARD
+     (the big tile below the hero)
+  ═══════════════════════════════════════════ */
+  featuredOverride: {
+    active:     true,                             // ← flip to false after release
+    eyebrow:    'COMING SOON',                    // becomes 'NEW SINGLE' when live
+    title:      'VELVET',
+    meta:       'SINGLE',                         // shows under the title
+    coverImage: '/assets/images/velvet-cover.jpg',
+    ctaText:    'COMING SOON',
+    ctaLink:    '',                               // empty = disabled
+  },
+
+
+  /* ── Auto mode fallback (used when useCustom:false) ── */
   pin: null,
-
-  /* ── FALLBACK ───────────────────────────────
-     Shown if the Spotify fetch fails. Keep this matched to
-     the current hero in index.html so nothing changes if the
-     API is down. */
   fallback: {
     eyebrow:    'NEW SINGLE',
-    title:      'BACK2ME',
-    subtitle:   'The new single from Uxban. Dropping Aug 21, 4PM NZT.',
-    ctaText:    'PRE-SAVE NOW',
-    ctaLink:    'https://distrokid.com/hyperfollow/uxban/back2me?ref=release',
-    background: '/assets/images/cover-back2me.jpg',
+    title:      'ON YOU',
+    subtitle:   'New single out now.',
+    ctaText:    'LISTEN NOW',
+    ctaLink:    'https://too.fm/on-you',
+    background: '',
   },
+
 };

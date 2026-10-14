@@ -22,73 +22,62 @@ window.UXBAN_UNLOCK_CONFIG = {
   /* ════════════════════════════════════════════
      VELVET — First gated release
      ════════════════════════════════════════════ */
-  'velvet': {
-    slug:  'velvet',
-    title: 'VELVET',
-    public: false,
+    'velvet': {
+      slug:  'velvet',
+      title: 'VELVET',
 
-    // ── Artwork ────────────────────────────────
-    coverImage: '/assets/images/velvet-cover.jpg',
+      public: false,   // ← flip to true when Too Lost gives you the presave URL
 
-    // ── Pre-save / stream link (Too.fm) ────────
-    // The same URL works pre + post release — Too.fm
-    // auto-switches the landing page for you.
-    streamUrl: 'https://too.fm/velvet',
+      coverImage: '/assets/images/velvet-cover.jpg',
 
-    // ── Timing ─────────────────────────────────
-    openAt:      null,                              // always open
-    releaseDate: '2026-11-01T00:00:00+13:00',       // ← set your real date
-    closeAt:     '2026-11-15T23:59:59+13:00',       // ← set your real close
+      streamUrl: 'https://too.fm/velvet',  // will swap to the real URL when it's live
 
-    // ── Locked state copy ──────────────────────
-    locked: {
-      eyebrow: '// EXCLUSIVE EARLY ACCESS',
-      title:   'HEAR IT\nBEFORE\nIT DROPS.',
-      desc:    'Pre-save VELVET to unlock the full track, 48 hours before it hits streaming.',
-      cta:     'PRE-SAVE VELVET',
-      waiting: 'Waiting for you to come back…',
-    },
+      openAt:      null,
+      releaseDate: '2026-10-30T16:00:00+13:00',
+      closeAt:     '2026-11-13T23:59:59+13:00',
 
-    // ── Unlocked state copy ────────────────────
-    unlocked: {
-      eyebrow: '// YOU\'RE IN',
-      title:   'YOU\'RE\nEARLY.',
-      desc:    'You\'re hearing this before anyone else. Keep it between us.',
-    },
-
-    // ── Post-release copy (stream-to-unlock phase) ──
-    streaming: {
-      eyebrow: '// OUT NOW',
-      title:   'STREAM IT.\nUNLOCK IT.',
-      desc:    'VELVET is out now. Stream the track below to unlock the extended cut.',
-      cta:     'STREAM VELVET',
-      waiting: 'Waiting for you to come back…',
-    },
-
-    // ── Too early state ────────────────────────
-    tooEarly: {
-      eyebrow: '// NOT YET',
-      title:   'TOO\nEARLY.',
-      desc:    'Pre-saves open on the date below. Come back then to claim your early access.',
-    },
-
-    // ── Ended state ────────────────────────────
-    ended: {
-      eyebrow: '// CLOSED',
-      title:   'YOU MISSED\nIT.',
-      desc:    'The early access window for VELVET has closed. Stream it everywhere now.',
-    },
-
-    // ── Rewards ────────────────────────────────
-    // (array — you can stack more reward types later)
-    rewards: [
-      {
-        type:  'audio',
-        label: 'VELVET — Early Stream',
-        src:   '/assets/audio/velvet.mp3',
+      locked: {
+        eyebrow: '// EXCLUSIVE EARLY ACCESS',
+        title:   'HEAR IT\nBEFORE\nIT DROPS.',
+        desc:    'Pre-save VELVET to unlock the full track, before it hits streaming.',
+        cta:     'PRE-SAVE VELVET',
+        waiting: 'Waiting for you to come back…',
       },
-    ],
-  },
+
+      unlocked: {
+        eyebrow: '// YOU\'RE IN',
+        title:   'YOU\'RE\nEARLY.',
+        desc:    'You\'re hearing this before anyone else. Keep it between us.',
+      },
+
+      streaming: {
+        eyebrow: '// OUT NOW',
+        title:   'STREAM IT.\nUNLOCK IT.',
+        desc:    'VELVET is out now. Stream the track below to unlock the extended cut.',
+        cta:     'STREAM VELVET',
+        waiting: 'Waiting for you to come back…',
+      },
+
+      tooEarly: {
+        eyebrow: '// NOT YET',
+        title:   'TOO\nEARLY.',
+        desc:    'Pre-saves open on the date below. Come back then to claim your early access.',
+      },
+
+      ended: {
+        eyebrow: '// CLOSED',
+        title:   'YOU MISSED\nIT.',
+        desc:    'The early access window for VELVET has closed. Stream it everywhere now.',
+      },
+
+      rewards: [
+        {
+          type:  'audio',
+          label: 'VELVET — Early Stream',
+          src:   '/assets/audio/velvet.mp3',
+        },
+      ],
+    },
 
 
   /* ════════════════════════════════════════════

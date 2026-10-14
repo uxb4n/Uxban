@@ -266,7 +266,31 @@ async function loadSpotifyData() {
     ].sort((a, b) => new Date(b.release.release_date) - new Date(a.release.release_date));
 
     // ── Featured ──
-    if (all.length) {
+    const heroCfg  = window.UXBAN_HERO || {};
+    const featOv   = heroCfg.featuredOverride;
+
+    if (featOv && featOv.active) {
+      // Coming soon override
+      const coverEl = document.getElementById('featured-cover');
+      const titleEl = document.getElementById('featured-title');
+      const metaEl  = document.getElementById('featured-meta');
+      const linksEl = document.getElementById('featured-links');
+      const badgeEl = document.getElementById('featured-badge');
+
+      if (coverEl && featOv.coverImage) coverEl.style.backgroundImage = `url('${featOv.coverImage}')`;
+      if (titleEl) titleEl.textContent = featOv.title || '';
+      if (metaEl)  metaEl.textContent  = featOv.meta  || '';
+      if (badgeEl) badgeEl.textContent = featOv.eyebrow || 'COMING SOON';
+
+      if (linksEl) {
+        if (featOv.ctaLink) {
+          linksEl.innerHTML = `<a class="stream-link" href="${featOv.ctaLink}" target="_blank" rel="noopener">${featOv.ctaText || 'LISTEN'} ↗</a>`;
+        } else {
+          linksEl.innerHTML = `<span class="stream-link disabled">${featOv.ctaText || 'COMING SOON'}</span>`;
+        }
+      }
+      setVisible(featEl, featEmpty, true);
+    } else if (all.length) {
       renderFeaturedRelease(all[0].release, all[0].cover, all[0].links, all[0].type);
       setVisible(featEl, featEmpty, true);
     } else {

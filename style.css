@@ -3042,6 +3042,13 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
   transition: width 0.35s var(--ease);
 }
 
+/* Disabled / coming-soon state for stream links */
+.stream-link.disabled {
+  pointer-events: none;
+  opacity: 0.35;
+  cursor: default;
+}
+
 /* ── Hide-on-mobile helper ── */
 @media (max-width: 480px) {
   .site-banner .hide-on-mobile { display: none; }

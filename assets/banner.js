@@ -22,7 +22,7 @@ window.UXBAN_BANNER = {
      Dismissing hides the banner for THIS version.
      Bump the version string to re-show to everyone. */
   dismissible: true,
-  version: 'on-you-v1',
+  version: 'velvet-v1',
 
   /* ── Content ─────────────────────────────────
      Array of segments, rendered left to right.
@@ -50,17 +50,12 @@ window.UXBAN_BANNER = {
        hideOnMobile: true   → hidden under 480px
   ────────────────────────────────────────────── */
   segments: [
-    { text: '// NEW SINGLE "ON YOU"', hideOnMobile: false },
-    {
-      type: 'countdown',
-      target: '2026-10-02T16:00:00+13:00',
-      label: 'DROPS IN',
-      expiredStyle: 'hide',   // 'hide' | 'text' | 'link'
-      expiredText: 'OUT NOW',
-      expiredHref: 'https://too.fm/on-you',
-    },
-    { text: 'PRE-SAVE', href: 'https://too.fm/on-you', style: 'primary' },
-  ],
+      dismissible: true,
+      version: 'velvet-v1',   // ← was 'on-you-v1', bump so anyone who dismissed the old one sees this
+
+      segments: [
+        { text: '// NEW SINGLE VELVET — COMING SOON', hideOnMobile: false },
+      ],
 
   /* ═══════════════════════════════════════════
      EXAMPLES — copy/paste what you need
