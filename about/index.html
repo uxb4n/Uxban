@@ -185,6 +185,131 @@
       display: block;
     }
 
+    /* ── Press / interview card ── */
+    .interview-card {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
+      align-items: center;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-card);
+      text-decoration: none;
+      color: #fff;
+      transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.2s var(--ease);
+      max-width: 900px;
+    }
+    .interview-card:hover {
+      border-color: var(--border-2);
+      background: rgba(255,255,255,0.02);
+      transform: translateY(-2px);
+    }
+
+    .interview-thumb {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      flex-shrink: 0;
+    }
+    .interview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0.85;
+      transition: opacity 0.3s, transform 0.4s var(--ease);
+    }
+    .interview-card:hover .interview-thumb img {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+
+    .interview-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .interview-play svg {
+      width: 56px;
+      height: 56px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      fill: #000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      transition: transform 0.25s var(--ease), background 0.2s, fill 0.2s;
+    }
+    .interview-card:hover .interview-play svg {
+      background: var(--accent);
+      fill: #fff;
+      transform: scale(1.08);
+    }
+
+    .interview-info { min-width: 0; }
+
+    .interview-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .interview-title {
+      font-family: var(--sans);
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .interview-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .interview-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--fg-dim);
+      margin-bottom: 20px;
+      max-width: 480px;
+    }
+    .interview-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: #fff;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      padding-bottom: 3px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .interview-card:hover .interview-cta {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .interview-cta svg {
+      transition: transform 0.2s var(--ease);
+    }
+    .interview-card:hover .interview-cta svg {
+      transform: translate(2px, -2px);
+    }
+
     /* ── Contact block ── */
     .contact-grid {
       display: grid;
@@ -268,7 +393,6 @@
       opacity: 0.6;
     }
 
-    /* Honeypot — visually hidden */
     .contact-honey {
       position: absolute;
       left: -9999px;
@@ -373,6 +497,12 @@
       .about-stats { grid-template-columns: repeat(2, 1fr); }
       .contact-grid { grid-template-columns: 1fr; gap: 48px; }
       .about-section { margin-bottom: 72px; }
+
+      .interview-card {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -427,31 +557,33 @@
     <div class="about-bio">
       <div class="about-photo-wrap ab-fade ab-fade-1">
         <div class="about-photo" style="background-image:url('/assets/images/about-photo.jpg')"></div>
-        <!-- If you don't have a photo yet, swap the line above with:
-             <div class="about-photo-placeholder">// PRESS PHOTO<br>COMING SOON</div> -->
       </div>
 
       <div class="about-bio-content ab-fade ab-fade-2">
         <span class="about-bio-eyebrow">// THE STORY</span>
 
         <p class="about-bio-text">
-          <strong>Blake Taylor</strong> (born April 6, 2010), known professionally as <strong>Uxban</strong>, is a rapper and producer from Hamilton, New Zealand. At 12, he began making music under the name Blakeotaylor Music — but quickly evolved into one of the younger, emerging voices in hip-hop, rap, and trap.
+          <strong>Blake Taylor</strong> (born April 6, 2010), known as <strong>Uxban</strong>, is a rapper and producer from Hamilton, New Zealand. He picked up producing at 12 under an old alias, and for two years he was mostly behind the boards making beats. By 14 he'd moved in front of the mic, writing and recording his own vocals, and the Uxban project became the thing he was actually building toward.
         </p>
 
         <p class="about-bio-text">
-          What started as curiosity — experimenting with sounds, recording basic demos, and learning production at home — became a deeper creative drive. He eventually rebranded to <strong>Uxban</strong>, a name that reflected the darker, sharper, more authentic direction his music was taking.
+          When his friends first found his early recordings, he openly admits they were bad, and he got bullied for a whole year over them. He didn't quit. He locked in instead, kept refining the sound, and by 16 he had put out two albums, a debut tape, and a run of singles, all self produced and self mixed.
         </p>
 
         <p class="about-bio-text">
-          "A friend of mine was in social studies thinking of artist names and came up with <strong>Uxban</strong>. It instantly clicked — it sounded different, matched my style, and also connected to the urban environment I come from, which influences a lot of what I create."
+          The name came from a friend in social studies who was brainstorming artist names. <em>"It instantly clicked,"</em> Blake says. <em>"It sounded different, matched my style, and connected to the urban environment I come from, which influences a lot of what I create."</em>
         </p>
 
         <p class="about-bio-text">
-          Asked what sets him apart: <em>"I stay true to myself. I'm not trying to copy what's trending. I talk about what I know, how I feel, and I'm always experimenting. I make everything myself, so when people hear my music, they're hearing exactly what I intended."</em>
+          His sound lives somewhere in melodic rage, where heavy atmospheric production and experimental structures sit underneath writing that moves between aggression and real vulnerability depending on the song. He describes his lane with the same directness he raps with: <em>"You see no 16 year olds making music in New Zealand. Especially in my genre."</em>
         </p>
 
         <p class="about-bio-text">
-          Uxban's sound blends heavy, atmospheric production with raw, personal lyrics. Mixing emotion and aggression, his music offers a window into the mind of a young artist navigating life, pressure, identity, and growth — one release at a time.
+          He's also not chasing a deal. <em>"I don't want to sign to a label. I don't want to do anything like that. I just want to make music and pursue my career."</em>
+        </p>
+
+        <p class="about-bio-text">
+          The output backs up the mindset. He records a week's worth of content in a single day, drops albums around moments that matter to him, like UXTRA landing on his birthday and UX arriving on New Year's, and he doesn't waste time second guessing a move once he's made it. As he puts it: <em>"Life isn't infinite. Once something's over, it's over."</em>
         </p>
       </div>
     </div>
@@ -474,6 +606,30 @@
         <span class="about-stat-value">Self</span>
         <span class="about-stat-label">Written &amp; Produced</span>
       </div>
+    </div>
+
+    <!-- ══ PRESS ══ -->
+    <div class="about-section">
+      <span class="about-section-label">// PRESS</span>
+
+      <a class="interview-card ab-fade" href="https://youtu.be/RAz4lYzXtXs" target="_blank" rel="noopener">
+        <div class="interview-thumb">
+          <img src="https://img.youtube.com/vi/RAz4lYzXtXs/maxresdefault.jpg" alt="Uxban on Address the Elephant" loading="lazy">
+          <div class="interview-play">
+            <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+          </div>
+        </div>
+        <div class="interview-info">
+          <p class="interview-label">// FULL INTERVIEW</p>
+          <h3 class="interview-title">Uxban on Address the Elephant</h3>
+          <p class="interview-meta">wokeupbored · August 18, 2026</p>
+          <p class="interview-desc">A one-hour conversation on the New Zealand underground scene, producing at 14, independence, the ego problem, and unreleased music.</p>
+          <span class="interview-cta">
+            Watch on YouTube
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
+          </span>
+        </div>
+      </a>
     </div>
 
     <!-- ══ CONTACT ══ -->
@@ -524,7 +680,6 @@
             <textarea class="contact-textarea" id="contact-message" name="message" required maxlength="5000"></textarea>
           </div>
 
-          <!-- Honeypot — do not fill -->
           <input class="contact-honey" type="text" name="_honey" tabindex="-1" autocomplete="off">
 
           <button class="contact-submit" id="contact-submit" type="submit">
