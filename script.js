@@ -102,8 +102,30 @@ function applyHeroContent(c) {
   if (eyebrow && c.eyebrow  != null) eyebrow.textContent = c.eyebrow;
   if (title   && c.title    != null) title.textContent   = c.title;
   if (sub     && c.subtitle != null) sub.textContent     = c.subtitle;
-  if (cta     && c.ctaText  != null) cta.textContent     = c.ctaText;
-  if (cta     && c.ctaLink)          cta.href            = c.ctaLink;
+
+  // CTA handling — disable when no link is set
+  if (cta) {
+    if (c.ctaText != null) cta.textContent = c.ctaText;
+
+    if (c.ctaLink) {
+      cta.href = c.ctaLink;
+      cta.removeAttribute('target');
+      // External links open in new tab
+      if (/^https?:/i.test(c.ctaLink)) {
+        cta.setAttribute('target', '_blank');
+        cta.setAttribute('rel', 'noopener');
+      }
+      cta.classList.remove('disabled');
+      cta.removeAttribute('aria-disabled');
+    } else {
+      // No link — make it a non-navigating, visually disabled button
+      cta.removeAttribute('href');
+      cta.removeAttribute('target');
+      cta.removeAttribute('rel');
+      cta.classList.add('disabled');
+      cta.setAttribute('aria-disabled', 'true');
+    }
+  }
 
   if (!bgWrap || !c.background) return;
 

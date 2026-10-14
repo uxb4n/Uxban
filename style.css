@@ -3042,11 +3042,19 @@ body:has(.util-bar):has(.site-banner:not([style*="display: none"])) .top-bar { t
   transition: width 0.35s var(--ease);
 }
 
-/* Disabled / coming-soon state for stream links */
+/* Hero CTA disabled state (when ctaLink is empty) */
+.hero-cta.disabled,
+.hero-cta[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Also disabled stream links (featured card) */
 .stream-link.disabled {
   pointer-events: none;
   opacity: 0.35;
-  cursor: default;
+  cursor: not-allowed;
 }
 
 /* ── Hide-on-mobile helper ── */
