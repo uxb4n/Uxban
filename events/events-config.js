@@ -12,6 +12,8 @@ window.UXBAN_EVENTS_CONFIG = {
       id:    'bankset-exe-nov-7',
       title: 'Bankset Presents: Exe',
 
+      posterImage: '/assets/images/events/exe-nov-7.jpg',   // ← add this
+
       date:      '2026-11-07T20:30:00+13:00',
       doorsOpen: '2026-11-07T20:00:00+13:00',
 
