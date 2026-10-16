@@ -8,15 +8,13 @@ window.UXBAN_BANNER = {
 
   enabled: true,
   dismissible: true,
-  version: 'velvet-v1',
+  version: 'exe-v1',
 
-  /* Segments render left to right.
-     Plain text: { text: '...' }
-     Button:     { text: '...', href: '...', style: 'primary' | 'outline' | 'link' }
-     Countdown:  { type: 'countdown', target: '...', label: '...', ... } */
   segments: [
-    { text: '// NEW SINGLE VELVET — COMING SOON', hideOnMobile: false },
+    { text: '// LIVE IN AUCKLAND — NOV 7', hideOnMobile: false },
+    { text: 'GET TICKETS', href: 'https://www.undertheradar.co.nz/ticket/36393/Bankset-Presents-Exe.utr', style: 'primary' },
   ],
+
 };
 
 
