@@ -90,35 +90,6 @@
   ],
   "singles": [
     {
-      "id": "6825103024",
-      "name": "Velvet",
-      "album_type": "single",
-      "release_date": "2026-10-30",
-      "total_tracks": 1,
-      "images": [
-        {
-          "url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/62/4a/da/624adaa9-c118-2edf-6b48-b0d5a64232fa/1562912.jpg/600x600bb.jpg"
-        }
-      ],
-      "external_urls": {
-        "spotify": "https://open.spotify.com/search/Velvet%20Uxban"
-      },
-      "artists": [
-        {
-          "id": "1757422943",
-          "name": "Uxban"
-        }
-      ],
-      "featuring": [],
-      "featuredOn": false,
-      "primaryArtist": "Uxban",
-      "links": {
-        "spotify": "https://open.spotify.com/search/Velvet%20Uxban",
-        "appleMusic": "https://music.apple.com/us/album/velvet-single/6825103024?uo=4",
-        "youtubeMusic": ""
-      }
-    },
-    {
       "id": "6817164124",
       "name": "On You",
       "album_type": "single",
