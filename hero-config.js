@@ -25,11 +25,11 @@ window.UXBAN_HERO = {
   useCustom: true,   // ← true = show upcoming below, false = auto iTunes
 
   custom: {
-    eyebrow:    'COMING SOON',
+    eyebrow:    'OUT NOW',
     title:      'VELVET',
     subtitle:   'The new single from Uxban.',
-    ctaText:    'COMING SOON',                    // shown until you have a URL
-    ctaLink:    '',                               // empty = disabled button
+    ctaText:    'LISTEN NOW',                    // shown until you have a URL
+    ctaLink:    'https://too.fm/velvet-presave',                               // empty = disabled button
     background: '/assets/images/velvet-cover.jpg',
   },
 
@@ -40,12 +40,12 @@ window.UXBAN_HERO = {
   ═══════════════════════════════════════════ */
   featuredOverride: {
     active:     true,                             // ← flip to false after release
-    eyebrow:    'COMING SOON',                    // becomes 'NEW SINGLE' when live
+    eyebrow:    'OUT NOW',                    // becomes 'NEW SINGLE' when live
     title:      'VELVET',
     meta:       'SINGLE',                         // shows under the title
     coverImage: '/assets/images/velvet-cover.jpg',
-    ctaText:    'COMING SOON',
-    ctaLink:    '',                               // empty = disabled
+    ctaText:    'LISTEN NOW',
+    ctaLink:    'https://too.fm/velvet-presave',                               // empty = disabled
   },
 
 

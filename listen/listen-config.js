@@ -59,6 +59,7 @@ window.UXBAN_LINKS_CONFIG = {
     // "UX" is only 2 characters — Too.fm requires 3+,
     // so we point /listen/ux/ at the actual Too.fm URL.
     'ux': 'https://too.fm/ux1',
+    'velvet': 'https://too.fm/velvet-presave',
 
     // ── Add more as you need them ──
     // 'some-track': 'https://too.fm/abc123',
